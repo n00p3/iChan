@@ -1,5 +1,5 @@
 //
-//  SecondViewController.swift
+//  FirstViewController.swift
 //  iChan
 //
 //  Created by Mateusz Głowski on 19/05/2020.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SecondViewController: UIViewController {
+class BookmarksViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
