@@ -14,7 +14,7 @@ class CatalogViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.prompt = "g - Technology"
+//        navigationItem.prompt = "g - Technology"
         
         let boardsButton = UIBarButtonItem(title: "Boards", style: .plain, target: self, action: #selector(openBoardsModal))
         navigationItem.rightBarButtonItem = boardsButton

@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import RealmSwift
 
 class BoardsModalViewController: UITableViewController {
 
     @IBOutlet var boardsTable: UITableView!
     
-    var boards = ["uwu", "owo"]
+    var boards = [Board]()
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -23,7 +24,7 @@ class BoardsModalViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell")!
-        cell.textLabel?.text = self.boards[indexPath.row]
+        cell.textLabel?.text = self.boards[indexPath.row].board + " - " + self.boards[indexPath.row].title
         return cell
     }
     
@@ -38,7 +39,18 @@ class BoardsModalViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Boards"
+        
+        getBoards { boards in
+            if boards == nil || boards?.boards == nil {
+                return
+            }
+            
+            self.boards = boards!.boards
+            self.tableView.reloadData()
+            
+        }
+        
+//        title = "Boards"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         boardsTable.dataSource = self
@@ -53,5 +65,36 @@ class BoardsModalViewController: UITableViewController {
     }
 
 
+    /**
+     Gets list of boards. Updated every 15 minutes.
+     */
+    private func getBoards(callback: @escaping (Boards?) -> ()) {
+        let realm = try! Realm()
+        let settings = realm.objects(Settings.self)
+        
+        let boardsLastSyncedDate = settings[0].boardsLastSyncedDate
+        
+        let intervalSinceLastSync = Date().timeIntervalSince(boardsLastSyncedDate ?? Date(timeIntervalSince1970: 0))
+        let fiveteenMinutes = TimeInterval(exactly: 15 )! // TODO: Change to 15 * 60!
+        if intervalSinceLastSync < fiveteenMinutes && realm.objects(Boards.self).count > 0 {
+            NSLog("BoardsModalViewController#getBoards: Reading boards from realm...")
+            callback(realm.objects(Boards.self)[0])
+        } else {
+            NSLog("BoardsModalViewController#getBoards: Fetching boards from api...")
+     
+            Requests.boards(success: { (boards) in
+                
+                try! realm.write {
+                    realm.delete(realm.objects(Boards.self))
+                    realm.add(boards)
+                    settings[0].boardsLastSyncedDate = Date()
+                }
+                
+                callback(boards)
+            }) { (error) in
+                callback(nil)
+            }
+        }
+    }
 }
 
