@@ -28,15 +28,15 @@ class Requests {
     /**
      A list of all boards and their attributes.
      */
-    static func boards(success: @escaping (Boards) -> (), failure: @escaping (Error) -> ()) {
+    static func boards(success: @escaping (BoardsJSON) -> (), failure: @escaping (Error) -> ()) {
         var h = HTTPHeaders()
         if lastRequested.boards != nil {
             h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
         }
         
         AF.request("https://a.4cdn.org/boards.json", headers: h)
-            .responseDecodable(of: Boards.self) { response in
-                print(response)
+            .responseDecodable(of: BoardsJSON.self) { response in
+//                print(response)
                 if response.response?.statusCode != 200 {
                     failure(.notOk)
                     return
@@ -119,7 +119,7 @@ class Requests {
         let url = "https://a.4cdn.org/\(board)/thread/\(no).json"
         let r = AF.request(url, headers: h)
             .responseDecodable(of: Posts.self) { response in
-                print(response)
+//                print(response)
                 if response.response?.statusCode != 200 {
                     failure(.notOk)
                     return
