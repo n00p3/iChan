@@ -10,11 +10,34 @@ import UIKit
 import RealmSwift
 
 
-class BoardsModalViewController: UITableViewController {
+class BoardsModalViewController: UITableViewController, UISearchResultsUpdating {
 
     @IBOutlet var boardsTable: UITableView!
     
     var boards = [BoardRealm]()
+
+    func updateSearchResults(for searchController: UISearchController) {
+        let bs = try! Realm().objects(BoardsRealm.self)[0]
+        boards = Array(bs.boards)
+        
+        var search = searchController.searchBar.text
+        
+        if (search == nil || search!.isEmpty) {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            return
+        }
+        
+        search = search!.lowercased()
+        
+        self.boards = self.boards.filter { $0.board.lowercased().contains(search!) || $0.title.lowercased().contains(search!) }
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+        
+    }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -43,13 +66,17 @@ class BoardsModalViewController: UITableViewController {
         super.viewDidLoad()
         
         getBoards { boards in
-            let x = boards!.boards
             if boards == nil || boards?.boards == nil {
                 return
             }
+
+            self.boards = Array(boards!.boards)
             
-//            self.boards = boards?.boards!
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+//
+//            self.tableView.reloadData()
             
         }
         
@@ -62,7 +89,10 @@ class BoardsModalViewController: UITableViewController {
         boardsTable.insertRows(at: [indexPath], with: .automatic)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reorder", style: .plain, target: self, action: #selector(toggleEditMode))
-        navigationItem.searchController = UISearchController()
+        
+        let searchController = UISearchController()
+        searchController.searchResultsUpdater = self
+        navigationItem.searchController = searchController
         navigationController?.navigationItem.hidesSearchBarWhenScrolling = true
         // Do any additional setup after loading the view.
     }
@@ -78,7 +108,7 @@ class BoardsModalViewController: UITableViewController {
         let boardsLastSyncedDate = settings[0].boardsLastSyncedDate
         
         let intervalSinceLastSync = Date().timeIntervalSince(boardsLastSyncedDate ?? Date(timeIntervalSince1970: 0))
-        let fiveteenMinutes = TimeInterval(exactly: 1500000)! // TODO: Change to 15 * 60!
+        let fiveteenMinutes = TimeInterval(exactly: 5)! // TODO: Change to 15 * 60!
         if intervalSinceLastSync < fiveteenMinutes && realm.objects(BoardsRealm.self).count > 0 {
             NSLog("BoardsModalViewController#getBoards: Reading boards from realm...")
             callback(realm.objects(BoardsRealm.self)[0])
