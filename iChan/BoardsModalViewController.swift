@@ -10,7 +10,7 @@ import UIKit
 import RealmSwift
 
 
-class BoardsModalViewController: UITableViewController, UISearchResultsUpdating {
+class BoardsModalViewController: UITableViewController, UISearchResultsUpdating, UISearchControllerDelegate {
 
     @IBOutlet var boardsTable: UITableView!
     
@@ -39,6 +39,14 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating 
         
     }
     
+//    override func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+//        print("END")
+//    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("Selected \(boards[indexPath.item].board)")
+    }
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
         
@@ -53,13 +61,15 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating 
         return cell
     }
     
+    
+    
     @objc func toggleEditMode() {
         print("pach")
         boardsTable.setEditing(!boardsTable.isEditing, animated: true)
     }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
+        print("moved from \(sourceIndexPath.item) to \(destinationIndexPath.item)")
     }
     
     override func viewDidLoad() {
@@ -80,7 +90,7 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating 
             
         }
         
-//        title = "Boards"
+        title = "Boards"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         boardsTable.dataSource = self
@@ -88,10 +98,12 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating 
         let indexPath = IndexPath(row: 0, section: 0)
         boardsTable.insertRows(at: [indexPath], with: .automatic)
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reorder", style: .plain, target: self, action: #selector(toggleEditMode))
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reorder", style: .plain, target: self, action: #selector(toggleEditMode))
         
         let searchController = UISearchController()
         searchController.searchResultsUpdater = self
+        searchController.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         navigationController?.navigationItem.hidesSearchBarWhenScrolling = true
         // Do any additional setup after loading the view.
@@ -111,16 +123,19 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating 
         let fiveteenMinutes = TimeInterval(exactly: 5)! // TODO: Change to 15 * 60!
         if intervalSinceLastSync < fiveteenMinutes && realm.objects(BoardsRealm.self).count > 0 {
             NSLog("BoardsModalViewController#getBoards: Reading boards from realm...")
-            callback(realm.objects(BoardsRealm.self)[0])
+            var boards = realm.objects(BoardsRealm.self)[0]
+            callback(boards)
         } else {
             NSLog("BoardsModalViewController#getBoards: Fetching boards from api...")
 
             Requests.boards(success: { (boardsJSON) in
 
-                var r = BoardsRealm()
+                let r = BoardsRealm()
                 
                 try! realm.write {
-                    realm.delete(realm.objects(BoardsRealm.self))
+                    let br = realm.objects(BoardsRealm.self)
+      
+                    realm.delete(br)
                     
                     // Convert Alamofire -> Realm (ints to bools etc.)
 //                    r.boards = [BoardRealm]()
