@@ -134,4 +134,20 @@ class Requests {
                 success(posts)
         }
     }
+    
+    static func image(_ board: String, _ tim: Int64, _ ext: String, callback: @escaping (UIImage?) -> ()) {
+//        AF.request("https://i.4cdn.org/\(board)/\(tim).\(ext)")
+//        AF.request("https://i.4cdn.org/po/1590518531585.png")
+        let url = "https://i.4cdn.org/\(board)/\(tim)\(ext)"
+        AF.request(url)
+            .response { request in
+                if request.data == nil {
+                    callback(nil)
+                    return
+                }
+
+                let img = UIImage(data: request.data!)
+                callback(img)
+        }
+    }
 }

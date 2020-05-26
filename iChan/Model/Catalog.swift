@@ -21,21 +21,21 @@ struct CatalogElement: Codable {
 struct CatalogThread: Codable {
     let no: Int
     let sticky, closed: Int?
-    let now, name: String
+    let now, name: String?
     let sub: String?
     let com: String?
-    let filename: String
-    let ext: EXT
-    let w, h, tnW, tnH: Int
-    let tim, time: Int
-    let md5: String
-    let fsize, resto: Int
+    let filename: String?
+    let ext: String?
+    let w, h, tnW, tnH: Int?
+    let tim, time: Int64?
+    let md5: String?
+    let fsize, resto: Int?
     let capcode: String?
-    let semanticURL: String
-    let replies, images: Int
+    let semanticURL: String?
+    let replies, images: Int?
     let omittedPosts, omittedImages: Int?
     let lastReplies: [LastReply]?
-    let lastModified: Int
+    let lastModified: Int?
     let bumplimit, imagelimit: Int?
     let trip: String?
 
@@ -54,26 +54,19 @@ struct CatalogThread: Codable {
     }
 }
 
-enum EXT: String, Codable {
-    case gif = ".gif"
-    case jpg = ".jpg"
-    case pdf = ".pdf"
-    case png = ".png"
-    case webm = ".webm"
-}
 
 struct LastReply: Codable {
     let no: Int
-    let now, name: String
+    let now, name: String?
     let com: String?
     let filename: String?
-    let ext: EXT?
+    let ext: String?
     let w, h, tnW, tnH: Int?
     let tim: Int?
-    let time: Int
+    let time: Int?
     let md5: String?
     let fsize: Int?
-    let resto: Int
+    let resto: Int?
     let capcode, trip: String?
     let filedeleted: Int?
 

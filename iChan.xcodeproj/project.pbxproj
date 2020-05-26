@@ -21,6 +21,7 @@
 		FA5456E32474543B0015CF84 /* iChanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5456E22474543B0015CF84 /* iChanTests.swift */; };
 		FA5456EE2474543B0015CF84 /* iChanUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5456ED2474543B0015CF84 /* iChanUITests.swift */; };
 		FA5456FC247457510015CF84 /* CatalogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5456FB247457510015CF84 /* CatalogViewController.swift */; };
+		FA8850A6247D9BC9009D0DDA /* ThreadCatalogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */; };
 		FA8D186224758C9600BDD461 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186124758C9600BDD461 /* Requests.swift */; };
 		FA8D186424758CE300BDD461 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186324758CE300BDD461 /* Posts.swift */; };
 		FA8D186624758CEF00BDD461 /* Threads4Chan.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186524758CEF00BDD461 /* Threads4Chan.swift */; };
@@ -75,6 +76,7 @@
 		FA5456ED2474543B0015CF84 /* iChanUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iChanUITests.swift; sourceTree = "<group>"; };
 		FA5456EF2474543B0015CF84 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA5456FB247457510015CF84 /* CatalogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewController.swift; sourceTree = "<group>"; };
+		FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCatalogCell.swift; sourceTree = "<group>"; };
 		FA8D186124758C9600BDD461 /* Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requests.swift; sourceTree = "<group>"; };
 		FA8D186324758CE300BDD461 /* Posts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
 		FA8D186524758CEF00BDD461 /* Threads4Chan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Threads4Chan.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				FA5456C8247454370015CF84 /* SceneDelegate.swift */,
 				FA5456CA247454370015CF84 /* BookmarksViewController.swift */,
 				FA340AE824745F07009AD227 /* BoardsModalViewController.swift */,
+				FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */,
 				FA5456FB247457510015CF84 /* CatalogViewController.swift */,
 				FA5456CE247454370015CF84 /* Main.storyboard */,
 				FA5456D42474543B0015CF84 /* Assets.xcassets */,
@@ -460,6 +463,7 @@
 				FA8D186224758C9600BDD461 /* Requests.swift in Sources */,
 				FA340AE924745F07009AD227 /* BoardsModalViewController.swift in Sources */,
 				FA8D186624758CEF00BDD461 /* Threads4Chan.swift in Sources */,
+				FA8850A6247D9BC9009D0DDA /* ThreadCatalogCell.swift in Sources */,
 				FA8D186424758CE300BDD461 /* Posts.swift in Sources */,
 				FA8D186C24758E6700BDD461 /* Utils.swift in Sources */,
 			);
