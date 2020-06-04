@@ -81,7 +81,7 @@ class CatalogViewController: UIViewController {
     //    }
     @objc private func refreshRequested(_ sender: AnyObject) {
         print("refresh requested")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { 
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.refreshControl.endRefreshing()
         }
 //            self.collectionView.contentOffset = CGPoint.zero
@@ -135,9 +135,9 @@ extension CatalogViewController: UICollectionViewDataSource {
         let ext = catalog[indexPath.section].threads[indexPath.row].ext ?? ""
         let tim = catalog[indexPath.section].threads[indexPath.row].tim ?? 0
         
-        //                Requests.image("int", tim, ext) { (img) in
-        //                    card.backgroundImage = img
-        //                }
+//        Requests.image("int", tim, ext) { (img) in
+//            card.backgroundImage = img
+//        }
         
         cell.view.addSubview(card)
         

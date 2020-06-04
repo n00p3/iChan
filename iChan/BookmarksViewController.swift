@@ -56,9 +56,7 @@ class BookmarksViewController: UIViewController {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if (editingStyle == .delete) {
             self.dataSource.remove(at: indexPath.row)
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
 }
