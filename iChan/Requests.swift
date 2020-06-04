@@ -136,8 +136,6 @@ class Requests {
     }
     
     static func image(_ board: String, _ tim: Int64, _ ext: String, callback: @escaping (UIImage?) -> ()) {
-//        AF.request("https://i.4cdn.org/\(board)/\(tim).\(ext)")
-//        AF.request("https://i.4cdn.org/po/1590518531585.png")
         let url = "https://i.4cdn.org/\(board)/\(tim)\(ext)"
         AF.request(url)
             .response { request in
