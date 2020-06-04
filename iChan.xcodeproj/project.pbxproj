@@ -32,6 +32,7 @@
 		FAE22A90247AA6C8008B4F04 /* BoardsJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE22A8F247AA6C8008B4F04 /* BoardsJSON.swift */; };
 		FAE22A92247AA6CE008B4F04 /* BoardsRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE22A91247AA6CE008B4F04 /* BoardsRealm.swift */; };
 		FAF3D9532488E8A800F8AAE0 /* ThreadCatalogHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3D9522488E8A800F8AAE0 /* ThreadCatalogHeader.swift */; };
+		FAF3D9552488F16800F8AAE0 /* BookmarkElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3D9542488F16800F8AAE0 /* BookmarkElement.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,7 @@
 		FAE22A8F247AA6C8008B4F04 /* BoardsJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardsJSON.swift; sourceTree = "<group>"; };
 		FAE22A91247AA6CE008B4F04 /* BoardsRealm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardsRealm.swift; sourceTree = "<group>"; };
 		FAF3D9522488E8A800F8AAE0 /* ThreadCatalogHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCatalogHeader.swift; sourceTree = "<group>"; };
+		FAF3D9542488F16800F8AAE0 /* BookmarkElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkElement.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,6 +216,7 @@
 				FA8D186524758CEF00BDD461 /* Threads4Chan.swift */,
 				FA8D186724758CFF00BDD461 /* Catalog.swift */,
 				FAB2F1EC2475A4A900442CD4 /* Settings.swift */,
+				FAF3D9542488F16800F8AAE0 /* BookmarkElement.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -467,6 +470,7 @@
 				FAE22A90247AA6C8008B4F04 /* BoardsJSON.swift in Sources */,
 				FA5456C9247454370015CF84 /* SceneDelegate.swift in Sources */,
 				FAF3D9532488E8A800F8AAE0 /* ThreadCatalogHeader.swift in Sources */,
+				FAF3D9552488F16800F8AAE0 /* BookmarkElement.swift in Sources */,
 				FA8D186824758CFF00BDD461 /* Catalog.swift in Sources */,
 				FA8D186224758C9600BDD461 /* Requests.swift in Sources */,
 				FA340AE924745F07009AD227 /* BoardsModalViewController.swift in Sources */,

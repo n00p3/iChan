@@ -11,55 +11,80 @@ import RealmSwift
 import Cards
 
 class BookmarksViewController: UIViewController {
-
-    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var tableView: UITableView!
     
-    var dataSource = [UIView]()
+    var dataSource = [BookmarkElement]()
     
     override func viewDidLoad() {
+        navigationController?.navigationBar.prefersLargeTitles = true
         super.viewDidLoad()
-
         
-//        view.addSubview(card)
+        dataSource.append(
+            BookmarkElement(board: "int", threadNo: 23, title: "thread 1", newRepliesCnt: 0)
+        )
         
-        collectionView.dataSource = self
+        dataSource.append(
+            BookmarkElement(board: "int", threadNo: 123, title: "thread 2", newRepliesCnt: 3)
+        )
         
-        for _ in 0...10 {
-            self.dataSource.append(generateCard())
-        }
-        
-        
+        tableView.dataSource = self
     }
     
     func generateCard() -> UIView {
         // Aspect Ratio of 5:6 is preferred
         let card = CardHighlight(frame: CGRect(x: 10, y: 30, width: 100 , height: 120))
-
+        
         card.backgroundColor = UIColor(red: 0, green: 94/255, blue: 112/255, alpha: 1)
-//        card.icon = UIImage(named: "flappy")
+        //        card.icon = UIImage(named: "flappy")
         card.title = "Welcome \nto \nCards !"
         card.itemTitle = "Flappy Bird"
         card.itemSubtitle = "Flap That !"
         card.textColor = UIColor.white
-            
+        
         card.hasParallax = true
-            
+        
         let cardContentVC = storyboard!.instantiateViewController(withIdentifier: "CardContent")
         card.shouldPresent(cardContentVC, from: self, fullscreen: false)
         
         return card
     }
-}
-
-extension BookmarksViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        self.dataSource.count
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        collectionView.dequeueReusableCell(withReuseIdentifier: "CardCell", for: indexPath) as! CardCell
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == .delete) {
+            self.dataSource.remove(at: indexPath.row)
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+}
+
+extension BookmarksViewController : UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        dataSource.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+        let board = "/\(dataSource[indexPath.item].board)/"
+        let title = dataSource[indexPath.item].title
+        let newRepliesCnt: String = {
+            if self.dataSource[indexPath.item].newRepliesCnt == 0 {
+                return ""
+            } else {
+                return "(+\(self.dataSource[indexPath.item].newRepliesCnt))"
+            }
+        }()
+        
+        let label = "\(board) - \(title) \(newRepliesCnt)"
+        
+        cell.textLabel?.text = label
+        return cell
     }
     
     
 }
-
