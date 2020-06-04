@@ -12,12 +12,40 @@ import Cards
 
 class BookmarksViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
+    var buttonRemoveAllBookmarks: UIBarButtonItem?
     
-    var dataSource = [BookmarkElement]()
+    var dataSource: [BookmarkElement] = [BookmarkElement]() {
+        didSet {
+            updateDeletionButton()
+        }
+    }
+    
+    private func updateDeletionButton() {
+        buttonRemoveAllBookmarks?.isEnabled = self.dataSource.count > 0
+    }
+    
+    @objc private func deleteAllBookmarksClicked(_ sender: AnyObject) {
+        let alert = UIAlertController(title: "Deleting all bookmarks", message: "Are you sure you want to delete all bookmarks?", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Delete", style: .destructive) { _ in self.deleteAllBookmarksClickedHandler() }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func deleteAllBookmarksClickedHandler() {
+        for i in (0..<self.dataSource.count).reversed() {
+            self.dataSource.remove(at: i)
+            self.tableView.deleteRows(at: [IndexPath(item: i, section: 0)], with: .automatic)
+        }
+    }
     
     override func viewDidLoad() {
         navigationController?.navigationBar.prefersLargeTitles = true
         super.viewDidLoad()
+        
+        buttonRemoveAllBookmarks = UIBarButtonItem(title: "Delete all", style: .plain, target: self, action: #selector(deleteAllBookmarksClicked(_:)))
+        navigationItem.rightBarButtonItem = buttonRemoveAllBookmarks
         
         dataSource.append(
             BookmarkElement(board: "int", threadNo: 23, title: "thread 1", newRepliesCnt: 0)
