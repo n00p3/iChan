@@ -12,6 +12,8 @@ import Cards
 class CatalogViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
+    let refreshControl = UIRefreshControl()
+    
     private let itemsPerRow: CGFloat = 3
     private let sectionInsets = UIEdgeInsets(top: 50.0,
                                              left: 20.0,
@@ -21,6 +23,8 @@ class CatalogViewController: UIViewController {
     var catalog: Catalog = []
     
     override func viewDidLoad() {
+        // fix weird scroll:  https://stackoverflow.com/questions/50708081/prefer-large-titles-and-refreshcontrol-not-working-well
+        
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
         let searchController = UISearchController()
@@ -28,8 +32,20 @@ class CatalogViewController: UIViewController {
         navigationController?.navigationItem.hidesSearchBarWhenScrolling = true
         searchController.obscuresBackgroundDuringPresentation = false
         
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refreshRequested(_:)), for: .valueChanged)
         
-        //        navigationItem.prompt = "g - Technology"
+        let top = self.collectionView.adjustedContentInset.top
+        let y = self.refreshControl.frame.maxY + top
+        self.collectionView.setContentOffset(CGPoint(x: 0, y: -y), animated:true)
+        self.extendedLayoutIncludesOpaqueBars = true
+        //        collectionView.addSubview(refreshControl)
+        collectionView.refreshControl = refreshControl
+        
+        let activityIndicator = UIActivityIndicatorView()
+        activityIndicator.center = view.center
+        view.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
         
         let boardsButton = UIBarButtonItem(title: "Boards", style: .plain, target: self, action: #selector(openBoardsModal))
         navigationItem.rightBarButtonItem = boardsButton
@@ -39,6 +55,7 @@ class CatalogViewController: UIViewController {
         
         Requests.catalog(of: "int", success: { (catalog: Catalog) in
             self.catalog = catalog
+            activityIndicator.stopAnimating()
             
             self.collectionView.reloadData()
             NSLog("\(catalog.count) pages")
@@ -62,6 +79,15 @@ class CatalogViewController: UIViewController {
     //        backButton.title = "Boards"
     //        navigationController?.navigationItem.backBarButtonItem = backButton
     //    }
+    @objc private func refreshRequested(_ sender: AnyObject) {
+        print("refresh requested")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { 
+            self.refreshControl.endRefreshing()
+        }
+//            self.collectionView.contentOffset = CGPoint.zero
+            
+//        })
+    }
     
 }
 
@@ -109,9 +135,9 @@ extension CatalogViewController: UICollectionViewDataSource {
         let ext = catalog[indexPath.section].threads[indexPath.row].ext ?? ""
         let tim = catalog[indexPath.section].threads[indexPath.row].tim ?? 0
         
-//                Requests.image("int", tim, ext) { (img) in
-//                    card.backgroundImage = img
-//                }
+        //                Requests.image("int", tim, ext) { (img) in
+        //                    card.backgroundImage = img
+        //                }
         
         cell.view.addSubview(card)
         
@@ -147,8 +173,8 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView,
-                                 viewForSupplementaryElementOfKind kind: String,
-                                 at indexPath: IndexPath) -> UICollectionReusableView {
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             guard
@@ -159,7 +185,7 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
                 else {
                     fatalError("Invalid view type")
             }
-
+            
             headerView.headerPage.text = "Page \(indexPath.section + 1)"
             return headerView
         default:

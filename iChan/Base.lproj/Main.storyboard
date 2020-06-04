@@ -128,7 +128,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Skk-kr-4Tw">
-                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="tTo-Ls-gUb">
                                     <size key="itemSize" width="213" height="213"/>
@@ -176,7 +176,7 @@
                         <constraints>
                             <constraint firstItem="Ub4-BA-4NF" firstAttribute="bottom" secondItem="Skk-kr-4Tw" secondAttribute="bottom" id="1iD-ZJ-7E4"/>
                             <constraint firstItem="Ub4-BA-4NF" firstAttribute="trailing" secondItem="Skk-kr-4Tw" secondAttribute="trailing" id="7iU-gM-MQW"/>
-                            <constraint firstItem="Skk-kr-4Tw" firstAttribute="top" secondItem="Ub4-BA-4NF" secondAttribute="top" id="bZH-EN-ZdE"/>
+                            <constraint firstItem="Skk-kr-4Tw" firstAttribute="top" secondItem="faJ-7Y-U6B" secondAttribute="top" id="bZH-EN-ZdE"/>
                             <constraint firstItem="Skk-kr-4Tw" firstAttribute="leading" secondItem="Ub4-BA-4NF" secondAttribute="leading" id="rvY-xK-cgf"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ub4-BA-4NF"/>
