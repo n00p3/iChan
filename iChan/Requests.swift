@@ -36,7 +36,6 @@ class Requests {
         
         AF.request("https://a.4cdn.org/boards.json", headers: h)
             .responseDecodable(of: BoardsJSON.self) { response in
-//                print(response)
                 if response.response?.statusCode != 200 {
                     failure(.notOk)
                     return
@@ -117,9 +116,8 @@ class Requests {
         }
 
         let url = "https://a.4cdn.org/\(board)/thread/\(no).json"
-        let r = AF.request(url, headers: h)
+        AF.request(url, headers: h)
             .responseDecodable(of: Posts.self) { response in
-//                print(response)
                 if response.response?.statusCode != 200 {
                     failure(.notOk)
                     return

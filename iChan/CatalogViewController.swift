@@ -39,7 +39,6 @@ class CatalogViewController: UIViewController {
         let y = self.refreshControl.frame.maxY + top
         self.collectionView.setContentOffset(CGPoint(x: 0, y: -y), animated:true)
         self.extendedLayoutIncludesOpaqueBars = true
-        //        collectionView.addSubview(refreshControl)
         collectionView.refreshControl = refreshControl
         
         let activityIndicator = UIActivityIndicatorView()
@@ -66,27 +65,16 @@ class CatalogViewController: UIViewController {
     }
     
     @objc private func openBoardsModal() {
-        //let boardsVC = BoardsModalViewController()
-        //boardsVC.modalPresentationStyle = .pageSheet
-        //present(boardsVC, animated: true)
         let popup = self.storyboard?.instantiateViewController(withIdentifier: "BoardsModalViewController") as! UINavigationController
         present(popup, animated: true)
-        
     }
     
-    //    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    //        let backButton = UIBarButtonItem()
-    //        backButton.title = "Boards"
-    //        navigationController?.navigationItem.backBarButtonItem = backButton
-    //    }
+
     @objc private func refreshRequested(_ sender: AnyObject) {
         print("refresh requested")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.refreshControl.endRefreshing()
         }
-//            self.collectionView.contentOffset = CGPoint.zero
-            
-//        })
     }
     
 }
@@ -102,22 +90,12 @@ extension CatalogViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        //        return catalog[0].threads[indexPath.row].sub
         let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: "ThreadCatalogCell", for: indexPath) as! ThreadCatalogCell
-        //        cell.backgroundColor = .groupTableViewBackground
-        
-        // Configure the cell
-        
-        //        cell.content.text = catalog[indexPath.section].threads[indexPath.row].com
-        
-        //        cell.content.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
-        
         
         let card = CardHighlight(frame: CGRect(x: 10, y: 30, width: 100 , height: 120))
         
         card.backgroundColor = UIColor(red: 0, green: 94/255, blue: 112/255, alpha: 1)
-        //        card.icon = UIImage(named: "flappy")
         card.title = catalog[indexPath.section].threads[indexPath.row].sub ?? ""
         card.titleSize = 12
         card.itemTitle = ""
@@ -134,10 +112,6 @@ extension CatalogViewController: UICollectionViewDataSource {
         
         let ext = catalog[indexPath.section].threads[indexPath.row].ext ?? ""
         let tim = catalog[indexPath.section].threads[indexPath.row].tim ?? 0
-        
-//        Requests.image("int", tim, ext) { (img) in
-//            card.backgroundImage = img
-//        }
         
         cell.view.addSubview(card)
         

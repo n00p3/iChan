@@ -85,9 +85,6 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
-//
-//            self.tableView.reloadData()
-            
         }
         
         title = "Boards"
@@ -98,15 +95,12 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
         let indexPath = IndexPath(row: 0, section: 0)
         boardsTable.insertRows(at: [indexPath], with: .automatic)
         
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reorder", style: .plain, target: self, action: #selector(toggleEditMode))
-        
         let searchController = UISearchController()
         searchController.searchResultsUpdater = self
         searchController.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         navigationController?.navigationItem.hidesSearchBarWhenScrolling = true
-        // Do any additional setup after loading the view.
     }
 
 
@@ -136,10 +130,6 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
                     let br = realm.objects(BoardsRealm.self)
       
                     realm.delete(br)
-                    
-                    // Convert Alamofire -> Realm (ints to bools etc.)
-//                    r.boards = [BoardRealm]()
-//                    r.trollFlags = [TrollFlagRealm]()
                     
                     boardsJSON.boards.forEach {
                         let b = BoardRealm()

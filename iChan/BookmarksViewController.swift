@@ -30,25 +30,6 @@ class BookmarksViewController: UIViewController {
         tableView.dataSource = self
     }
     
-    func generateCard() -> UIView {
-        // Aspect Ratio of 5:6 is preferred
-        let card = CardHighlight(frame: CGRect(x: 10, y: 30, width: 100 , height: 120))
-        
-        card.backgroundColor = UIColor(red: 0, green: 94/255, blue: 112/255, alpha: 1)
-        //        card.icon = UIImage(named: "flappy")
-        card.title = "Welcome \nto \nCards !"
-        card.itemTitle = "Flappy Bird"
-        card.itemSubtitle = "Flap That !"
-        card.textColor = UIColor.white
-        
-        card.hasParallax = true
-        
-        let cardContentVC = storyboard!.instantiateViewController(withIdentifier: "CardContent")
-        card.shouldPresent(cardContentVC, from: self, fullscreen: false)
-        
-        return card
-    }
-    
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
