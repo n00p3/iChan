@@ -23,8 +23,9 @@ class CatalogThreadRealm: Object {
     @objc dynamic var sub = ""
     @objc dynamic var com = ""
     @objc dynamic var filename = ""
+    @objc dynamic var tim = 0
     @objc dynamic var ext = ""
-    var image: Data? = nil
+    @objc dynamic var image: Data? = nil
     @objc dynamic var lastAccessed: Date? = Date()
     @objc dynamic var page = 1
 //    @objc dynamic var w = 0

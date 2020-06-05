@@ -87,7 +87,7 @@ class Requests {
         print("Reading catalog from api")
         var h = HTTPHeaders()
         if lastRequested.catalog?[board] != nil {
-            h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
+            h["If-Modified-Since"] = self.lastRequested.catalog?[board]?.toRFC1123()
         }
         
         AF.request("https://a.4cdn.org/\(board)/catalog.json", headers: h)
@@ -167,6 +167,7 @@ class Requests {
         }()
         
         let url = "https://i.4cdn.org/\(board)/\(tim)\(size)\(ext)"
+        print(url)
         AF.request(url)
             .response { request in
                 if request.data == nil {

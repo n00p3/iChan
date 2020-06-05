@@ -75,7 +75,7 @@ func readCatalogFromRealm(board: String) -> Catalog? {
 
         var threads = [CatalogThread]()
         threadsAtPage.forEach {
-            let thread = CatalogThread(no: $0.no, sticky: $0.sticky, closed: $0.closed, now: String($0.closed), name: $0.name, sub: $0.sub, com: $0.com, filename: $0.filename, ext: $0.ext, w: nil, h: nil, tnW: nil, tnH: nil, tim: nil, time: nil, md5: nil, fsize: nil, resto: nil, capcode: nil, semanticURL: nil, replies: nil, images: nil, omittedPosts: nil, omittedImages: nil, lastReplies: nil, lastModified: nil, bumplimit: nil, imagelimit: nil, trip: nil)
+            let thread = CatalogThread(no: $0.no, sticky: $0.sticky, closed: $0.closed, now: String($0.closed), name: $0.name, sub: $0.sub, com: $0.com, filename: $0.filename, ext: $0.ext, w: nil, h: nil, tnW: nil, tnH: nil, tim: $0.tim, time: nil, md5: nil, fsize: nil, resto: nil, capcode: nil, semanticURL: nil, replies: nil, images: nil, omittedPosts: nil, omittedImages: nil, lastReplies: nil, lastModified: nil, bumplimit: nil, imagelimit: nil, trip: nil)
 
             threads.append(thread)
         }
@@ -104,6 +104,8 @@ func storeCatalogInRealm(board: String, liveCatalog: Catalog) {
                 newCatalogThread.board = board
                 newCatalogThread.sub = $0.sub ?? ""
                 newCatalogThread.com = $0.com ?? ""
+                newCatalogThread.ext = $0.ext ?? ""
+                newCatalogThread.tim = $0.tim ?? 0
                 newCatalogThread.no = $0.no
                 newCatalogThread.lastAccessed = Date()
                 newCatalogThread.page = element.page

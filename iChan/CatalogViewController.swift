@@ -167,6 +167,11 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
                 thread.image = data
             }
         }
+        
+        let r2 = try! Realm()
+        let filter = "board = \"\(board)\" AND #no = \(threadNo)"
+        let x = r2.objects(CatalogThreadRealm.self).filter(filter)
+        
     }
 
     /**
@@ -179,13 +184,20 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
             .filter(filter)
 
         if storedThread.first?.image != nil {
+            print("local \(threadNo)")
             callback(UIImage(data: storedThread.first!.image!))
             return
         }
+        print("remote \(threadNo)")
         
-        let ext = self.catalog.map { $0.threads }.joined().filter { $0.no == threadNo }.first?.ext ?? ""
-        Requests.image(board, threadNo, ext, fullSize: false) { (img) in
+        let x = self.catalog.map { $0.threads }.joined().filter { $0.no == threadNo }.first
+        let ext = x?.ext ?? ""
+        let tim = x?.tim ?? 0
+        Requests.image(board, tim, ext, fullSize: false) { (img) in
 //            card.backgroundImage = img
+            if img?.pngData() != nil {
+                self.storeImageForThread(board: board, threadNo: threadNo, data: img!.pngData()!)
+            }
             callback(img)
         }
         

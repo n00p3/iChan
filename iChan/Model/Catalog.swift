@@ -27,7 +27,7 @@ struct CatalogThread: Codable {
     let filename: String?
     let ext: String?
     let w, h, tnW, tnH: Int?
-    let tim, time: Int64?
+    let tim, time: Int?
     let md5: String?
     let fsize, resto: Int?
     let capcode: String?
