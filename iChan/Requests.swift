@@ -133,8 +133,20 @@ class Requests {
         }
     }
     
-    static func image(_ board: String, _ tim: Int64, _ ext: String, callback: @escaping (UIImage?) -> ()) {
-        let url = "https://i.4cdn.org/\(board)/\(tim)\(ext)"
+    /**
+     Returns specific image.
+     - Parameter fullSize: Should it get fullsize or thumbnail?
+     */
+    static func image(_ board: String, _ tim: Int64, _ ext: String, fullSize: Bool, callback: @escaping (UIImage?) -> ()) {
+        let size: String = {
+            if fullSize {
+                return ""
+            } else {
+                return "s"
+            }
+        }()
+        
+        let url = "https://i.4cdn.org/\(board)/\(tim)\(size)\(ext)"
         AF.request(url)
             .response { request in
                 if request.data == nil {

@@ -115,6 +115,10 @@ extension CatalogViewController: UICollectionViewDataSource {
         
         cell.view.addSubview(card)
         
+        Requests.image("int", tim, ext, fullSize: false) { (img) in
+            card.backgroundImage = img
+        }
+        
         return cell
     }
     
