@@ -11,4 +11,5 @@ import RealmSwift
 
 class Settings: Object {
     @objc dynamic var boardsLastSyncedDate: Date?
+    @objc dynamic var currentBoard = "a"
 }

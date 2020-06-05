@@ -188,12 +188,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Fs-fW-sG3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3884.057971014493" y="297.32142857142856"/>
+            <point key="canvasLocation" x="3699" y="338"/>
         </scene>
         <!--Boards Modal View Controller-->
         <scene sceneID="ftM-a4-8NZ">
             <objects>
-                <tableViewController id="qFh-EB-9AS" customClass="BoardsModalViewController" customModule="iChan" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="BoardsModalViewController" id="qFh-EB-9AS" customClass="BoardsModalViewController" customModule="iChan" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="gfa-pl-j3h">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -220,7 +220,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jvg-DF-IeO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4331.884057971015" y="-343.52678571428572"/>
+            <point key="canvasLocation" x="5173.913043478261" y="-413.16964285714283"/>
         </scene>
         <!--Item-->
         <scene sceneID="lfy-fZ-aqG">
@@ -240,24 +240,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZYc-07-EY4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="747.82608695652175" y="322.76785714285711"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="lnn-kW-asf">
-            <objects>
-                <navigationController storyboardIdentifier="BoardsModalViewController" automaticallyAdjustsScrollViewInsets="NO" definesPresentationContext="YES" providesPresentationContextTransitionStyle="YES" modalPresentationStyle="pageSheet" id="ydr-Hy-YSQ" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Gvp-wL-F43">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="qFh-EB-9AS" kind="relationship" relationship="rootViewController" id="657-gG-JRy"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="RPH-FU-Qeu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2710.144927536232" y="-183.48214285714286"/>
         </scene>
         <!--Thread-->
         <scene sceneID="1Mz-3a-VGl">
@@ -296,6 +278,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mCB-9s-dwL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="747.82608695652175" y="-581.25"/>
+        </scene>
+        <!--Boards Navigation Controller-->
+        <scene sceneID="Qtn-Mq-quD">
+            <objects>
+                <navigationController storyboardIdentifier="BoardsNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="CSO-oO-p5L" customClass="BoardsNavigationController" customModule="iChan" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="CTc-oW-kxQ">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="qFh-EB-9AS" kind="relationship" relationship="rootViewController" id="N54-z2-Ymf"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vgH-M3-7Du" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4263.768115942029" y="-413.16964285714283"/>
         </scene>
     </scenes>
     <resources>

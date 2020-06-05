@@ -10,10 +10,17 @@ import UIKit
 import Cards
 import RealmSwift
 
-class CatalogViewController: UIViewController {
+protocol CatalogBoardDelegate {
+    func boardChanged(newBoard: String)
+}
+
+class CatalogViewController: UIViewController, CatalogBoardDelegate {
     @IBOutlet weak var collectionView: UICollectionView!
     
+    var currentBoard = ""
+    
     let refreshControl = UIRefreshControl()
+    var activityIndicator: UIActivityIndicatorView?
     
     private let itemsPerRow: CGFloat = 3
     private let sectionInsets = UIEdgeInsets(top: 50.0,
@@ -27,6 +34,10 @@ class CatalogViewController: UIViewController {
         // fix weird scroll:  https://stackoverflow.com/questions/50708081/prefer-large-titles-and-refreshcontrol-not-working-well
         
         super.viewDidLoad()
+        
+        currentBoard = try! Realm().objects(Settings.self).first?.currentBoard ?? "a"
+        
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         let searchController = UISearchController()
         navigationItem.searchController = searchController
@@ -42,10 +53,10 @@ class CatalogViewController: UIViewController {
         self.extendedLayoutIncludesOpaqueBars = true
         collectionView.refreshControl = refreshControl
         
-        let activityIndicator = UIActivityIndicatorView()
-        activityIndicator.center = view.center
-        view.addSubview(activityIndicator)
-        activityIndicator.startAnimating()
+        activityIndicator = UIActivityIndicatorView()
+        activityIndicator!.center = view.center
+        view.addSubview(activityIndicator!)
+        activityIndicator!.startAnimating()
         
         let boardsButton = UIBarButtonItem(title: "Boards", style: .plain, target: self, action: #selector(openBoardsModal))
         navigationItem.rightBarButtonItem = boardsButton
@@ -53,12 +64,11 @@ class CatalogViewController: UIViewController {
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         
-        let BOARD = "int"
-        getCatalog(board: BOARD, callback: { catalog in
+        getCatalog(board: currentBoard, callback: { catalog in
             if catalog != nil {
                 
                 self.catalog = catalog!
-                activityIndicator.stopAnimating()
+                self.activityIndicator!.stopAnimating()
                 
                 self.collectionView.reloadData()
             }
@@ -71,11 +81,13 @@ class CatalogViewController: UIViewController {
     private func getCatalog(board: String, callback: @escaping (Catalog?) -> ()) {
         let catalog = readCatalogFromRealm(board: board)
         if catalog != nil {
+            print("Reading catalog from realm")
             callback(catalog)
             return
         }
         
         Requests.catalog(of: board, success: { (catalog: Catalog) in
+            print("Reading catalog from api")
             self.storeCatalogInRealm(board: board, liveCatalog: catalog)
             
             NSLog("\(catalog.count) pages")
@@ -85,15 +97,37 @@ class CatalogViewController: UIViewController {
     }
     
     @objc private func openBoardsModal() {
-        let popup = self.storyboard?.instantiateViewController(withIdentifier: "BoardsModalViewController") as! UINavigationController
-        present(popup, animated: true)
+        let popup = self.storyboard?.instantiateViewController(withIdentifier: "BoardsModalViewController") as! BoardsModalViewController //UINavigationController
+        let navigationController = UINavigationController(rootViewController: popup)
+        popup.myDelegate = self
+//        popup.modalPresentationStyle = .pageSheet
+//        navigationController?.pushViewController(popup, animated: true)
+//        navigationController?.show(popup, sender: self)
+//        popup.delegate = self
+        present(navigationController, animated: true)
     }
     
+    func boardChanged(newBoard: String) {
+        print("new board \(newBoard)")
+    }
     
     @objc private func refreshRequested(_ sender: AnyObject) {
         print("refresh requested")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.refreshControl.endRefreshing()
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+//            self.refreshControl.endRefreshing()
+//        }
+        
+        Requests.catalog(of: currentBoard, success: { (catalog: Catalog) in
+            print("Reading catalog from api")
+            self.storeCatalogInRealm(board: self.currentBoard, liveCatalog: catalog)
+            
+            self.getCatalog(board: self.currentBoard, callback: { catalog in
+                self.catalog = catalog!
+            })
+            
+            NSLog("\(catalog.count) pages")
+        }) { (error) in
+            NSLog("Failed to load catalog; \(error.localizedDescription)")
         }
     }
 
@@ -105,7 +139,7 @@ class CatalogViewController: UIViewController {
     private func storeCatalogInRealm(board: String, liveCatalog: Catalog) {
         print("Storing catalog in realm.")
         let realm = try! Realm()
-        let oldCatalogs = realm.objects(CatalogThreadRealm.self).filter("board == '\(board)'")
+        let oldCatalogs = realm.objects(CatalogThreadRealm.self).filter("board = \"\(board)\"")
         try! realm.write {
             realm.delete(oldCatalogs)
 
@@ -134,8 +168,10 @@ class CatalogViewController: UIViewController {
 
         try! realm.write {
             // Add image to stored thread if exists.
+            // Has to escape 'no' using hash.
+            let filter = "board = \"\(board)\" AND #no = \(threadNo)"
             let storedThread = realm.objects(CatalogThreadRealm.self)
-                .filter("board == '\(board)' AND threadNo == \(threadNo)")
+                .filter(filter)
 
             for thread in storedThread {
                 thread.image = data
@@ -146,12 +182,23 @@ class CatalogViewController: UIViewController {
     /**
      Reads image for specific thread number and board if given image exists.
      */
-    private func readImageForThread(board: String, threadNo: Int) -> Data? {
+    private func readImageForThread(board: String, threadNo: Int, callback: @escaping (UIImage?) -> ()) {
         let realm = try! Realm()
+        let filter = "board == \"\(board)\" AND #no == \(threadNo)"
         let storedThread = realm.objects(CatalogThreadRealm.self)
-            .filter("board == '\(board)' AND threadNo == \(threadNo)")
+            .filter(filter)
 
-        return storedThread.first?.image
+        if storedThread.first?.image != nil {
+            callback(UIImage(data: storedThread.first!.image!))
+            return
+        }
+        
+        let ext = storedThread.first?.ext ?? ""
+        Requests.image(board, threadNo, ext, fullSize: false) { (img) in
+//            card.backgroundImage = img
+            callback(img)
+        }
+        
     }
 
     /**
@@ -188,8 +235,6 @@ class CatalogViewController: UIViewController {
 
         return catalogElements
     }
-    
-    
 }
 
 extension CatalogViewController: UICollectionViewDataSource {
@@ -228,9 +273,10 @@ extension CatalogViewController: UICollectionViewDataSource {
         
         cell.view.addSubview(card)
         
-        Requests.image("int", tim, ext, fullSize: false) { (img) in
+        let no = catalog[indexPath.section].threads[indexPath.row].no
+        readImageForThread(board: currentBoard, threadNo: no, callback: { img in
             card.backgroundImage = img
-        }
+        })
         
         return cell
     }

@@ -11,6 +11,7 @@
 		97D52CD06FADCF04BE748618 /* Pods_iChanTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A7B67F4CF7B55F5A17F1D71 /* Pods_iChanTests.framework */; };
 		C07639D92A5E2D309D1A1BD7 /* Pods_iChan_iChanUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76AA937417F509435F1823A7 /* Pods_iChan_iChanUITests.framework */; };
 		FA18BBFE248A37FE00CC1582 /* CatalogThreadRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18BBFD248A37FE00CC1582 /* CatalogThreadRealm.swift */; };
+		FA18BC00248A644700CC1582 /* BoardsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18BBFF248A644700CC1582 /* BoardsNavigationController.swift */; };
 		FA25D8092487ADC4002D14FA /* CardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA25D8082487ADC4002D14FA /* CardCell.swift */; };
 		FA340AE924745F07009AD227 /* BoardsModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA340AE824745F07009AD227 /* BoardsModalViewController.swift */; };
 		FA5456C7247454370015CF84 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5456C6247454370015CF84 /* AppDelegate.swift */; };
@@ -64,6 +65,7 @@
 		C93F53CA73EC6EF6E77AB1E4 /* Pods-iChan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iChan.release.xcconfig"; path = "Target Support Files/Pods-iChan/Pods-iChan.release.xcconfig"; sourceTree = "<group>"; };
 		CA035EBD3FBA8B1217DD4F61 /* Pods-iChan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iChan.debug.xcconfig"; path = "Target Support Files/Pods-iChan/Pods-iChan.debug.xcconfig"; sourceTree = "<group>"; };
 		FA18BBFD248A37FE00CC1582 /* CatalogThreadRealm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CatalogThreadRealm.swift; sourceTree = "<group>"; };
+		FA18BBFF248A644700CC1582 /* BoardsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsNavigationController.swift; sourceTree = "<group>"; };
 		FA25D8082487ADC4002D14FA /* CardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCell.swift; sourceTree = "<group>"; };
 		FA340AE824745F07009AD227 /* BoardsModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsModalViewController.swift; sourceTree = "<group>"; };
 		FA5456C3247454370015CF84 /* iChan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iChan.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -179,6 +181,7 @@
 				FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */,
 				FA5456FB247457510015CF84 /* CatalogViewController.swift */,
 				FA5456CE247454370015CF84 /* Main.storyboard */,
+				FA18BBFF248A644700CC1582 /* BoardsNavigationController.swift */,
 				FAF3D9522488E8A800F8AAE0 /* ThreadCatalogHeader.swift */,
 				FA25D8082487ADC4002D14FA /* CardCell.swift */,
 				FA5456D42474543B0015CF84 /* Assets.xcassets */,
@@ -479,6 +482,7 @@
 				FA340AE924745F07009AD227 /* BoardsModalViewController.swift in Sources */,
 				FA8D186624758CEF00BDD461 /* Threads4Chan.swift in Sources */,
 				FA8850A6247D9BC9009D0DDA /* ThreadCatalogCell.swift in Sources */,
+				FA18BC00248A644700CC1582 /* BoardsNavigationController.swift in Sources */,
 				FA8D186424758CE300BDD461 /* Posts.swift in Sources */,
 				FA8D186C24758E6700BDD461 /* Utils.swift in Sources */,
 				FA18BBFE248A37FE00CC1582 /* CatalogThreadRealm.swift in Sources */,

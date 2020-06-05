@@ -138,7 +138,7 @@ class Requests {
      Returns specific image.
      - Parameter fullSize: Should it get fullsize or thumbnail?
      */
-    static func image(_ board: String, _ tim: Int64, _ ext: String, fullSize: Bool, callback: @escaping (UIImage?) -> ()) {
+    static func image(_ board: String, _ tim: Int, _ ext: String, fullSize: Bool, callback: @escaping (UIImage?) -> ()) {
         let size: String = {
             if fullSize {
                 return ""

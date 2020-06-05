@@ -11,8 +11,11 @@ import RealmSwift
 
 
 class BoardsModalViewController: UITableViewController, UISearchResultsUpdating, UISearchControllerDelegate {
-
+    
     @IBOutlet var boardsTable: UITableView!
+    
+    var myDelegate: CatalogBoardDelegate?
+    @IBAction func boardChanged(_ sender: UIStoryboardSegue) {}
     
     var boards = [BoardRealm]()
 
@@ -45,6 +48,15 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Selected \(boards[indexPath.item].board)")
+        let realm = try! Realm()
+        try! realm.write {
+            let settings = realm.objects(Settings.self)
+            settings.first?.currentBoard = boards[indexPath.item].board
+        }
+        
+        
+//        delegate?.boardChanged(newBoard: boards[indexPath.item].board)
+        myDelegate?.boardChanged(newBoard: boards[indexPath.item].board)
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -74,6 +86,9 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.title = "uwu"
+        navigationController?.navigationBar.prefersLargeTitles = true
         
         getBoards { boards in
             if boards == nil || boards?.boards == nil {
