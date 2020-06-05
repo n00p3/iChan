@@ -106,6 +106,37 @@ class Requests {
         }
     }
     
+    static func catalog2(of board: String, success: @escaping (Catalog2) -> (), failure: @escaping (Error) -> ()) {
+        var h = HTTPHeaders()
+        if lastRequested.boards != nil {
+            h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
+        }
+        
+        AF.request("https://a.4cdn.org/\(board)/catalog.json", headers: h)
+            .responseJSON { response in
+                print(response)
+//                if response.response?.statusCode != 200 {
+//                    failure(.notOk)
+//                    return
+//                }
+//
+//                guard let catalog = response.value else {
+//                    failure(.deserializationError)
+//                    return
+//                }
+//
+//                for page in catalog {
+//                    print("------------------------")
+//                    for thread in page.threads {
+//                        print(thread.no)
+//                    }
+//                }
+//
+//                lastRequested.catalog = Date()
+//                success(catalog)
+        }
+    }
+    
     /**
      A full list of posts in a single thread.
      */
@@ -133,7 +164,11 @@ class Requests {
         }
     }
     
-    static func image(_ board: String, _ tim: Int64, _ ext: String, callback: @escaping (UIImage?) -> ()) {
+    /**
+     Returns specific image.
+     - Parameter fullSize: Should it get fullsize or thumbnail?
+     */
+    static func image(_ board: String, _ tim: Int64, _ ext: String, fullSize: Bool, callback: @escaping (UIImage?) -> ()) {
         let url = "https://i.4cdn.org/\(board)/\(tim)\(ext)"
         AF.request(url)
             .response { request in

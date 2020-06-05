@@ -7,9 +7,6 @@
 //
 
 import Foundation
-
-
-import Foundation
 import RealmSwift
 
 class BoardsRealm: Object {

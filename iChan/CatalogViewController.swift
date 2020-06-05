@@ -8,8 +8,9 @@
 
 import UIKit
 import Cards
+import RealmSwift
 
-class CatalogViewController: UIViewController {
+class CatalogViewController: UIViewController, UICollectionViewDelegate {
     @IBOutlet weak var collectionView: UICollectionView!
     
     let refreshControl = UIRefreshControl()
@@ -22,10 +23,21 @@ class CatalogViewController: UIViewController {
     
     var catalog: Catalog = []
     
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        print("xxx")
+    }
+    
     override func viewDidLoad() {
-        // fix weird scroll:  https://stackoverflow.com/questions/50708081/prefer-large-titles-and-refreshcontrol-not-working-well
+        // fix weird scroll: https://stackoverflow.com/questions/50708081/prefer-large-titles-and-refreshcontrol-not-working-well
         
         super.viewDidLoad()
+        
+        Requests.catalog2(of: "int", success: { succ in
+            print(succ)
+        }, failure: { fail in
+            print(fail)
+        })
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         let searchController = UISearchController()
         navigationItem.searchController = searchController
@@ -69,7 +81,7 @@ class CatalogViewController: UIViewController {
         present(popup, animated: true)
     }
     
-
+    
     @objc private func refreshRequested(_ sender: AnyObject) {
         print("refresh requested")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
@@ -77,6 +89,74 @@ class CatalogViewController: UIViewController {
         }
     }
     
+    /**
+     Saves catalog in local memory for faster access. Removes previously stored catalog for specific board.
+     - Parameter board: Board name.
+     - Parameter liveCatalog: Catalog freshly fetched from 4chan API.
+     */
+//    private func storeCatalogInRealm(board: String, liveCatalog: Catalog) {
+//        let realm = try! Realm()
+//        let oldCatalogs = realm.objects(CatalogCacheRealm.self).filter("board == \(board)")
+//        try! realm.write {
+//            realm.delete(oldCatalogs)
+//
+//            for element in liveCatalog {
+//                element.threads.forEach {
+//                    let newCatalogThread = CatalogCacheRealm()
+//                    newCatalogThread.board = board
+//                    newCatalogThread.title = $0.sub ?? ""
+//                    newCatalogThread.comment = $0.com ?? ""
+//                    newCatalogThread.threadNo = $0.no
+//                    newCatalogThread.lastAccessed = Date()
+//                    newCatalogThread.page = element.page
+//                    newCatalogThread.image = nil
+//
+//                    realm.add(newCatalogThread)
+//                }
+//            }
+//        }
+//    }
+    
+    /**
+     Writes image for specific thread number and board.
+     */
+//    private func storeImageForThread(board: String, threadNo: Int, data: Data) {
+//        let realm = try! Realm()
+//
+//        try! realm.write {
+//            // Add image to stored thread if exists.
+//            let storedThread = realm.objects(CatalogCacheRealm.self)
+//                .filter("board == \(board) AND threadNo == \(threadNo)")
+//
+//            for thread in storedThread {
+//                thread.image = data
+//            }
+//        }
+//    }
+    
+    /**
+     Reads image for specific thread number and board if given image exists.
+     */
+//    private func readImageForThread(board: String, threadNo: Int) -> Data? {
+//        let realm = try! Realm()
+//        let storedThread = realm.objects(CatalogCacheRealm.self)
+//            .filter("board == \(board) AND threadNo == \(threadNo)")
+//
+//        return storedThread.first?.image
+//    }
+    
+    /**
+     Reads locally stored catalog for specific board.
+     - Parameter board: Board name.
+     */
+//    private func readCatalogFromRealm(board: String) -> Catalog {
+//        let realm = try! Realm()
+//        let catalogs = realm.objects(CatalogCacheRealm.self)
+//            .filter("board == \(board)")
+//
+//        let toReturn = Catalog()
+//        toReturn.
+//    }
 }
 
 extension CatalogViewController: UICollectionViewDataSource {
@@ -106,6 +186,11 @@ extension CatalogViewController: UICollectionViewDataSource {
         
         card.hasParallax = true
         
+        for recognizer in card.gestureRecognizers ?? [] {
+            recognizer.delegate = nil
+            card.removeGestureRecognizer(recognizer)
+        }
+        
         card.center = CGPoint(x: cell.frame.size.width / 2,
                               y: cell.frame.size.height / 2)
         
@@ -113,7 +198,23 @@ extension CatalogViewController: UICollectionViewDataSource {
         let ext = catalog[indexPath.section].threads[indexPath.row].ext ?? ""
         let tim = catalog[indexPath.section].threads[indexPath.row].tim ?? 0
         
+        
+        //        for recognizer in cell.gestureRecognizers ?? [] {
+        //            recognizer.delegate = nil
+        //            cell.removeGestureRecognizer(recognizer)
+        //        }
+        //        card.delegate = nil
+        
         cell.view.addSubview(card)
+        
+        //        for recognizer in cell.view.gestureRecognizers ?? [] {
+        //            recognizer.delegate = nil
+        //            cell.view.removeGestureRecognizer(recognizer)
+        //        }
+        
+        //        Requests.image("int", tim, ext, fullSize: false) { (img) in
+        //            card.backgroundImage = img
+        //        }
         
         return cell
     }
