@@ -49,7 +49,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         
         let top = self.collectionView.adjustedContentInset.top
         let y = self.refreshControl.frame.maxY + top
-        self.collectionView.setContentOffset(CGPoint(x: 0, y: -y), animated:true)
+//        self.collectionView.setContentOffset(CGPoint(x: 0, y: -y), animated:true)
         self.extendedLayoutIncludesOpaqueBars = true
         collectionView.refreshControl = refreshControl
         
@@ -87,8 +87,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         }
         
         Requests.catalog(of: board, success: { (catalog: Catalog) in
-            print("Reading catalog from api")
-            self.storeCatalogInRealm(board: board, liveCatalog: catalog)
+            storeCatalogInRealm(board: board, liveCatalog: catalog)
             
             NSLog("\(catalog.count) pages")
         }) { (error) in
@@ -109,6 +108,9 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
     
     func boardChanged(newBoard: String) {
         print("new board \(newBoard)")
+        currentBoard = newBoard
+        let x: AnyObject = "" as! AnyObject
+        refreshRequested(x)
     }
     
     @objc private func refreshRequested(_ sender: AnyObject) {
@@ -116,47 +118,35 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
 //            self.refreshControl.endRefreshing()
 //        }
+        collectionView.alpha = 0
+        activityIndicator?.startAnimating()
         
         Requests.catalog(of: currentBoard, success: { (catalog: Catalog) in
-            print("Reading catalog from api")
-            self.storeCatalogInRealm(board: self.currentBoard, liveCatalog: catalog)
+            storeCatalogInRealm(board: self.currentBoard, liveCatalog: catalog)
             
             self.getCatalog(board: self.currentBoard, callback: { catalog in
-                self.catalog = catalog!
+                DispatchQueue.main.async {
+                    self.catalog = catalog!
+                
+            
+                    self.refreshControl.endRefreshing()
+                    self.activityIndicator?.stopAnimating()
+                    let top = self.collectionView.adjustedContentInset.top
+                    UIView.animate(withDuration: 0.5, animations: {
+                        self.collectionView.alpha = 1
+                    })
+                    
+                    let y = self.refreshControl.frame.maxY + top
+    //                    self.collectionView.setContentOffset(CGPoint(x: 0, y: -y), animated:true)
+                    self.collectionView.reloadData()
+                }
+            
+
             })
             
             NSLog("\(catalog.count) pages")
         }) { (error) in
             NSLog("Failed to load catalog; \(error.localizedDescription)")
-        }
-    }
-
-    /**
-     Saves catalog in local memory for faster access. Removes previously stored catalog for specific board.
-     - Parameter board: Board name.
-     - Parameter liveCatalog: Catalog freshly fetched from 4chan API.
-     */
-    private func storeCatalogInRealm(board: String, liveCatalog: Catalog) {
-        print("Storing catalog in realm.")
-        let realm = try! Realm()
-        let oldCatalogs = realm.objects(CatalogThreadRealm.self).filter("board = \"\(board)\"")
-        try! realm.write {
-            realm.delete(oldCatalogs)
-
-            for element in liveCatalog {
-                element.threads.forEach {
-                    let newCatalogThread = CatalogThreadRealm()
-                    newCatalogThread.board = board
-                    newCatalogThread.sub = $0.sub ?? ""
-                    newCatalogThread.com = $0.com ?? ""
-                    newCatalogThread.no = $0.no
-                    newCatalogThread.lastAccessed = Date()
-                    newCatalogThread.page = element.page
-                    newCatalogThread.image = nil
-
-                    realm.add(newCatalogThread)
-                }
-            }
         }
     }
 
@@ -193,47 +183,12 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
             return
         }
         
-        let ext = storedThread.first?.ext ?? ""
+        let ext = self.catalog.map { $0.threads }.joined().filter { $0.no == threadNo }.first?.ext ?? ""
         Requests.image(board, threadNo, ext, fullSize: false) { (img) in
 //            card.backgroundImage = img
             callback(img)
         }
         
-    }
-
-    /**
-     Reads locally stored catalog for specific board.
-     - Parameter board: Board name.
-     */
-    private func readCatalogFromRealm(board: String) -> Catalog? {
-        let realm = try! Realm()
-        let catalogs = realm.objects(CatalogThreadRealm.self)
-            .filter("board == '\(board)'")
-
-        if catalogs.count == 0 {
-            return nil
-        }
-
-        // Pages starts from 1.
-        let maxPages = catalogs.map { $0.page }.max() ?? 1
-
-
-        var catalogElements = [CatalogElement]()
-        for page in 1...maxPages {
-
-            let threadsAtPage = catalogs.filter { $0.page == page }
-
-            var threads = [CatalogThread]()
-            threadsAtPage.forEach {
-                let thread = CatalogThread(no: $0.no, sticky: $0.sticky, closed: $0.closed, now: String($0.closed), name: $0.name, sub: $0.sub, com: $0.com, filename: $0.filename, ext: $0.ext, w: nil, h: nil, tnW: nil, tnH: nil, tim: nil, time: nil, md5: nil, fsize: nil, resto: nil, capcode: nil, semanticURL: nil, replies: nil, images: nil, omittedPosts: nil, omittedImages: nil, lastReplies: nil, lastModified: nil, bumplimit: nil, imagelimit: nil, trip: nil)
-
-                threads.append(thread)
-            }
-            let catalogElement = CatalogElement(page: page, threads: threads)
-            catalogElements.append(catalogElement)
-        }
-
-        return catalogElements
     }
 }
 

@@ -57,6 +57,7 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
         
 //        delegate?.boardChanged(newBoard: boards[indexPath.item].board)
         myDelegate?.boardChanged(newBoard: boards[indexPath.item].board)
+        dismiss(animated: true, completion: nil)
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {

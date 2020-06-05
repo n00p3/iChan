@@ -50,3 +50,67 @@ func initDB() {
         realm.add(Settings())
     }
 }
+
+/**
+ Reads locally stored catalog for specific board.
+ - Parameter board: Board name.
+ */
+func readCatalogFromRealm(board: String) -> Catalog? {
+    let realm = try! Realm()
+    let catalogs = realm.objects(CatalogThreadRealm.self)
+        .filter("board == '\(board)'")
+
+    if catalogs.count == 0 {
+        return nil
+    }
+
+    // Pages starts from 1.
+    let maxPages = catalogs.map { $0.page }.max() ?? 1
+
+
+    var catalogElements = [CatalogElement]()
+    for page in 1...maxPages {
+
+        let threadsAtPage = Array(catalogs).filter { $0.page == page }
+
+        var threads = [CatalogThread]()
+        threadsAtPage.forEach {
+            let thread = CatalogThread(no: $0.no, sticky: $0.sticky, closed: $0.closed, now: String($0.closed), name: $0.name, sub: $0.sub, com: $0.com, filename: $0.filename, ext: $0.ext, w: nil, h: nil, tnW: nil, tnH: nil, tim: nil, time: nil, md5: nil, fsize: nil, resto: nil, capcode: nil, semanticURL: nil, replies: nil, images: nil, omittedPosts: nil, omittedImages: nil, lastReplies: nil, lastModified: nil, bumplimit: nil, imagelimit: nil, trip: nil)
+
+            threads.append(thread)
+        }
+        let catalogElement = CatalogElement(page: page, threads: threads)
+        catalogElements.append(catalogElement)
+    }
+
+    return catalogElements
+}
+
+/**
+ Saves catalog in local memory for faster access. Removes previously stored catalog for specific board.
+ - Parameter board: Board name.
+ - Parameter liveCatalog: Catalog freshly fetched from 4chan API.
+ */
+func storeCatalogInRealm(board: String, liveCatalog: Catalog) {
+    print("Storing catalog in realm.")
+    let realm = try! Realm()
+    let oldCatalogs = realm.objects(CatalogThreadRealm.self).filter("board = \"\(board)\"")
+    try! realm.write {
+        realm.delete(oldCatalogs)
+
+        for element in liveCatalog {
+            element.threads.forEach {
+                let newCatalogThread = CatalogThreadRealm()
+                newCatalogThread.board = board
+                newCatalogThread.sub = $0.sub ?? ""
+                newCatalogThread.com = $0.com ?? ""
+                newCatalogThread.no = $0.no
+                newCatalogThread.lastAccessed = Date()
+                newCatalogThread.page = element.page
+                newCatalogThread.image = nil
+
+                realm.add(newCatalogThread)
+            }
+        }
+    }
+}

@@ -13,7 +13,7 @@ import Alamofire
 struct LastRequested {
     var boards:  Date?
     var threads: Date?
-    var catalog: Date?
+    var catalog: [String:Date]?
     var posts:   Date?
 }
 
@@ -86,12 +86,23 @@ class Requests {
     static func catalog(of board: String, success: @escaping (Catalog) -> (), failure: @escaping (Error) -> ()) {
         print("Reading catalog from api")
         var h = HTTPHeaders()
-        if lastRequested.boards != nil {
+        if lastRequested.catalog?[board] != nil {
             h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
         }
         
         AF.request("https://a.4cdn.org/\(board)/catalog.json", headers: h)
             .responseDecodable(of: Catalog.self) { response in
+                if response.response?.statusCode == 304 {
+                    print("304 - Reading from cache")
+                    guard let x = readCatalogFromRealm(board: board) else {
+                        failure(.notOk)
+                        return
+                    }
+                    success(x)
+                    
+                    return
+                }
+                
                 if response.response?.statusCode != 200 {
                     failure(.notOk)
                     return
@@ -102,7 +113,15 @@ class Requests {
                     return
                 }
                 
-                lastRequested.catalog = Date()
+//                lastRequested.catalog = Date()
+                if lastRequested.catalog == nil {
+                    lastRequested.catalog = [String:Date]()
+                }
+
+                lastRequested.catalog![board] = Date()
+                
+                storeCatalogInRealm(board: board, liveCatalog: catalog)
+                
                 success(catalog)
         }
     }
