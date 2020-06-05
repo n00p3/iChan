@@ -8,6 +8,7 @@
 
 import UIKit
 import Cards
+import RealmSwift
 
 class CatalogViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
@@ -52,16 +53,35 @@ class CatalogViewController: UIViewController {
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         
-        Requests.catalog(of: "int", success: { (catalog: Catalog) in
-            self.catalog = catalog
-            activityIndicator.stopAnimating()
+        let BOARD = "int"
+        getCatalog(board: BOARD, callback: { catalog in
+            if catalog != nil {
+                
+                self.catalog = catalog!
+                activityIndicator.stopAnimating()
+                
+                self.collectionView.reloadData()
+            }
+        })
+    }
+    
+    /**
+     Gets locally stored catalog. If not present then fetches from api and caches.
+     */
+    private func getCatalog(board: String, callback: @escaping (Catalog?) -> ()) {
+        let catalog = readCatalogFromRealm(board: board)
+        if catalog != nil {
+            callback(catalog)
+            return
+        }
+        
+        Requests.catalog(of: board, success: { (catalog: Catalog) in
+            self.storeCatalogInRealm(board: board, liveCatalog: catalog)
             
-            self.collectionView.reloadData()
             NSLog("\(catalog.count) pages")
         }) { (error) in
             NSLog("Failed to load catalog; \(error.localizedDescription)")
         }
-        
     }
     
     @objc private func openBoardsModal() {
@@ -69,13 +89,106 @@ class CatalogViewController: UIViewController {
         present(popup, animated: true)
     }
     
-
+    
     @objc private func refreshRequested(_ sender: AnyObject) {
         print("refresh requested")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.refreshControl.endRefreshing()
         }
     }
+
+    /**
+     Saves catalog in local memory for faster access. Removes previously stored catalog for specific board.
+     - Parameter board: Board name.
+     - Parameter liveCatalog: Catalog freshly fetched from 4chan API.
+     */
+    private func storeCatalogInRealm(board: String, liveCatalog: Catalog) {
+        print("Storing catalog in realm.")
+        let realm = try! Realm()
+        let oldCatalogs = realm.objects(CatalogThreadRealm.self).filter("board == '\(board)'")
+        try! realm.write {
+            realm.delete(oldCatalogs)
+
+            for element in liveCatalog {
+                element.threads.forEach {
+                    let newCatalogThread = CatalogThreadRealm()
+                    newCatalogThread.board = board
+                    newCatalogThread.sub = $0.sub ?? ""
+                    newCatalogThread.com = $0.com ?? ""
+                    newCatalogThread.no = $0.no
+                    newCatalogThread.lastAccessed = Date()
+                    newCatalogThread.page = element.page
+                    newCatalogThread.image = nil
+
+                    realm.add(newCatalogThread)
+                }
+            }
+        }
+    }
+
+    /**
+     Writes image for specific thread number and board.
+     */
+    private func storeImageForThread(board: String, threadNo: Int, data: Data) {
+        let realm = try! Realm()
+
+        try! realm.write {
+            // Add image to stored thread if exists.
+            let storedThread = realm.objects(CatalogThreadRealm.self)
+                .filter("board == '\(board)' AND threadNo == \(threadNo)")
+
+            for thread in storedThread {
+                thread.image = data
+            }
+        }
+    }
+
+    /**
+     Reads image for specific thread number and board if given image exists.
+     */
+    private func readImageForThread(board: String, threadNo: Int) -> Data? {
+        let realm = try! Realm()
+        let storedThread = realm.objects(CatalogThreadRealm.self)
+            .filter("board == '\(board)' AND threadNo == \(threadNo)")
+
+        return storedThread.first?.image
+    }
+
+    /**
+     Reads locally stored catalog for specific board.
+     - Parameter board: Board name.
+     */
+    private func readCatalogFromRealm(board: String) -> Catalog? {
+        let realm = try! Realm()
+        let catalogs = realm.objects(CatalogThreadRealm.self)
+            .filter("board == '\(board)'")
+
+        if catalogs.count == 0 {
+            return nil
+        }
+
+        // Pages starts from 1.
+        let maxPages = catalogs.map { $0.page }.max() ?? 1
+
+
+        var catalogElements = [CatalogElement]()
+        for page in 1...maxPages {
+
+            let threadsAtPage = catalogs.filter { $0.page == page }
+
+            var threads = [CatalogThread]()
+            threadsAtPage.forEach {
+                let thread = CatalogThread(no: $0.no, sticky: $0.sticky, closed: $0.closed, now: String($0.closed), name: $0.name, sub: $0.sub, com: $0.com, filename: $0.filename, ext: $0.ext, w: nil, h: nil, tnW: nil, tnH: nil, tim: nil, time: nil, md5: nil, fsize: nil, resto: nil, capcode: nil, semanticURL: nil, replies: nil, images: nil, omittedPosts: nil, omittedImages: nil, lastReplies: nil, lastModified: nil, bumplimit: nil, imagelimit: nil, trip: nil)
+
+                threads.append(thread)
+            }
+            let catalogElement = CatalogElement(page: page, threads: threads)
+            catalogElements.append(catalogElement)
+        }
+
+        return catalogElements
+    }
+    
     
 }
 

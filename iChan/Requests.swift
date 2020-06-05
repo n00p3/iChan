@@ -84,6 +84,7 @@ class Requests {
      A JSON representation of a board catalog. Includes all OPs and their preview replies.
      */
     static func catalog(of board: String, success: @escaping (Catalog) -> (), failure: @escaping (Error) -> ()) {
+        print("Reading catalog from api")
         var h = HTTPHeaders()
         if lastRequested.boards != nil {
             h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
