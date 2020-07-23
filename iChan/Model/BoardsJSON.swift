@@ -13,8 +13,8 @@ import Foundation
 import Alamofire
 import RealmSwift
 
-class Boards: Object, Codable {
-    @objc dynamic let boards: [Board]
+struct BoardsJSON: Codable {
+    let boards: [BoardJSON]
     let trollFlags: [String : String]
 
     enum CodingKeys: String, CodingKey {
@@ -23,36 +23,17 @@ class Boards: Object, Codable {
     }
 }
 
-class Board: Object, Codable {
-    @objc dynamic let board: String
-    @objc dynamic let title: String
-    @objc dynamic let wsBoard: Int
-    @objc dynamic let perPage: Int
-    @objc dynamic let pages: Int
-    @objc dynamic let maxFilesize: Int
-    @objc dynamic let maxWebmFilesize: Int
-    @objc dynamic let maxCommentChars: Int
-    @objc dynamic let maxWebmDuration: Int
-    @objc dynamic let bumpLimit: Int
-    @objc dynamic let imageLimit: Int
-    let cooldowns: [String : Int]
-    @objc dynamic let metaDescription: String
-    let isArchived: Int?
-    let spoilers: Int?
-    let customSpoilers: Int?
-    let forcedAnon: Int?
-    let userIDS: Int?
-    let countryFlags: Int?
-    let codeTags: Int?
-    let webmAudio: Int?
-    let minImageWidth: Int?
-    let minImageHeight: Int?
-    let oekaki: Int?
-    let sjisTags: Int?
-    let textOnly: Int?
-    let requireSubject: Int?
-    let trollFlags: Int?
-    let mathTags: Int?
+struct BoardJSON: Codable {
+    let board, title: String
+    let wsBoard, perPage, pages, maxFilesize: Int
+    let maxWebmFilesize, maxCommentChars, maxWebmDuration, bumpLimit: Int
+    let imageLimit: Int
+    let cooldowns: CooldownsJSON
+    let metaDescription: String
+    let isArchived, spoilers, customSpoilers, forcedAnon: Int?
+    let userIDS, countryFlags, codeTags, webmAudio: Int?
+    let minImageWidth, minImageHeight, oekaki, sjisTags: Int?
+    let textOnly, requireSubject, trollFlags, mathTags: Int?
 
     enum CodingKeys: String, CodingKey {
         case board, title
@@ -86,12 +67,6 @@ class Board: Object, Codable {
     }
 }
 
-class Cooldowns: Object, Codable {
-    let threads: Int
-    let replies: Int
-    let images: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case threads, replies, images
-    }
+struct CooldownsJSON: Codable {
+    let threads, replies, images: Int
 }

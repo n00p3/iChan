@@ -13,7 +13,7 @@ import Alamofire
 struct LastRequested {
     var boards:  Date?
     var threads: Date?
-    var catalog: Date?
+    var catalog: [String:Date]?
     var posts:   Date?
 }
 
@@ -28,15 +28,14 @@ class Requests {
     /**
      A list of all boards and their attributes.
      */
-    static func boards(success: @escaping (Boards) -> (), failure: @escaping (Error) -> ()) {
+    static func boards(success: @escaping (BoardsJSON) -> (), failure: @escaping (Error) -> ()) {
         var h = HTTPHeaders()
         if lastRequested.boards != nil {
             h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
         }
         
         AF.request("https://a.4cdn.org/boards.json", headers: h)
-            .responseDecodable(of: Boards.self) { response in
-                print(response)
+            .responseDecodable(of: BoardsJSON.self) { response in
                 if response.response?.statusCode != 200 {
                     failure(.notOk)
                     return
@@ -85,13 +84,25 @@ class Requests {
      A JSON representation of a board catalog. Includes all OPs and their preview replies.
      */
     static func catalog(of board: String, success: @escaping (Catalog) -> (), failure: @escaping (Error) -> ()) {
+        print("Reading catalog from api")
         var h = HTTPHeaders()
-        if lastRequested.boards != nil {
-            h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
+        if lastRequested.catalog?[board] != nil {
+            h["If-Modified-Since"] = self.lastRequested.catalog?[board]?.toRFC1123()
         }
         
         AF.request("https://a.4cdn.org/\(board)/catalog.json", headers: h)
             .responseDecodable(of: Catalog.self) { response in
+                if response.response?.statusCode == 304 {
+                    print("304 - Reading from cache")
+                    guard let x = readCatalogFromRealm(board: board) else {
+                        failure(.notOk)
+                        return
+                    }
+                    success(x)
+                    
+                    return
+                }
+                
                 if response.response?.statusCode != 200 {
                     failure(.notOk)
                     return
@@ -102,7 +113,15 @@ class Requests {
                     return
                 }
                 
-                lastRequested.catalog = Date()
+//                lastRequested.catalog = Date()
+                if lastRequested.catalog == nil {
+                    lastRequested.catalog = [String:Date]()
+                }
+
+                lastRequested.catalog![board] = Date()
+                
+                storeCatalogInRealm(board: board, liveCatalog: catalog)
+                
                 success(catalog)
         }
     }
@@ -117,9 +136,8 @@ class Requests {
         }
 
         let url = "https://a.4cdn.org/\(board)/thread/\(no).json"
-        let r = AF.request(url, headers: h)
+        AF.request(url, headers: h)
             .responseDecodable(of: Posts.self) { response in
-                print(response)
                 if response.response?.statusCode != 200 {
                     failure(.notOk)
                     return
@@ -132,6 +150,36 @@ class Requests {
 
                 lastRequested.posts = Date()
                 success(posts)
+        }
+    }
+    
+    /**
+     Returns specific image.
+     - Parameter fullSize: Should it get fullsize or thumbnail?
+     */
+    static func image(_ board: String, _ tim: Int, _ ext: String, fullSize: Bool, callback: @escaping (UIImage?) -> ()) {
+        var myExt = ""
+        let size: String = {
+            if fullSize {
+                myExt = ext
+                return ""
+            } else {
+                myExt = ".jpg"
+                return "s"
+            }
+        }()
+        
+        let url = "https://i.4cdn.org/\(board)/\(tim)\(size)\(myExt)"
+        print(url)
+        AF.request(url)
+            .response { request in
+                if request.data == nil {
+                    callback(nil)
+                    return
+                }
+
+                let img = UIImage(data: request.data!)
+                callback(img)
         }
     }
 }
