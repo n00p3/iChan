@@ -9,6 +9,11 @@
 import Foundation
 import RealmSwift
 
+class ThreadIdentifier : Object {
+    var board: String?
+    var no: Int?
+}
+
 class Settings: Object {
     @objc dynamic var boardsLastSyncedDate: Date?
     @objc dynamic var currentBoard = "a"

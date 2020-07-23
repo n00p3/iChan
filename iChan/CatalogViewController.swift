@@ -110,7 +110,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
     }
     
     func updateHeader() {
-        let fullName = try! Realm().objects(BoardsRealm.self)[0].boards.filter { $0.board == self.currentBoard }.first
+        let fullName = try! Realm().objects(BoardsRealm.self).first?.boards.filter { $0.board == self.currentBoard }.first
         if fullName != nil {
             navigationItem.title = fullName!.board + " - " + fullName!.title
         }
@@ -199,7 +199,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
             callback(UIImage(data: storedThread.first!.image!))
             return
         }
-        print("remote \(threadNo)")
+//        print("remote \(threadNo)")
         
         let x = self.catalog.map { $0.threads }.joined().filter { $0.no == threadNo }.first
         let ext = x?.ext ?? ""
@@ -229,40 +229,11 @@ extension CatalogViewController: UICollectionViewDataSource {
         let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: "ThreadCatalogCell", for: indexPath) as! ThreadCatalogCell
         
-//        let card = CardHighlight(frame: CGRect(x: 10, y: 30, width: 100 , height: 120))
-//
-//        card.backgroundColor = UIColor(red: 0, green: 94/255, blue: 112/255, alpha: 1)
-//        card.title = catalog[indexPath.section].threads[indexPath.row].sub ?? ""
-//        card.titleSize = 12
-//        card.itemTitle = ""
-//        card.itemSubtitle = catalog[indexPath.section].threads[indexPath.row].com ?? ""
-//        card.textColor = UIColor.white
-//        card.buttonText = nil
-//        card.shadowOpacity = 0
-//
-//        card.gestureRecognizers?.removeAll()
-//
-//        card.delegate = self
-//
-//        card.hasParallax = true
-//
-//        card.center = CGPoint(x: cell.frame.size.width / 2,
-//                              y: cell.frame.size.height / 2)
-//
-//
-//        let ext = catalog[indexPath.section].threads[indexPath.row].ext ?? ""
-//        let tim = catalog[indexPath.section].threads[indexPath.row].tim ?? 0
-//
-//        cell.view.addSubview(card)
-//
         let no = catalog[indexPath.section].threads[indexPath.row].no
-//        readImageForThread(board: currentBoard, threadNo: no, callback: { img in
-//            card.backgroundImage = img
-//        })
+
         readImageForThread(board: currentBoard, threadNo: no, callback: { img in
             if img != nil {
                 let i = UIImageView(image: img!)
-//                i.clipsToBounds = false
                 i.frame = CGRect(x: i.frame.origin.x, y: i.frame.origin.y, width: cell.frame.width, height: cell.frame.height)
                 i.contentMode = .scaleAspectFill
                 cell.contentView.addSubview(i)
@@ -306,7 +277,10 @@ extension CatalogViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(catalog[indexPath.section].threads[indexPath.row])
+//        print(catalog[indexPath.section].threads[indexPath.row])
+//        DataHolder.shared.threadNo = catalog[indexPath.section].threads[indexPath.row].no
+//        DataHolder.shared.threadBoard = currentBoard
+        
     }
     
 }

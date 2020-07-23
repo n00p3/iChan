@@ -170,7 +170,7 @@ class Requests {
         }()
         
         let url = "https://i.4cdn.org/\(board)/\(tim)\(size)\(myExt)"
-        print(url)
+//        print(url)
         AF.request(url)
             .response { request in
                 if request.data == nil {
