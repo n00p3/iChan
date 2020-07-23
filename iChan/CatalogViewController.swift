@@ -37,6 +37,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         
         currentBoard = try! Realm().objects(Settings.self).first?.currentBoard ?? "a"
         
+        updateHeader()
         
         navigationController?.navigationBar.prefersLargeTitles = true
         let searchController = UISearchController()
@@ -106,11 +107,19 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         present(navigationController, animated: true)
     }
     
+    func updateHeader() {
+        let fullName = try! Realm().objects(BoardsRealm.self)[0].boards.filter { $0.board == self.currentBoard }.first
+        if fullName != nil {
+            navigationItem.title = fullName!.board + " - " + fullName!.title
+        }
+    }
+    
     func boardChanged(newBoard: String) {
         print("new board \(newBoard)")
         currentBoard = newBoard
-        let x: AnyObject = "" as! AnyObject
+        let x: AnyObject = "" as AnyObject
         refreshRequested(x)
+        updateHeader()
     }
     
     @objc private func refreshRequested(_ sender: AnyObject) {
