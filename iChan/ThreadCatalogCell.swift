@@ -10,5 +10,5 @@ import UIKit
 
 class ThreadCatalogCell: UICollectionViewCell {
 
-    @IBOutlet weak var view: UIView!
+
 }

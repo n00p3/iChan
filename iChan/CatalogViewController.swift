@@ -74,6 +74,8 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
                 self.collectionView.reloadData()
             }
         })
+        
+        collectionView.register(ThreadCatalogCell.self, forCellWithReuseIdentifier: "ThreadCatalogCell")
     }
     
     /**
@@ -179,7 +181,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         
         let r2 = try! Realm()
         let filter = "board = \"\(board)\" AND #no = \(threadNo)"
-        let x = r2.objects(CatalogThreadRealm.self).filter(filter)
+        _ = r2.objects(CatalogThreadRealm.self).filter(filter)
         
     }
 
@@ -193,7 +195,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
             .filter(filter)
 
         if storedThread.first?.image != nil {
-            print("local \(threadNo)")
+//            print("local \(threadNo)")
             callback(UIImage(data: storedThread.first!.image!))
             return
         }
@@ -227,36 +229,85 @@ extension CatalogViewController: UICollectionViewDataSource {
         let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: "ThreadCatalogCell", for: indexPath) as! ThreadCatalogCell
         
-        let card = CardHighlight(frame: CGRect(x: 10, y: 30, width: 100 , height: 120))
-        
-        card.backgroundColor = UIColor(red: 0, green: 94/255, blue: 112/255, alpha: 1)
-        card.title = catalog[indexPath.section].threads[indexPath.row].sub ?? ""
-        card.titleSize = 12
-        card.itemTitle = ""
-        card.itemSubtitle = catalog[indexPath.section].threads[indexPath.row].com ?? ""
-        card.textColor = UIColor.white
-        card.buttonText = nil
-        card.shadowOpacity = 0
-        
-        card.hasParallax = true
-        
-        card.center = CGPoint(x: cell.frame.size.width / 2,
-                              y: cell.frame.size.height / 2)
-        
-        
-        let ext = catalog[indexPath.section].threads[indexPath.row].ext ?? ""
-        let tim = catalog[indexPath.section].threads[indexPath.row].tim ?? 0
-        
-        cell.view.addSubview(card)
-        
+//        let card = CardHighlight(frame: CGRect(x: 10, y: 30, width: 100 , height: 120))
+//
+//        card.backgroundColor = UIColor(red: 0, green: 94/255, blue: 112/255, alpha: 1)
+//        card.title = catalog[indexPath.section].threads[indexPath.row].sub ?? ""
+//        card.titleSize = 12
+//        card.itemTitle = ""
+//        card.itemSubtitle = catalog[indexPath.section].threads[indexPath.row].com ?? ""
+//        card.textColor = UIColor.white
+//        card.buttonText = nil
+//        card.shadowOpacity = 0
+//
+//        card.gestureRecognizers?.removeAll()
+//
+//        card.delegate = self
+//
+//        card.hasParallax = true
+//
+//        card.center = CGPoint(x: cell.frame.size.width / 2,
+//                              y: cell.frame.size.height / 2)
+//
+//
+//        let ext = catalog[indexPath.section].threads[indexPath.row].ext ?? ""
+//        let tim = catalog[indexPath.section].threads[indexPath.row].tim ?? 0
+//
+//        cell.view.addSubview(card)
+//
         let no = catalog[indexPath.section].threads[indexPath.row].no
+//        readImageForThread(board: currentBoard, threadNo: no, callback: { img in
+//            card.backgroundImage = img
+//        })
         readImageForThread(board: currentBoard, threadNo: no, callback: { img in
-            card.backgroundImage = img
+            if img != nil {
+                let i = UIImageView(image: img!)
+//                i.clipsToBounds = false
+                i.frame = CGRect(x: i.frame.origin.x, y: i.frame.origin.y, width: cell.frame.width, height: cell.frame.height)
+                i.contentMode = .scaleAspectFill
+                cell.contentView.addSubview(i)
+            }
         })
+
+        let blur = UIBlurEffect(style: .regular)
+        let effect = UIVisualEffectView(effect: blur)
+        let H = CGFloat(35)
+        effect.frame = CGRect(
+            x: cell.contentView.frame.origin.x,
+            y: (cell.contentView.frame.height - H) + cell.contentView.frame.origin.y,
+            width: cell.contentView.frame.width,
+            height: H)
+        
+        cell.contentView.addSubview(effect)
+        cell.contentView.backgroundColor = .red
+        cell.contentView.layer.cornerRadius = 8
+        cell.contentView.clipsToBounds = true
+        
+        let sub = catalog[indexPath.section].threads[indexPath.row].sub ?? ""
+        let com = catalog[indexPath.section].threads[indexPath.row].com ?? ""
+        
+        let title = [sub, com].filter { $0 != "" }.first ?? "[no comment]"
+        
+        let label = UILabel()
+        label.text = title
+        label.minimumScaleFactor = 0.5
+        label.adjustsFontSizeToFitWidth = true
+        label.numberOfLines = 2
+        
+        let INSET = CGFloat(8)
+        label.frame = CGRect(
+            x: cell.contentView.frame.origin.x + INSET,
+            y: ((cell.contentView.frame.height - H) + cell.contentView.frame.origin.y) + INSET / 2,
+            width: cell.contentView.frame.width - INSET * 2,
+            height: H * 0.8)
+        cell.contentView.addSubview(label)
         
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(catalog[indexPath.section].threads[indexPath.row])
+    }
     
 }
 

@@ -133,7 +133,7 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
         let fiveteenMinutes = TimeInterval(exactly: 5)! // TODO: Change to 15 * 60!
         if intervalSinceLastSync < fiveteenMinutes && realm.objects(BoardsRealm.self).count > 0 {
             NSLog("BoardsModalViewController#getBoards: Reading boards from realm...")
-            var boards = realm.objects(BoardsRealm.self)[0]
+            let boards = realm.objects(BoardsRealm.self)[0]
             callback(boards)
         } else {
             NSLog("BoardsModalViewController#getBoards: Fetching boards from api...")
