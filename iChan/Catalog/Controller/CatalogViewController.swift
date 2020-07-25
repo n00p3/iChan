@@ -83,7 +83,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate, UIContextMe
             let bookmark = UIAction(title: "Add to bookmarks", image: UIImage(systemName: "star"), identifier: UIAction.Identifier(rawValue: "bookmark")) { _ in
                 print("Add to bookmarks clicked,")
             }
-            let hide = UIAction(title: "Hide", image: UIImage(systemName: "eye.slash"), identifier: UIAction.Identifier(rawValue: "hide")) { action in
+            let hide = UIAction(title: "Hide thread", image: UIImage(systemName: "eye.slash"), identifier: UIAction.Identifier(rawValue: "hide")) { action in
                 print("Hide clicked.")
             }
             let viewImage = UIAction(title: "View OP file", image: UIImage(systemName: "eye"), identifier: UIAction.Identifier(rawValue: "viewImage")) { action in
@@ -160,13 +160,11 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate, UIContextMe
             
                     self.refreshControl.endRefreshing()
                     self.activityIndicator?.stopAnimating()
-                    let top = self.collectionView.adjustedContentInset.top
-                    UIView.animate(withDuration: 0.5, animations: {
-                        self.collectionView.alpha = 1
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                        UIView.animate(withDuration: 0.5, animations: {
+                            self.collectionView.alpha = 1
+                        })
                     })
-                    
-                    let y = self.refreshControl.frame.maxY + top
-    //                    self.collectionView.setContentOffset(CGPoint(x: 0, y: -y), animated:true)
                     self.collectionView.reloadData()
                 }
             
@@ -244,6 +242,8 @@ extension CatalogViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let H = CGFloat(35)
+        
         let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: "ThreadCatalogCell", for: indexPath)
         
@@ -259,41 +259,40 @@ extension CatalogViewController: UICollectionViewDataSource {
                 i.contentMode = .scaleAspectFill
                 cell.contentView.addSubview(i)
             }
+            
+            let blur = UIBlurEffect(style: .regular)
+            let effect = UIVisualEffectView(effect: blur)
+            
+            effect.frame = CGRect(
+                x: cell.contentView.frame.origin.x,
+                y: (cell.contentView.frame.height - H) + cell.contentView.frame.origin.y,
+                width: cell.contentView.frame.width,
+                height: H)
+            
+            cell.contentView.addSubview(effect)
+            
+            cell.contentView.layer.cornerRadius = 8
+            cell.contentView.clipsToBounds = true
+            
+            let sub = self.catalog[indexPath.section].threads[indexPath.row].sub ?? ""
+            let com = self.catalog[indexPath.section].threads[indexPath.row].com ?? ""
+            
+            let title = [sub, com].filter { $0 != "" }.first ?? "[no comment]"
+            
+            let label = UILabel()
+            label.text = title
+            label.minimumScaleFactor = 0.5
+            label.adjustsFontSizeToFitWidth = true
+            label.numberOfLines = 2
+            
+            let INSET = CGFloat(8)
+            label.frame = CGRect(
+                x: cell.contentView.frame.origin.x + INSET,
+                y: ((cell.contentView.frame.height - H) + cell.contentView.frame.origin.y) + INSET / 2,
+                width: cell.contentView.frame.width - INSET * 2,
+                height: H * 0.8)
+            cell.contentView.addSubview(label)
         })
-
-        let blur = UIBlurEffect(style: .regular)
-        let effect = UIVisualEffectView(effect: blur)
-        let H = CGFloat(35)
-        effect.frame = CGRect(
-            x: cell.contentView.frame.origin.x,
-            y: (cell.contentView.frame.height - H) + cell.contentView.frame.origin.y,
-            width: cell.contentView.frame.width,
-            height: H)
-        
-        cell.contentView.addSubview(effect)
-//        cell.contentView.backgroundColor = .red
-        cell.contentView.layer.cornerRadius = 8
-        cell.contentView.clipsToBounds = true
-        
-        let sub = catalog[indexPath.section].threads[indexPath.row].sub ?? ""
-        let com = catalog[indexPath.section].threads[indexPath.row].com ?? ""
-        
-        let title = [sub, com].filter { $0 != "" }.first ?? "[no comment]"
-        
-        let label = UILabel()
-        label.text = title
-        label.minimumScaleFactor = 0.5
-        label.adjustsFontSizeToFitWidth = true
-        label.numberOfLines = 2
-        
-        let INSET = CGFloat(8)
-        label.frame = CGRect(
-            x: cell.contentView.frame.origin.x + INSET,
-            y: ((cell.contentView.frame.height - H) + cell.contentView.frame.origin.y) + INSET / 2,
-            width: cell.contentView.frame.width - INSET * 2,
-            height: H * 0.8)
-        cell.contentView.addSubview(label)
-        
         return cell
     }
     
