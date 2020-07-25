@@ -181,15 +181,13 @@
 		FA5456C5247454370015CF84 /* iChan */ = {
 			isa = PBXGroup;
 			children = (
+				FA8E946D24CCB60B00AE90ED /* Bookmarks */,
 				FA8E946524CC901F00AE90ED /* Thread */,
 				FA8E946124CC8FB200AE90ED /* Catalog */,
 				FA8D186024758C8900BDD461 /* Model */,
 				FA5456C6247454370015CF84 /* AppDelegate.swift */,
 				FA5456C8247454370015CF84 /* SceneDelegate.swift */,
-				FA5456CA247454370015CF84 /* BookmarksViewController.swift */,
-				FA340AE824745F07009AD227 /* BoardsModalViewController.swift */,
 				FA5456CE247454370015CF84 /* Main.storyboard */,
-				FA18BBFF248A644700CC1582 /* BoardsNavigationController.swift */,
 				FA5456D42474543B0015CF84 /* Assets.xcassets */,
 				FA5456D62474543B0015CF84 /* LaunchScreen.storyboard */,
 				FA5456D92474543B0015CF84 /* Info.plist */,
@@ -263,6 +261,8 @@
 		FA8E946424CC900B00AE90ED /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				FA18BBFF248A644700CC1582 /* BoardsNavigationController.swift */,
+				FA340AE824745F07009AD227 /* BoardsModalViewController.swift */,
 				FA5456FB247457510015CF84 /* CatalogViewController.swift */,
 				FAF3D9522488E8A800F8AAE0 /* ThreadCatalogHeader.swift */,
 				FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */,
@@ -299,6 +299,38 @@
 			isa = PBXGroup;
 			children = (
 				FA8E946924CC906D00AE90ED /* ThreadViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		FA8E946D24CCB60B00AE90ED /* Bookmarks */ = {
+			isa = PBXGroup;
+			children = (
+				FA8E947024CCB63600AE90ED /* Controller */,
+				FA8E946F24CCB62F00AE90ED /* Model */,
+				FA8E946E24CCB62A00AE90ED /* View */,
+			);
+			path = Bookmarks;
+			sourceTree = "<group>";
+		};
+		FA8E946E24CCB62A00AE90ED /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FA8E946F24CCB62F00AE90ED /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FA8E947024CCB63600AE90ED /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FA5456CA247454370015CF84 /* BookmarksViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
