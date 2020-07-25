@@ -325,6 +325,7 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
             }
             
             headerView.headerPage.text = "Page \(indexPath.section + 1)"
+            headerView.frame = CGRect(x: headerView.frame.origin.x, y: headerView.frame.origin.y + 8, width: headerView.frame.width, height: headerView.frame.height)
             return headerView
         default:
             assert(false, "Invalid element type")

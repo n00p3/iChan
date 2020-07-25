@@ -165,7 +165,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YbF-8g-ZpL">
-                                            <rect key="frame" x="39" y="-2" width="42" height="22"/>
+                                            <rect key="frame" x="24" y="-2" width="42" height="22"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -174,7 +174,7 @@
                                     <constraints>
                                         <constraint firstItem="YbF-8g-ZpL" firstAttribute="centerY" secondItem="1MD-Dd-mk3" secondAttribute="centerY" id="ZTI-Xv-cvc"/>
                                         <constraint firstItem="YbF-8g-ZpL" firstAttribute="top" secondItem="1MD-Dd-mk3" secondAttribute="topMargin" constant="-10" id="eqS-j6-3Lt"/>
-                                        <constraint firstItem="YbF-8g-ZpL" firstAttribute="leading" secondItem="1MD-Dd-mk3" secondAttribute="leadingMargin" constant="31" id="wPe-pe-UyE"/>
+                                        <constraint firstItem="YbF-8g-ZpL" firstAttribute="leading" secondItem="1MD-Dd-mk3" secondAttribute="leadingMargin" constant="16" id="wPe-pe-UyE"/>
                                     </constraints>
                                     <connections>
                                         <outlet property="headerPage" destination="YbF-8g-ZpL" id="cQ5-LE-yk5"/>
