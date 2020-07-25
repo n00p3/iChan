@@ -7,14 +7,14 @@
 //
 
 import UIKit
-import Cards
 import RealmSwift
+import SPAlert
 
 protocol CatalogBoardDelegate {
     func boardChanged(newBoard: String)
 }
 
-class CatalogViewController: UIViewController, CatalogBoardDelegate, UIContextMenuInteractionDelegate {
+class CatalogViewController: UIViewController, CatalogBoardDelegate {
     @IBOutlet weak var collectionView: UICollectionView!
     
     var currentBoard = ""
@@ -49,8 +49,6 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate, UIContextMe
         refreshControl.addTarget(self, action: #selector(refreshRequested(_:)), for: .valueChanged)
         
         let top = self.collectionView.adjustedContentInset.top
-        let y = self.refreshControl.frame.maxY + top
-//        self.collectionView.setContentOffset(CGPoint(x: 0, y: -y), animated:true)
         self.extendedLayoutIncludesOpaqueBars = true
         collectionView.refreshControl = refreshControl
         
@@ -78,22 +76,19 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate, UIContextMe
         collectionView.register(ThreadCatalogCell.self, forCellWithReuseIdentifier: "ThreadCatalogCell")
     }
     
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil){ action in
-            let bookmark = UIAction(title: "Add to bookmarks", image: UIImage(systemName: "star"), identifier: UIAction.Identifier(rawValue: "bookmark")) { _ in
-                print("Add to bookmarks clicked,")
-            }
-            let hide = UIAction(title: "Hide thread", image: UIImage(systemName: "eye.slash"), identifier: UIAction.Identifier(rawValue: "hide")) { action in
-                print("Hide clicked.")
-            }
-            let viewImage = UIAction(title: "View OP file", image: UIImage(systemName: "eye"), identifier: UIAction.Identifier(rawValue: "viewImage")) { action in
-                print("View image clicked.")
-            }
+    private func addToBookmarks(threadNo: Int, board: String, title: String) {
+        let realm = try! Realm()
+        try! realm.write {
+            let bookmark = BookmarkRealm()
+            bookmark.repliesCnt = 0
+            bookmark.board = board
+            bookmark.threadNo = threadNo
+            bookmark.title = title
             
-            return UIMenu(title: "Options", image: nil, identifier: nil, children: [bookmark, hide, viewImage])
+            realm.add(bookmark)
         }
         
-        return configuration
+        SPAlert.present(message: "Bookmark added!")
     }
     
     /**
@@ -241,14 +236,33 @@ extension CatalogViewController: UICollectionViewDataSource {
         catalog[section].threads.count
     }
     
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil){ _ in
+            let bookmark = UIAction(title: "Add to bookmarks", image: UIImage(systemName: "star"), identifier: UIAction.Identifier(rawValue: "bookmark")) { menu in
+                let thread = self.catalog[indexPath.section].threads[indexPath.row]
+                let subject = [thread.sub ?? "", thread.com ?? "", "[no comment]"].filter { $0 != "" }.first!
+                
+                self.addToBookmarks(threadNo: thread.no, board: DataHolder.shared.threadBoard, title: subject)
+                
+            }
+            let hide = UIAction(title: "Hide thread", image: UIImage(systemName: "eye.slash"), identifier: UIAction.Identifier(rawValue: "hide")) { action in
+                print("Hide clicked.")
+            }
+            let viewImage = UIAction(title: "View OP file", image: UIImage(systemName: "eye"), identifier: UIAction.Identifier(rawValue: "viewImage")) { action in
+                print("View image clicked.")
+            }
+            
+            return UIMenu(title: "Options", image: nil, identifier: nil, children: [bookmark, hide, viewImage])
+        }
+        
+        return configuration
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let H = CGFloat(35)
         
         let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: "ThreadCatalogCell", for: indexPath)
-        
-        let interaction = UIContextMenuInteraction(delegate: self)
-        cell.addInteraction(interaction)
         
         let no = catalog[indexPath.section].threads[indexPath.row].no
 

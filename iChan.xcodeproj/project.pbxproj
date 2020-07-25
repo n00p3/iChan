@@ -34,6 +34,7 @@
 		FA8D186C24758E6700BDD461 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186B24758E6700BDD461 /* Utils.swift */; };
 		FA8E946A24CC906D00AE90ED /* ThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8E946924CC906D00AE90ED /* ThreadViewController.swift */; };
 		FA8E946C24CC939100AE90ED /* ThreadCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8E946B24CC939100AE90ED /* ThreadCellModel.swift */; };
+		FA8E947224CCB7C900AE90ED /* BookmarkRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8E947124CCB7C900AE90ED /* BookmarkRealm.swift */; };
 		FAB2F1ED2475A4A900442CD4 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB2F1EC2475A4A900442CD4 /* Settings.swift */; };
 		FAE22A90247AA6C8008B4F04 /* BoardsJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE22A8F247AA6C8008B4F04 /* BoardsJSON.swift */; };
 		FAE22A92247AA6CE008B4F04 /* BoardsRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE22A91247AA6CE008B4F04 /* BoardsRealm.swift */; };
@@ -98,6 +99,7 @@
 		FA8D186B24758E6700BDD461 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		FA8E946924CC906D00AE90ED /* ThreadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewController.swift; sourceTree = "<group>"; };
 		FA8E946B24CC939100AE90ED /* ThreadCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCellModel.swift; sourceTree = "<group>"; };
+		FA8E947124CCB7C900AE90ED /* BookmarkRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkRealm.swift; sourceTree = "<group>"; };
 		FAB2F1EC2475A4A900442CD4 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FAE22A8F247AA6C8008B4F04 /* BoardsJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardsJSON.swift; sourceTree = "<group>"; };
 		FAE22A91247AA6CE008B4F04 /* BoardsRealm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardsRealm.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 				FA18BBFD248A37FE00CC1582 /* CatalogThreadRealm.swift */,
 				FAB2F1EC2475A4A900442CD4 /* Settings.swift */,
 				FAF3D9542488F16800F8AAE0 /* BookmarkElement.swift */,
+				FA8E947124CCB7C900AE90ED /* BookmarkRealm.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -576,6 +579,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA5456FC247457510015CF84 /* CatalogViewController.swift in Sources */,
+				FA8E947224CCB7C900AE90ED /* BookmarkRealm.swift in Sources */,
 				FA5456D3247454370015CF84 /* iChan.xcdatamodeld in Sources */,
 				FAE22A92247AA6CE008B4F04 /* BoardsRealm.swift in Sources */,
 				FA25D8092487ADC4002D14FA /* CardCell.swift in Sources */,

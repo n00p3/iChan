@@ -12,5 +12,5 @@ struct BookmarkElement {
     let board: String
     let threadNo: Int
     let title: String
-    var newRepliesCnt: Int
+    var repliesCnt: Int
 }

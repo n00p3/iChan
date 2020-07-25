@@ -20,6 +20,27 @@ class BookmarksViewController: UIViewController {
         }
     }
     
+    
+    override func viewDidAppear(_ animated: Bool) {
+        fetchBookmarks()
+    }
+    
+    private func fetchBookmarks() {
+        let realm = try! Realm()
+        let bookmarks = try! realm.objects(BookmarkRealm.self)
+        
+        dataSource.removeAll()
+        
+        for bookmark in bookmarks {
+            let element = BookmarkElement(board: bookmark.board, threadNo: bookmark.threadNo, title: bookmark.title, repliesCnt: 0)
+            dataSource.append(element)
+        }
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
     private func updateDeletionButton() {
         buttonRemoveAllBookmarks?.isEnabled = self.dataSource.count > 0
     }
@@ -34,7 +55,12 @@ class BookmarksViewController: UIViewController {
     }
     
     private func deleteAllBookmarksClickedHandler() {
+        let realm = try! Realm()
         for i in (0..<self.dataSource.count).reversed() {
+            try! realm.write {
+                let bookmark = realm.objects(BookmarkRealm.self).filter(NSPredicate(format: "threadNo = %d", self.dataSource[i].threadNo))
+                realm.delete(bookmark)
+            }
             self.dataSource.remove(at: i)
             self.tableView.deleteRows(at: [IndexPath(item: i, section: 0)], with: .automatic)
         }
@@ -47,15 +73,9 @@ class BookmarksViewController: UIViewController {
         buttonRemoveAllBookmarks = UIBarButtonItem(title: "Delete all", style: .plain, target: self, action: #selector(deleteAllBookmarksClicked(_:)))
         navigationItem.rightBarButtonItem = buttonRemoveAllBookmarks
         
-        dataSource.append(
-            BookmarkElement(board: "int", threadNo: 23, title: "thread 1", newRepliesCnt: 0)
-        )
-        
-        dataSource.append(
-            BookmarkElement(board: "int", threadNo: 123, title: "thread 2", newRepliesCnt: 3)
-        )
-        
         tableView.dataSource = self
+        
+        fetchBookmarks()
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -64,6 +84,11 @@ class BookmarksViewController: UIViewController {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if (editingStyle == .delete) {
+            let realm = try! Realm()
+            try! realm.write {
+                let bookmark = realm.objects(BookmarkRealm.self).filter(NSPredicate(format: "threadNo = %d", self.dataSource[indexPath.row].threadNo))
+                realm.delete(bookmark)
+            }
             self.dataSource.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
         }
@@ -80,10 +105,10 @@ extension BookmarksViewController : UITableViewDataSource {
         let board = "/\(dataSource[indexPath.item].board)/"
         let title = dataSource[indexPath.item].title
         let newRepliesCnt: String = {
-            if self.dataSource[indexPath.item].newRepliesCnt == 0 {
+            if self.dataSource[indexPath.item].repliesCnt == 0 {
                 return ""
             } else {
-                return "(+\(self.dataSource[indexPath.item].newRepliesCnt))"
+                return "(+\(self.dataSource[indexPath.item].repliesCnt))"
             }
         }()
         
