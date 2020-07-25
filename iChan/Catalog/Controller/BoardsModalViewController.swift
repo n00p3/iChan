@@ -51,7 +51,7 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
         let realm = try! Realm()
         try! realm.write {
             let settings = realm.objects(Settings.self)
-            settings.first?.currentBoard = boards[indexPath.item].board
+            settings.first?.currentBoardInCatalog = boards[indexPath.item].board
         }
         
         

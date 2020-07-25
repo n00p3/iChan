@@ -25,7 +25,9 @@ class BookmarksViewController: UIViewController {
         fetchBookmarks()
         
         // Preload thread view.
-        let _ = tabBarController?.viewControllers?[2].view
+        tabBarController?.viewControllers?[2].loadViewIfNeeded()
+//        tabBarController?.viewControllers?.forEach { let _ = $0.view }
+        DataHolder.shared.threadChangedEvent.emit(DataHolder.shared.currentThread)
     }
     
     private func fetchBookmarks() {

@@ -23,9 +23,11 @@ class ThreadViewController : UITableViewController {
         activityIndicator.startAnimating()
         activityIndicator.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height / 2)
         view.addSubview(activityIndicator)
+        self.activityIndicator.alpha = 0
+        
         Requests.posts(
-            "g",
-            no: 76925041,
+            DataHolder.shared.currentThread.board,
+            no: DataHolder.shared.currentThread.threadNo,
             success: { posts in
                 self.dataSource = posts.posts
                 self.setHeader(posts.posts.first?.sub)
@@ -35,7 +37,9 @@ class ThreadViewController : UITableViewController {
                 
                 UIView.animate(withDuration: 0.5, animations: {
                     self.activityIndicator.alpha = 0
+                    self.tableView.alpha = 1
                 })
+                
         }, failure: { e in
             SPAlert.present(title: "Error", message: "Couldn't fetch thread data.", preset: .error)
         })
@@ -45,7 +49,6 @@ class ThreadViewController : UITableViewController {
     
     private func prepareEventListener() {
         listener = DataHolder.shared.threadChangedEvent.on { data in
-            self.dataSource.removeAll()
             self.activityIndicator.alpha = 1
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -149,7 +152,7 @@ class ThreadViewController : UITableViewController {
             cell.addSubview(img)
             
             // TODO: pass valid board automatically.
-            readImageForPost(board: DataHolder.shared.threadBoard, postNo: dataSource[indexPath.row].no, callback: { i in
+            readImageForPost(board: DataHolder.shared.currentThread.board, postNo: dataSource[indexPath.row].no, callback: { i in
                 img.image = i
             })
             
@@ -157,7 +160,11 @@ class ThreadViewController : UITableViewController {
         }
         
         let header = UILabel()
-//        header.text = "Anonymous 2020-01-01(Sat) 18:00:00 No.1234567890"
+        let author = dataSource[indexPath.row].name
+        let dateTime = dataSource[indexPath.row].now
+        let no = dataSource[indexPath.row].no
+        header.text = "\(author) \(dateTime) \(no)"
+        header.textColor = .gray
         header.adjustsFontSizeToFitWidth = true
         header.minimumScaleFactor = 0.5
         header.frame =  CGRect(x: x, y: 8, width: tableView.frame.width - (x + 8), height: 12)

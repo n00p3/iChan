@@ -18,8 +18,6 @@ protocol CatalogBoardDelegate {
 class CatalogViewController: UIViewController, CatalogBoardDelegate {
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var currentBoard = ""
-    
     let refreshControl = UIRefreshControl()
     var activityIndicator: UIActivityIndicatorView?
     
@@ -36,7 +34,12 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         
         super.viewDidLoad()
         
-        currentBoard = try! Realm().objects(Settings.self).first?.currentBoard ?? "a"
+        let realmBoard = try! Realm().objects(Settings.self).first?.currentBoardInCatalog
+        if realmBoard!.isEmpty {
+            DataHolder.shared.currentCatalogBoard = "g"
+        } else {
+            DataHolder.shared.currentCatalogBoard = realmBoard!
+        }
         
         updateHeader()
         
@@ -64,7 +67,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         
-        getCatalog(board: currentBoard, callback: { catalog in
+        getCatalog(board: DataHolder.shared.currentCatalogBoard, callback: { catalog in
             if catalog != nil {
                 
                 self.catalog = catalog!
@@ -124,7 +127,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
     }
     
     func updateHeader() {
-        let fullName = try! Realm().objects(BoardsRealm.self).first?.boards.filter { $0.board == self.currentBoard }.first
+        let fullName = try! Realm().objects(BoardsRealm.self).first?.boards.filter { $0.board == DataHolder.shared.currentCatalogBoard }.first
         if fullName != nil {
             navigationItem.title = fullName!.board + " - " + fullName!.title
         }
@@ -132,7 +135,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
     
     func boardChanged(newBoard: String) {
         print("new board \(newBoard)")
-        currentBoard = newBoard
+        DataHolder.shared.currentCatalogBoard = newBoard
         let x: AnyObject = "" as AnyObject
         refreshRequested(x)
         updateHeader()
@@ -146,10 +149,10 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         collectionView.alpha = 0
         activityIndicator?.startAnimating()
         
-        Requests.catalog(of: currentBoard, success: { (catalog: Catalog) in
-            storeCatalogInRealm(board: self.currentBoard, liveCatalog: catalog)
+        Requests.catalog(of: DataHolder.shared.currentCatalogBoard, success: { (catalog: Catalog) in
+            storeCatalogInRealm(board: DataHolder.shared.currentCatalogBoard, liveCatalog: catalog)
             
-            self.getCatalog(board: self.currentBoard, callback: { catalog in
+            self.getCatalog(board: DataHolder.shared.currentCatalogBoard, callback: { catalog in
                 DispatchQueue.main.async {
                     self.catalog = catalog!
                 
@@ -243,7 +246,7 @@ extension CatalogViewController: UICollectionViewDataSource {
                 let thread = self.catalog[indexPath.section].threads[indexPath.row]
                 let subject = [thread.sub ?? "", thread.com ?? "", "[no comment]"].filter { $0 != "" }.first!
                 
-                self.addToBookmarks(threadNo: thread.no, board: DataHolder.shared.threadBoard, title: subject)
+                self.addToBookmarks(threadNo: thread.no, board: DataHolder.shared.currentCatalogBoard, title: subject)
                 
             }
             let hide = UIAction(title: "Hide thread", image: UIImage(systemName: "eye.slash"), identifier: UIAction.Identifier(rawValue: "hide")) { action in
@@ -267,7 +270,7 @@ extension CatalogViewController: UICollectionViewDataSource {
         
         let no = catalog[indexPath.section].threads[indexPath.row].no
 
-        readImageForThread(board: currentBoard, threadNo: no, callback: { img in
+        readImageForThread(board: DataHolder.shared.currentCatalogBoard, threadNo: no, callback: { img in
             if img != nil {
                 let i = UIImageView(image: img!)
                 i.frame = CGRect(x: i.frame.origin.x, y: i.frame.origin.y, width: cell.frame.width, height: cell.frame.height)
@@ -313,12 +316,13 @@ extension CatalogViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        print(catalog[indexPath.section].threads[indexPath.row])
-        DataHolder.shared.threadNo = catalog[indexPath.section].threads[indexPath.row].no
-        DataHolder.shared.threadBoard = currentBoard
+        DataHolder.shared.currentThread = CurrentThread(
+            threadNo: catalog[indexPath.section].threads[indexPath.row].no,
+            board: DataHolder.shared.currentCatalogBoard)
         
         let thread = catalog[indexPath.section].threads[indexPath.row]
         
-        DataHolder.shared.threadChangedEvent.emit(CurrentThread(threadNo: thread.no, board: currentBoard))
+        DataHolder.shared.threadChangedEvent.emit(CurrentThread(threadNo: thread.no, board: DataHolder.shared.currentCatalogBoard))
         tabBarController?.selectedIndex = 2
     }
     

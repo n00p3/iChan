@@ -8,16 +8,42 @@
 
 import Foundation
 import EmitterKit
+import RealmSwift
 
 struct DataHolder {
     static var shared = DataHolder()
     
-    var threadNo = 0
-    var threadBoard = ""
+    var currentCatalogBoard: String = "" {
+        didSet {
+            let realm = try! Realm()
+            try! realm.write {
+                let sett = realm.objects(Settings.self).first!
+                sett.currentBoardInCatalog = currentCatalogBoard
+            }
+        }
+    }
     
+    var currentThread: CurrentThread = CurrentThread(threadNo: 0, board: "") {
+        didSet {
+            let realm = try! Realm()
+            try! realm.write {
+                let sett = realm.objects(Settings.self).first!
+                let t = CurrentThreadRealm()
+                t.board = currentThread.board
+                t.no = currentThread.threadNo
+                sett.currentThread = t
+            }
+            print(realm.objects(Settings.self).first!.currentThread)
+        }
+    }
     var threadChangedEvent = Event<CurrentThread>()
     
     init() {
-        
+        let realm = try! Realm()
+        let settings = realm.objects(Settings.self).first
+        currentThread = CurrentThread(
+            threadNo: settings?.currentThread?.no ?? 0,
+            board: settings?.currentThread?.board ?? "")
+        currentCatalogBoard = settings?.currentBoardInCatalog ?? "g"
     }
 }
