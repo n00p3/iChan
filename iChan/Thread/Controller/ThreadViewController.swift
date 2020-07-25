@@ -9,14 +9,20 @@
 import UIKit
 import SPAlert
 import RealmSwift
+import EmitterKit
 
 class ThreadViewController : UITableViewController {
     let COM_FONT_SIZE = CGFloat(16)
     var dataSource = [Post]()
+    var listener: EventListener<CurrentThread>?
+    let activityIndicator = UIActivityIndicatorView()
     
     override func viewDidLoad() {
         tableView.delegate = self
         tableView.dataSource = self
+        activityIndicator.startAnimating()
+        activityIndicator.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height / 2)
+        view.addSubview(activityIndicator)
         Requests.posts(
             "g",
             no: 76925041,
@@ -26,9 +32,45 @@ class ThreadViewController : UITableViewController {
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
+                
+                UIView.animate(withDuration: 0.5, animations: {
+                    self.activityIndicator.alpha = 0
+                })
         }, failure: { e in
             SPAlert.present(title: "Error", message: "Couldn't fetch thread data.", preset: .error)
         })
+        
+        prepareEventListener()
+    }
+    
+    private func prepareEventListener() {
+        listener = DataHolder.shared.threadChangedEvent.on { data in
+            self.dataSource.removeAll()
+            self.activityIndicator.alpha = 1
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            
+            Requests.posts(
+                data.board,
+                no: data.threadNo,
+                success: { posts in
+                    self.dataSource = posts.posts
+                    self.setHeader(posts.posts.first?.sub)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                    
+                    UIView.animate(withDuration: 0.5, animations: {
+                        self.activityIndicator.alpha = 0
+                        self.tableView.alpha = 1
+                    })
+                    
+            }, failure: { e in
+                SPAlert.present(title: "Error", message: "Couldn't fetch thread data.", preset: .error)
+            })
+            
+        }
     }
     
     private func readImageForPost(board: String, postNo: Int, callback: @escaping (UIImage?) -> ()) {

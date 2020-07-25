@@ -23,6 +23,9 @@ class BookmarksViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         fetchBookmarks()
+        
+        // Preload thread view.
+        let _ = tabBarController?.viewControllers?[2].view
     }
     
     private func fetchBookmarks() {

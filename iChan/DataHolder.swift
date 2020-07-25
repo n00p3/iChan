@@ -7,12 +7,15 @@
 //
 
 import Foundation
+import EmitterKit
 
 struct DataHolder {
     static var shared = DataHolder()
     
     var threadNo = 0
     var threadBoard = ""
+    
+    var threadChangedEvent = Event<CurrentThread>()
     
     init() {
         

@@ -9,6 +9,7 @@
 import UIKit
 import RealmSwift
 import SPAlert
+import EmitterKit
 
 protocol CatalogBoardDelegate {
     func boardChanged(newBoard: String)
@@ -315,6 +316,10 @@ extension CatalogViewController: UICollectionViewDataSource {
         DataHolder.shared.threadNo = catalog[indexPath.section].threads[indexPath.row].no
         DataHolder.shared.threadBoard = currentBoard
         
+        let thread = catalog[indexPath.section].threads[indexPath.row]
+        
+        DataHolder.shared.threadChangedEvent.emit(CurrentThread(threadNo: thread.no, board: currentBoard))
+        tabBarController?.selectedIndex = 2
     }
     
 }
