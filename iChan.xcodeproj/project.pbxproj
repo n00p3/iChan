@@ -32,6 +32,8 @@
 		FA8D186624758CEF00BDD461 /* Threads4Chan.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186524758CEF00BDD461 /* Threads4Chan.swift */; };
 		FA8D186824758CFF00BDD461 /* Catalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186724758CFF00BDD461 /* Catalog.swift */; };
 		FA8D186C24758E6700BDD461 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186B24758E6700BDD461 /* Utils.swift */; };
+		FA8E946A24CC906D00AE90ED /* ThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8E946924CC906D00AE90ED /* ThreadViewController.swift */; };
+		FA8E946C24CC939100AE90ED /* ThreadCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8E946B24CC939100AE90ED /* ThreadCellModel.swift */; };
 		FAB2F1ED2475A4A900442CD4 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB2F1EC2475A4A900442CD4 /* Settings.swift */; };
 		FAE22A90247AA6C8008B4F04 /* BoardsJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE22A8F247AA6C8008B4F04 /* BoardsJSON.swift */; };
 		FAE22A92247AA6CE008B4F04 /* BoardsRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE22A91247AA6CE008B4F04 /* BoardsRealm.swift */; };
@@ -94,6 +96,8 @@
 		FA8D186524758CEF00BDD461 /* Threads4Chan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Threads4Chan.swift; sourceTree = "<group>"; };
 		FA8D186724758CFF00BDD461 /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
 		FA8D186B24758E6700BDD461 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		FA8E946924CC906D00AE90ED /* ThreadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewController.swift; sourceTree = "<group>"; };
+		FA8E946B24CC939100AE90ED /* ThreadCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCellModel.swift; sourceTree = "<group>"; };
 		FAB2F1EC2475A4A900442CD4 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FAE22A8F247AA6C8008B4F04 /* BoardsJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardsJSON.swift; sourceTree = "<group>"; };
 		FAE22A91247AA6CE008B4F04 /* BoardsRealm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardsRealm.swift; sourceTree = "<group>"; };
@@ -177,24 +181,21 @@
 		FA5456C5247454370015CF84 /* iChan */ = {
 			isa = PBXGroup;
 			children = (
+				FA8E946524CC901F00AE90ED /* Thread */,
+				FA8E946124CC8FB200AE90ED /* Catalog */,
 				FA8D186024758C8900BDD461 /* Model */,
 				FA5456C6247454370015CF84 /* AppDelegate.swift */,
 				FA5456C8247454370015CF84 /* SceneDelegate.swift */,
 				FA5456CA247454370015CF84 /* BookmarksViewController.swift */,
 				FA340AE824745F07009AD227 /* BoardsModalViewController.swift */,
-				FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */,
-				FA5456FB247457510015CF84 /* CatalogViewController.swift */,
 				FA5456CE247454370015CF84 /* Main.storyboard */,
 				FA18BBFF248A644700CC1582 /* BoardsNavigationController.swift */,
-				FAF3D9522488E8A800F8AAE0 /* ThreadCatalogHeader.swift */,
-				FA25D8082487ADC4002D14FA /* CardCell.swift */,
 				FA5456D42474543B0015CF84 /* Assets.xcassets */,
 				FA5456D62474543B0015CF84 /* LaunchScreen.storyboard */,
 				FA5456D92474543B0015CF84 /* Info.plist */,
 				FA5456D1247454370015CF84 /* iChan.xcdatamodeld */,
 				FA8D186124758C9600BDD461 /* Requests.swift */,
 				FA8D186B24758E6700BDD461 /* Utils.swift */,
-				FA4C338624CA19950036B29E /* ThreadCatalogCell.xib */,
 				FA4C338824CA26880036B29E /* DataHolder.swift */,
 			);
 			path = iChan;
@@ -231,6 +232,75 @@
 				FAF3D9542488F16800F8AAE0 /* BookmarkElement.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		FA8E946124CC8FB200AE90ED /* Catalog */ = {
+			isa = PBXGroup;
+			children = (
+				FA8E946424CC900B00AE90ED /* Controller */,
+				FA8E946324CC900700AE90ED /* View */,
+				FA8E946224CC8FEB00AE90ED /* Model */,
+			);
+			path = Catalog;
+			sourceTree = "<group>";
+		};
+		FA8E946224CC8FEB00AE90ED /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FA25D8082487ADC4002D14FA /* CardCell.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FA8E946324CC900700AE90ED /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FA4C338624CA19950036B29E /* ThreadCatalogCell.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FA8E946424CC900B00AE90ED /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FA5456FB247457510015CF84 /* CatalogViewController.swift */,
+				FAF3D9522488E8A800F8AAE0 /* ThreadCatalogHeader.swift */,
+				FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		FA8E946524CC901F00AE90ED /* Thread */ = {
+			isa = PBXGroup;
+			children = (
+				FA8E946824CC903000AE90ED /* Controller */,
+				FA8E946724CC902C00AE90ED /* View */,
+				FA8E946624CC902400AE90ED /* Model */,
+			);
+			path = Thread;
+			sourceTree = "<group>";
+		};
+		FA8E946624CC902400AE90ED /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FA8E946B24CC939100AE90ED /* ThreadCellModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FA8E946724CC902C00AE90ED /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FA8E946824CC903000AE90ED /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FA8E946924CC906D00AE90ED /* ThreadViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -481,11 +551,13 @@
 				FA5456CB247454370015CF84 /* BookmarksViewController.swift in Sources */,
 				FA5456C7247454370015CF84 /* AppDelegate.swift in Sources */,
 				FAE22A90247AA6C8008B4F04 /* BoardsJSON.swift in Sources */,
+				FA8E946A24CC906D00AE90ED /* ThreadViewController.swift in Sources */,
 				FA5456C9247454370015CF84 /* SceneDelegate.swift in Sources */,
 				FAF3D9532488E8A800F8AAE0 /* ThreadCatalogHeader.swift in Sources */,
 				FAF3D9552488F16800F8AAE0 /* BookmarkElement.swift in Sources */,
 				FA8D186824758CFF00BDD461 /* Catalog.swift in Sources */,
 				FA8D186224758C9600BDD461 /* Requests.swift in Sources */,
+				FA8E946C24CC939100AE90ED /* ThreadCellModel.swift in Sources */,
 				FA340AE924745F07009AD227 /* BoardsModalViewController.swift in Sources */,
 				FA8D186624758CEF00BDD461 /* Threads4Chan.swift in Sources */,
 				FA8850A6247D9BC9009D0DDA /* ThreadCatalogCell.swift in Sources */,
