@@ -139,7 +139,7 @@ class ThreadViewController : UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         
-        var x = CGFloat(8.0)
+        var x = CGFloat(20)
         
         if dataSource[indexPath.row].filename != nil {
             let img = UIImageView()
@@ -156,7 +156,7 @@ class ThreadViewController : UITableViewController {
                 img.image = i
             })
             
-            x = CGFloat(116.0)
+            x = CGFloat(128)
         }
         
         let header = UILabel()
@@ -180,7 +180,7 @@ class ThreadViewController : UITableViewController {
         ]
         let attrStr = dataSource[indexPath.row].com?.htmlToAttributedString(attrs: attrs)
         comment.attributedText = attrStr
-        comment.frame = CGRect(x: x, y: 8, width: tableView.frame.width - (x + 8), height: CGFloat.greatestFiniteMagnitude)
+        comment.frame = CGRect(x: x, y: 8, width: tableView.frame.width - (x + 20), height: CGFloat.greatestFiniteMagnitude)
         comment.sizeToFit()
         comment.frame = CGRect(x: comment.frame.origin.x, y: 24, width: comment.frame.width, height: comment.frame.height)
         
@@ -198,9 +198,9 @@ class ThreadViewController : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        var x = CGFloat(8.0)
+        var x = CGFloat(20)
         if dataSource[indexPath.row].filename != nil {
-            x = CGFloat(116.0)
+            x = CGFloat(128)
         }
         let comment = UILabel()
         comment.font = comment.font.withSize(COM_FONT_SIZE)
@@ -211,12 +211,12 @@ class ThreadViewController : UITableViewController {
         ]
         let attrStr = dataSource[indexPath.row].com?.htmlToAttributedString(attrs: attrs)
         comment.attributedText = attrStr
-        comment.frame = CGRect(x: 116, y: 8, width: tableView.frame.width - (x + 8), height: CGFloat.greatestFiniteMagnitude)
+        comment.frame = CGRect(x: x, y: 8, width: tableView.frame.width - (x + 20), height: CGFloat.greatestFiniteMagnitude)
         comment.sizeToFit()
 //        print(comment.frame)
         
-        if comment.frame.height < 116 {
-            return 116
+        if comment.frame.height < 128 {
+            return 128
         }
         return comment.frame.height + 32
     }
