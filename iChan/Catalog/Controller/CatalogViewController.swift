@@ -278,8 +278,8 @@ extension CatalogViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        print(catalog[indexPath.section].threads[indexPath.row])
-//        DataHolder.shared.threadNo = catalog[indexPath.section].threads[indexPath.row].no
-//        DataHolder.shared.threadBoard = currentBoard
+        DataHolder.shared.threadNo = catalog[indexPath.section].threads[indexPath.row].no
+        DataHolder.shared.threadBoard = currentBoard
         
     }
     

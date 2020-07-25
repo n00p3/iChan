@@ -8,6 +8,7 @@
 
 import UIKit
 import SPAlert
+import RealmSwift
 
 class ThreadViewController : UITableViewController {
     let COM_FONT_SIZE = CGFloat(16)
@@ -30,6 +31,53 @@ class ThreadViewController : UITableViewController {
         })
     }
     
+    private func readImageForPost(board: String, postNo: Int, callback: @escaping (UIImage?) -> ()) {
+        let realm = try! Realm()
+        let filter = "board == \"\(board)\" AND #no == \(postNo)"
+        let storedThread = realm.objects(CatalogThreadRealm.self)
+            .filter(filter)
+
+        if storedThread.first?.image != nil {
+//            print("local \(threadNo)")
+            callback(UIImage(data: storedThread.first!.image!))
+            return
+        }
+//        print("remote \(threadNo)")
+        
+        let x = self.dataSource.filter { $0.no == postNo }.first
+        let ext = x?.ext ?? ""
+        let tim = x?.tim ?? 0
+        Requests.image(board, tim, ext, fullSize: false) { (img) in
+//            card.backgroundImage = img
+            if img?.pngData() != nil {
+                self.storeImageForPost(board: board, postNo: postNo, data: img!.pngData()!)
+            }
+            callback(img)
+        }
+        
+    }
+    
+    private func storeImageForPost(board: String, postNo: Int, data: Data) {
+        let realm = try! Realm()
+
+        try! realm.write {
+            // Add image to stored thread if exists.
+            // Has to escape 'no' using hash.
+            let filter = "board = \"\(board)\" AND #no = \(postNo)"
+            let storedThread = realm.objects(CatalogThreadRealm.self)
+                .filter(filter)
+
+            for thread in storedThread {
+                thread.image = data
+            }
+        }
+        
+        let r2 = try! Realm()
+        let filter = "board = \"\(board)\" AND #no = \(postNo)"
+        _ = r2.objects(CatalogThreadRealm.self).filter(filter)
+        
+    }
+    
     private func setHeader(_ val: String?) {
         if val == nil {
             navigationItem.title = "Thread"
@@ -50,10 +98,18 @@ class ThreadViewController : UITableViewController {
         
         if dataSource[indexPath.row].filename != nil {
             let img = UIImageView()
+            img.contentMode = .scaleAspectFill
+            img.clipsToBounds = true
             img.frame = CGRect(x: x, y: 8, width: 100, height: 100)
+            
             img.backgroundColor = .gray
         
             cell.addSubview(img)
+            
+            // TODO: pass valid board automatically.
+            readImageForPost(board: DataHolder.shared.threadBoard, postNo: dataSource[indexPath.row].no, callback: { i in
+                img.image = i
+            })
             
             x = CGFloat(116.0)
         }
