@@ -126,7 +126,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="D9r-6x-J9h"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Settings" id="487-6F-hfR"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="wrench" catalog="system" id="487-6F-hfR"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UQv-0A-Sq0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -236,7 +236,7 @@
         <scene sceneID="lfy-fZ-aqG">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Vcs-ht-UQL" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Catalog" id="e0v-oe-cai"/>
+                    <tabBarItem key="tabBarItem" title="Catalog" image="square.grid.2x2" catalog="system" id="e0v-oe-cai"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Yzl-eu-aDn">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -255,7 +255,7 @@
         <scene sceneID="oGf-4r-0Ey">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="b6w-Q2-Zw2" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Bookmarks" image="first" id="acW-dT-cKf"/>
+                    <tabBarItem key="tabBarItem" title="Bookmarks" image="bookmark" catalog="system" id="acW-dT-cKf"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="YG7-lH-Nf2">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -292,7 +292,7 @@
         <scene sceneID="RhV-A7-aQC">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="iei-oY-aT5" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Thread" id="vWI-l1-Efo"/>
+                    <tabBarItem key="tabBarItem" title="Thread" image="book" catalog="system" id="vWI-l1-Efo"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="6bE-MT-frN">
                         <rect key="frame" x="0.0" y="44" width="414" height="96"/>
@@ -309,6 +309,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="first" width="30" height="30"/>
+        <image name="book" catalog="system" width="64" height="50"/>
+        <image name="bookmark" catalog="system" width="56" height="64"/>
+        <image name="square.grid.2x2" catalog="system" width="64" height="56"/>
+        <image name="wrench" catalog="system" width="64" height="60"/>
     </resources>
 </document>
