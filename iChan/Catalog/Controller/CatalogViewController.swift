@@ -94,7 +94,6 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         
         SPAlert.present(message: "Bookmark added!")
     }
-    
     /**
      Gets locally stored catalog. If not present then fetches from api and caches.
      */
@@ -241,13 +240,24 @@ extension CatalogViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let realm = try! Realm()
+        let thread = realm.objects(BookmarkRealm.self)
+            .filter(NSPredicate(format: "threadNo = %d", catalog[indexPath.section].threads[indexPath.row].no)).first
+        
         let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil){ _ in
-            let bookmark = UIAction(title: "Add to bookmarks", image: UIImage(systemName: "star"), identifier: UIAction.Identifier(rawValue: "bookmark")) { menu in
-                let thread = self.catalog[indexPath.section].threads[indexPath.row]
-                let subject = [thread.sub ?? "", thread.com ?? "", "[no comment]"].filter { $0 != "" }.first!
-                
-                self.addToBookmarks(threadNo: thread.no, board: DataHolder.shared.currentCatalogBoard, title: subject)
-                
+            var bookmark: UIAction
+            if thread == nil {
+                bookmark = UIAction(title: "Add to bookmarks", image: UIImage(systemName: "star"), identifier: UIAction.Identifier(rawValue: "bookmark")) { menu in
+                    let thread = self.catalog[indexPath.section].threads[indexPath.row]
+                    let subject = [thread.sub ?? "", thread.com ?? "", "[no comment]"].filter { $0 != "" }.first!
+                    
+                    self.addToBookmarks(threadNo: thread.no, board: DataHolder.shared.currentCatalogBoard, title: subject)
+                }
+            } else {
+                bookmark = UIAction(title: "Remove from bookmarks", image: UIImage(systemName: "star.slash"), identifier: UIAction.Identifier(rawValue: "bookmark")) { menu in
+                    try! realm.write { realm.delete(thread!) }
+                    SPAlert.present(message: "Bookmark removed!")
+                }
             }
             let hide = UIAction(title: "Hide thread", image: UIImage(systemName: "eye.slash"), identifier: UIAction.Identifier(rawValue: "hide")) { action in
                 print("Hide clicked.")
