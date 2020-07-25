@@ -10,6 +10,7 @@ import UIKit
 import SPAlert
 
 class ThreadViewController : UITableViewController {
+    let COM_FONT_SIZE = CGFloat(16)
     var dataSource = [Post]()
     
     override func viewDidLoad() {
@@ -20,12 +21,22 @@ class ThreadViewController : UITableViewController {
             no: 76925041,
             success: { posts in
                 self.dataSource = posts.posts
+                self.setHeader(posts.posts.first?.sub)
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
         }, failure: { e in
             SPAlert.present(title: "Error", message: "Couldn't fetch thread data.", preset: .error)
         })
+    }
+    
+    private func setHeader(_ val: String?) {
+        if val == nil {
+            navigationItem.title = "Thread"
+        } else {
+            navigationItem.title = val!
+        }
+        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -56,9 +67,14 @@ class ThreadViewController : UITableViewController {
         cell.addSubview(header)
         
         let comment = UILabel()
+        comment.font = comment.font.withSize(COM_FONT_SIZE)
         comment.numberOfLines = 0
         comment.lineBreakMode = .byWordWrapping
-        comment.text = dataSource[indexPath.row].com
+        let attrs: [NSAttributedString.Key : Any] = [
+            .font : UIFont.systemFont(ofSize: COM_FONT_SIZE)
+        ]
+        let attrStr = dataSource[indexPath.row].com?.htmlToAttributedString(attrs: attrs)
+        comment.attributedText = attrStr
         comment.frame = CGRect(x: x, y: 8, width: tableView.frame.width - (x + 8), height: CGFloat.greatestFiniteMagnitude)
         comment.sizeToFit()
         comment.frame = CGRect(x: comment.frame.origin.x, y: 24, width: comment.frame.width, height: comment.frame.height)
@@ -82,9 +98,14 @@ class ThreadViewController : UITableViewController {
             x = CGFloat(116.0)
         }
         let comment = UILabel()
+        comment.font = comment.font.withSize(COM_FONT_SIZE)
         comment.numberOfLines = 0
         comment.lineBreakMode = .byWordWrapping
-        comment.text = dataSource[indexPath.row].com
+        let attrs: [NSAttributedString.Key : Any] = [
+            .font : UIFont.systemFont(ofSize: COM_FONT_SIZE)
+        ]
+        let attrStr = dataSource[indexPath.row].com?.htmlToAttributedString(attrs: attrs)
+        comment.attributedText = attrStr
         comment.frame = CGRect(x: 116, y: 8, width: tableView.frame.width - (x + 8), height: CGFloat.greatestFiniteMagnitude)
         comment.sizeToFit()
 //        print(comment.frame)

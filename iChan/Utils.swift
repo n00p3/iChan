@@ -116,3 +116,19 @@ func storeCatalogInRealm(board: String, liveCatalog: Catalog) {
         }
     }
 }
+
+extension String {
+    func htmlToAttributedString(attrs: [NSAttributedString.Key : Any]) -> NSAttributedString? {
+        guard let data = data(using: .utf8) else { return nil }
+        do {
+            var ret = try NSMutableAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil)
+            ret.addAttributes(attrs, range: NSRange(location: 0, length: ret.string.count))
+            return ret
+        } catch {
+            return nil
+        }
+    }
+//    var htmlToString: String {
+//        return htmlToAttributedString?.string ?? ""
+//    }
+}
