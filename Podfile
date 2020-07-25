@@ -12,6 +12,7 @@ target 'iChan' do
   pod 'Cards'
   pod 'SPAlert'
   pod 'EmitterKit'
+  pod 'Lightbox'
   target 'iChanTests' do
     inherit! :search_paths
     # Pods for testing

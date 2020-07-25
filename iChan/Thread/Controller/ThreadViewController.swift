@@ -10,6 +10,7 @@ import UIKit
 import SPAlert
 import RealmSwift
 import EmitterKit
+import Lightbox
 
 class ThreadViewController : UITableViewController {
     let COM_FONT_SIZE = CGFloat(16)
@@ -20,6 +21,7 @@ class ThreadViewController : UITableViewController {
     override func viewDidLoad() {
         tableView.delegate = self
         tableView.dataSource = self
+        
         activityIndicator.startAnimating()
         activityIndicator.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height / 2)
         view.addSubview(activityIndicator)
@@ -50,6 +52,7 @@ class ThreadViewController : UITableViewController {
     private func prepareEventListener() {
         listener = DataHolder.shared.threadChangedEvent.on { data in
             self.activityIndicator.alpha = 1
+            self.dataSource.removeAll()
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -136,6 +139,24 @@ class ThreadViewController : UITableViewController {
         dataSource.count
     }
     
+    @objc dynamic func viewFileSelector(_ gesture: UITapGestureRecognizer) {
+        let fileName = gesture.view?.accessibilityIdentifier?.split(separator: ".")
+        let tim = Int(fileName?.first ?? "0") ?? 0
+        let ext = String("." + (fileName?.last ?? ""))
+        viewFile(tim: tim, ext: ext)
+    }
+    
+    private func viewFile(tim: Int, ext: String) {
+        Requests.image(DataHolder.shared.currentCatalogBoard, tim, ext, fullSize: true, callback: { img in
+            if img != nil {
+                let i = LightboxImage(image: img!)
+                let controller = LightboxController(images: [i])
+                controller.dynamicBackground = true
+                self.present(controller, animated: true)
+            }
+        })
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         
@@ -151,9 +172,13 @@ class ThreadViewController : UITableViewController {
         
             cell.addSubview(img)
             
-            // TODO: pass valid board automatically.
             readImageForPost(board: DataHolder.shared.currentThread.board, postNo: dataSource[indexPath.row].no, callback: { i in
                 img.image = i
+                img.isUserInteractionEnabled = true
+                let tim = self.dataSource[indexPath.row].tim ?? 0
+                let ext = self.dataSource[indexPath.row].ext ?? ""
+                img.accessibilityIdentifier = String(tim) + ext
+                img.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.viewFileSelector(_:))))
             })
             
             x = CGFloat(128)

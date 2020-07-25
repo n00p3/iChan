@@ -10,6 +10,7 @@ import UIKit
 import RealmSwift
 import SPAlert
 import EmitterKit
+import Lightbox
 
 protocol CatalogBoardDelegate {
     func boardChanged(newBoard: String)
@@ -227,6 +228,27 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         }
         
     }
+    
+    private func store(thread: CatalogThread) {
+        let realm = try! Realm()
+        try! realm.write {
+            let realmThread = CatalogThreadRealm()
+            realmThread.board =  DataHolder.shared.currentCatalogBoard
+            realmThread.no =  thread.no
+            realmThread.sticky =  thread.sticky ?? 0
+            realmThread.closed =  thread.closed ?? 0
+            realmThread.now =  thread.now ?? ""
+            realmThread.name =  thread.name ?? ""
+            realmThread.sub =  thread.sub ?? ""
+            realmThread.com =  thread.com ?? ""
+            realmThread.filename =  thread.filename ?? ""
+            realmThread.ext =  thread.ext ?? ""
+            realmThread.lastAccessed =  Date()
+            // TODO: implement later.
+            realmThread.tim = -1
+            realmThread.page = -1
+        }
+    }
 }
 
 extension CatalogViewController: UICollectionViewDataSource {
@@ -262,14 +284,30 @@ extension CatalogViewController: UICollectionViewDataSource {
             let hide = UIAction(title: "Hide thread", image: UIImage(systemName: "eye.slash"), identifier: UIAction.Identifier(rawValue: "hide")) { action in
                 print("Hide clicked.")
             }
+            
+            
+            let thread = self.catalog[indexPath.section].threads[indexPath.row]
+           
             let viewImage = UIAction(title: "View OP file", image: UIImage(systemName: "eye"), identifier: UIAction.Identifier(rawValue: "viewImage")) { action in
-                print("View image clicked.")
+                self.viewOpFile(thread: thread)
             }
             
-            return UIMenu(title: "Options", image: nil, identifier: nil, children: [bookmark, hide, viewImage])
+            let children = [bookmark, hide, viewImage]
+            return UIMenu(title: "Options", image: nil, identifier: nil, children: children)
         }
         
         return configuration
+    }
+    
+    private func viewOpFile(thread: CatalogThread) {
+        Requests.image(DataHolder.shared.currentCatalogBoard, thread.tim!, thread.ext!, fullSize: true, callback: { img in
+            if img != nil {
+                let i = LightboxImage(image: img!)
+                let controller = LightboxController(images: [i])
+                controller.dynamicBackground = true
+                self.present(controller, animated: true)
+            }
+        })
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -280,6 +318,7 @@ extension CatalogViewController: UICollectionViewDataSource {
         
         let no = catalog[indexPath.section].threads[indexPath.row].no
 
+        store(thread: self.catalog[indexPath.section].threads[indexPath.row])
         readImageForThread(board: DataHolder.shared.currentCatalogBoard, threadNo: no, callback: { img in
             if img != nil {
                 let i = UIImageView(image: img!)

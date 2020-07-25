@@ -1,8 +1,13 @@
 PODS:
   - Alamofire (5.2.0)
+  - Cache (5.3.0)
   - Cards (1.4.0):
     - Player (= 0.13.0)
   - EmitterKit (5.2.2)
+  - Imaginary (4.3.1):
+    - Cache (~> 5.3.0)
+  - Lightbox (2.4.2):
+    - Imaginary (~> 4.3.1)
   - Player (0.13.0)
   - Realm (5.0.0):
     - Realm/Headers (= 5.0.0)
@@ -15,6 +20,7 @@ DEPENDENCIES:
   - Alamofire (~> 5.2)
   - Cards
   - EmitterKit
+  - Lightbox
   - Realm
   - RealmSwift
   - SPAlert
@@ -22,8 +28,11 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Cache
     - Cards
     - EmitterKit
+    - Imaginary
+    - Lightbox
     - Player
     - Realm
     - RealmSwift
@@ -31,13 +40,16 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: c1ca147559e730bfb2182c8c7aafbdd90a867987
+  Cache: 48762993ec44e1d93483c4d4a13edd18452326f4
   Cards: 45ae6bd0eca7b5e8016d3b6cb30b60b04753f68f
   EmitterKit: e7a27b37118823d8ad413b8396f75e40d59f8cba
+  Imaginary: 18c5bba364229eef383b925199db442e71d175e1
+  Lightbox: 8837c35c1150fa0410d94296e369b432d37f18c7
   Player: 968d8d07d923bcdd6f7e4091c9e306eb44a5f7a4
   Realm: 76066d333de26f97e9caedaa85ee3ff4a62ca265
   RealmSwift: c1bdff09b422569dc6881410d9ccf712bcdb79b0
   SPAlert: 1a8afa1c6ac86a82ab5b2cfdf7f9a51e68cb6c0c
 
-PODFILE CHECKSUM: 6cfda87a1a4f199bb6ee74843696814343ab4dc0
+PODFILE CHECKSUM: 2ce31a5d864a555666caf6d9086cc4e5b5cc3643
 
 COCOAPODS: 1.9.1
