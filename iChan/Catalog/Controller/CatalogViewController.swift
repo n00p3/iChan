@@ -14,7 +14,7 @@ protocol CatalogBoardDelegate {
     func boardChanged(newBoard: String)
 }
 
-class CatalogViewController: UIViewController, CatalogBoardDelegate {
+class CatalogViewController: UIViewController, CatalogBoardDelegate, UIContextMenuInteractionDelegate {
     @IBOutlet weak var collectionView: UICollectionView!
     
     var currentBoard = ""
@@ -76,6 +76,24 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         })
         
         collectionView.register(ThreadCatalogCell.self, forCellWithReuseIdentifier: "ThreadCatalogCell")
+    }
+    
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil){ action in
+            let bookmark = UIAction(title: "Add to bookmarks", image: UIImage(systemName: "star"), identifier: UIAction.Identifier(rawValue: "bookmark")) { _ in
+                print("Add to bookmarks clicked,")
+            }
+            let hide = UIAction(title: "Hide", image: UIImage(systemName: "eye.slash"), identifier: UIAction.Identifier(rawValue: "hide")) { action in
+                print("Hide clicked.")
+            }
+            let viewImage = UIAction(title: "View OP file", image: UIImage(systemName: "eye"), identifier: UIAction.Identifier(rawValue: "viewImage")) { action in
+                print("View image clicked.")
+            }
+            
+            return UIMenu(title: "Options", image: nil, identifier: nil, children: [bookmark, hide, viewImage])
+        }
+        
+        return configuration
     }
     
     /**
@@ -229,6 +247,9 @@ extension CatalogViewController: UICollectionViewDataSource {
         let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: "ThreadCatalogCell", for: indexPath)
         
+        let interaction = UIContextMenuInteraction(delegate: self)
+        cell.addInteraction(interaction)
+        
         let no = catalog[indexPath.section].threads[indexPath.row].no
 
         readImageForThread(board: currentBoard, threadNo: no, callback: { img in
@@ -329,24 +350,6 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
             return headerView
         default:
             assert(false, "Invalid element type")
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
-        UIView.animate(withDuration: 0.5) {
-            if let cell = collectionView.cellForItem(at: indexPath) {
-                cell.transform = .init(scaleX: 0.95, y: 0.95)
-                cell.contentView.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
-            }
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
-        UIView.animate(withDuration: 0.5) {
-            if let cell = collectionView.cellForItem(at: indexPath) as? ThreadCatalogCell {
-                cell.transform = .identity
-                cell.contentView.backgroundColor = .clear
-            }
         }
     }
 }
