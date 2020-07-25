@@ -7,19 +7,25 @@
 //
 
 import UIKit
+import SPAlert
 
 class ThreadViewController : UITableViewController {
-    var dataSource = [
-        ThreadCellModel(imgUrl: "x", author: "Anonymous", dateTime: Date(), no: 1234567890, comment: "Lorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsumLorem ipsum lorem ipsum lorem ipsum test test test test test test test test test test test test "),
-        ThreadCellModel(imgUrl: nil, author: "Anonymous", dateTime: Date(), no: 1234567890, comment: "Lorem ipsum lorem ipsum lorem ipsum"),
-        ThreadCellModel(imgUrl: "x", author: "Anonymous", dateTime: Date(), no: 1234567890, comment: "test"),
-//        ThreadCellModel(imgUrl: "", author: "Anonymous", dateTime: Date(), no: 1234567890, comment: "Lorem ipsum lorem ipsum lorem ipsum"),
-//        ThreadCellModel(imgUrl: "", author: "Anonymous", dateTime: Date(), no: 1234567890, comment: "Lorem ipsum lorem ipsum lorem ipsum"),
-    ]
+    var dataSource = [Post]()
     
     override func viewDidLoad() {
         tableView.delegate = self
         tableView.dataSource = self
+        Requests.posts(
+            "g",
+            no: 76925041,
+            success: { posts in
+                self.dataSource = posts.posts
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+        }, failure: { e in
+            SPAlert.present(title: "Error", message: "Couldn't fetch thread data.", preset: .error)
+        })
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -31,7 +37,7 @@ class ThreadViewController : UITableViewController {
         
         var x = CGFloat(8.0)
         
-        if dataSource[indexPath.row].imgUrl != nil {
+        if dataSource[indexPath.row].filename != nil {
             let img = UIImageView()
             img.frame = CGRect(x: x, y: 8, width: 100, height: 100)
             img.backgroundColor = .gray
@@ -42,18 +48,18 @@ class ThreadViewController : UITableViewController {
         }
         
         let header = UILabel()
-        header.text = "Anonymous 2020-01-01(Sat) 18:00:00 No.1234567890"
+//        header.text = "Anonymous 2020-01-01(Sat) 18:00:00 No.1234567890"
         header.adjustsFontSizeToFitWidth = true
         header.minimumScaleFactor = 0.5
-        header.frame =  CGRect(x: x, y: 8, width: tableView.frame.width - 124, height: 12)
+        header.frame =  CGRect(x: x, y: 8, width: tableView.frame.width - (x + 8), height: 12)
         
         cell.addSubview(header)
         
         let comment = UILabel()
         comment.numberOfLines = 0
         comment.lineBreakMode = .byWordWrapping
-        comment.text = dataSource[indexPath.row].comment
-        comment.frame = CGRect(x: x, y: 8, width: tableView.frame.width - 124, height: CGFloat.greatestFiniteMagnitude)
+        comment.text = dataSource[indexPath.row].com
+        comment.frame = CGRect(x: x, y: 8, width: tableView.frame.width - (x + 8), height: CGFloat.greatestFiniteMagnitude)
         comment.sizeToFit()
         comment.frame = CGRect(x: comment.frame.origin.x, y: 24, width: comment.frame.width, height: comment.frame.height)
         
@@ -71,11 +77,15 @@ class ThreadViewController : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        var x = CGFloat(8.0)
+        if dataSource[indexPath.row].filename != nil {
+            x = CGFloat(116.0)
+        }
         let comment = UILabel()
         comment.numberOfLines = 0
         comment.lineBreakMode = .byWordWrapping
-        comment.text = dataSource[indexPath.row].comment
-        comment.frame = CGRect(x: 116, y: 8, width: tableView.frame.width - 124, height: CGFloat.greatestFiniteMagnitude)
+        comment.text = dataSource[indexPath.row].com
+        comment.frame = CGRect(x: 116, y: 8, width: tableView.frame.width - (x + 8), height: CGFloat.greatestFiniteMagnitude)
         comment.sizeToFit()
 //        print(comment.frame)
         

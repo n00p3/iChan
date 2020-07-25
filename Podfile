@@ -10,6 +10,7 @@ target 'iChan' do
   pod 'Realm'
   pod 'Alamofire', '~> 5.2'
   pod 'Cards'
+  pod 'SPAlert'
   target 'iChanTests' do
     inherit! :search_paths
     # Pods for testing
