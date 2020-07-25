@@ -227,7 +227,7 @@ extension CatalogViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView
-            .dequeueReusableCell(withReuseIdentifier: "ThreadCatalogCell", for: indexPath) as! ThreadCatalogCell
+            .dequeueReusableCell(withReuseIdentifier: "ThreadCatalogCell", for: indexPath)
         
         let no = catalog[indexPath.section].threads[indexPath.row].no
 
@@ -250,7 +250,7 @@ extension CatalogViewController: UICollectionViewDataSource {
             height: H)
         
         cell.contentView.addSubview(effect)
-        cell.contentView.backgroundColor = .red
+//        cell.contentView.backgroundColor = .red
         cell.contentView.layer.cornerRadius = 8
         cell.contentView.clipsToBounds = true
         
@@ -329,6 +329,24 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
             return headerView
         default:
             assert(false, "Invalid element type")
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        UIView.animate(withDuration: 0.5) {
+            if let cell = collectionView.cellForItem(at: indexPath) {
+                cell.transform = .init(scaleX: 0.95, y: 0.95)
+                cell.contentView.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
+            }
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        UIView.animate(withDuration: 0.5) {
+            if let cell = collectionView.cellForItem(at: indexPath) as? ThreadCatalogCell {
+                cell.transform = .identity
+                cell.contentView.backgroundColor = .clear
+            }
         }
     }
 }
