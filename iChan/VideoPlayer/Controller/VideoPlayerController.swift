@@ -36,6 +36,18 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
         createTimer()
     }
     
+    @IBAction func backPressed(_ sender: Any) {
+        if player != nil {
+            player!.mediaPlayer.time = VLCTime(int: player!.mediaPlayer.time.intValue - 10_000)
+        }
+    }
+    
+    @IBAction func forwardPressed(_ sender: Any) {
+        if player != nil {
+            player!.mediaPlayer.time = VLCTime(int: player!.mediaPlayer.time.intValue + 10_000)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         playPauseBtn.setImage(UIImage(systemName: "pause.fill"), for: .normal)
@@ -93,7 +105,7 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
         }
     }
     
-    func mediaPlayerStateChanged(_ aNotification: Notification!) {
-        print(player?.mediaPlayer.state)
-    }
+//    func mediaPlayerStateChanged(_ aNotification: Notification!) {
+////        print(player?.mediaPlayer.state)
+//    }
 }
