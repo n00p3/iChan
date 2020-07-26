@@ -91,53 +91,6 @@ class BookmarksViewController: UIViewController, VLCMediaPlayerDelegate {
         tableView.dataSource = self
         
         fetchBookmarks()
-        
-//        let url = URL(string: "https://i.4cdn.org/wsg/1595758660757.webm")
-////        let url = URL(string: "https://i.4cdn.org/wsg/1594028421375.webm")
-//        let url = URL(string: "http://dl5.webmfiles.org/big-buck-bunny_trailer.webm")
-////        let url = URL(string: "https://streams.videolan.org/streams/mp4/Mr_MrsSmith-h264_aac.mp4")
-//
-//        player = VLCMediaPlayer()
-//        player?.delegate = self
-////        player?.drawable = view
-//        player?.media = VLCMedia(url: url!)
-//        player
-//
-//
-//        present(controller, animated: true)
-//
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
-//            self.player?.play()
-//        })
-        
-
-        let vc = UIStoryboard(name: "VideoPlayer", bundle: nil).instantiateViewController(withIdentifier: "VideoPlayerController")
-        present(vc, animated: true)
-        
-        
-//        let player = Player()
-////        player.playerDelegate = self
-////        player.playbackDelegate = self
-//        player.view.frame = view.frame
-//        player.fillMode = PlayerFillMode.resizeAspect
-//        player.url = url
-//        player.playFromBeginning()
-//
-//        present(player, animated: true)
-//        self.player = Player()
-//        self.player.playerDelegate = self
-//        self.player.playbackDelegate = self
-//        self.player.view.frame = self.view.frame
-//
-//        print("player: \(self.player.view.frame)")
-//
-//        self.addChild(self.player)
-//        self.view.addSubview(self.player.view)
-//        self.player.didMove(toParent: self)
-//        self.player.playbackLoops = true
-//
-//
-//        self.player.url = url
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

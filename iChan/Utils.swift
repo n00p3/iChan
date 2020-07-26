@@ -148,54 +148,17 @@ func filePreviewHandler(
     ext: String,
     playerDelegate: PlayerDelegate?,
     playbackDelegate: PlayerPlaybackDelegate?) {
-    let url = URL(string: "https://i.4cdn.org/\(board)/\(tim).webm")
-    let player = AVPlayer(url: url!)
 
-    let vc = AVPlayerViewController()
-    vc.player = player
-
-    parent.present(vc, animated: true) { vc.player?.play() }
-    
-//    Requests.file(board, tim, ext, fullSize: true, callback: { data in
-//        if ext == ".webm" {
-////            let vc = UIViewController()
-////            let v = UIView()
-////            v.frame = vc.view.frame
-////            v.backgroundColor = .white
-////            vc.view.addSubview(v)
-////            vc.view.frame = vc.view.frame
-////
-////            let player = Player()
-////            player.playerDelegate = playerDelegate
-////            player.playbackDelegate = playbackDelegate
-////            player.view.frame = vc.view.frame
-////            player.fillMode = PlayerFillMode.resizeAspect
-////            player.view.backgroundColor = .red
-////            vc.view.addSubview(player.view)
-////            player.playFromBeginning()
-////
-////            parent.present(vc, animated: true)
-//            let url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")
-//            let player = AVPlayer(url: url!)
-//
-//            let vc = AVPlayerViewController()
-//            vc.player = player
-//
-//            parent.present(vc, animated: true) { vc.player?.play() }
-//
-//        } else {
-//            guard let img = UIImage(data: data!) else {
-//                SPAlert.present(title: "Couldn't preview image", message: nil, preset: .error)
-//                return
-//            }
-//            let i = LightboxImage(image: img)
-//            let controller = LightboxController(images: [i])
-//            controller.dynamicBackground = true
-//            parent.present(controller, animated: true)
-//        }
-//    })
-//
-
+    if ext == ".webm" {
+        let vc = UIStoryboard(name: "VideoPlayer", bundle: nil).instantiateViewController(withIdentifier: "VideoPlayerController") as! VideoPlayerController
+        vc.videoURL = "https://i.4cdn.org/\(board)/\(tim)\(ext)"
+        parent.present(vc, animated: true)
+    } else {
+        let i = LightboxImage(imageURL: URL(string: "https://i.4cdn.org/\(board)/\(tim)\(ext)")!)
+        let controller = LightboxController(images: [i])
+        controller.dynamicBackground = true
+        parent.present(controller, animated: true)
+    }
 }
 
 extension UIImage {

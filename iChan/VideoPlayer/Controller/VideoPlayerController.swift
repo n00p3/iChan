@@ -18,8 +18,7 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
     @IBOutlet weak var videoRemainingTimeLabel: UILabel!
     private var player: VLCMediaListPlayer?
     @IBOutlet weak var playPauseBtn: UIButton!
-//    var videoURL = "https://i.4cdn.org/wsg/1594028421375.webm"
-    var videoURL = "file:///Users/mateusz.glowski/Desktop/test_video.webm"
+    var videoURL = ""
     var timer: Timer?
     
     override func viewDidDisappear(_ animated: Bool) {
