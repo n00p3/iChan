@@ -25,7 +25,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="330" height="64"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="GDE-K5-FD1">
+                                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="GDE-K5-FD1">
                                             <rect key="frame" x="15" y="0.0" width="300" height="36"/>
                                         </slider>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3GI-NO-tMx">
@@ -110,6 +110,8 @@
                         <outlet property="controlsView" destination="Wpa-wJ-cXp" id="7N6-5f-BGG"/>
                         <outlet property="playPauseBtn" destination="3GI-NO-tMx" id="Sch-gg-wVT"/>
                         <outlet property="sliderView" destination="GDE-K5-FD1" id="osw-Tx-fWt"/>
+                        <outlet property="videoRemainingTimeLabel" destination="s2x-TU-gvW" id="yWN-es-qtJ"/>
+                        <outlet property="videoTimeLabel" destination="Bbo-0t-XUi" id="fHs-k3-ssn"/>
                         <outlet property="videoView" destination="h0y-dC-DVD" id="6qz-9g-bbJ"/>
                     </connections>
                 </viewController>
