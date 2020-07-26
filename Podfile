@@ -13,6 +13,9 @@ target 'iChan' do
   pod 'SPAlert'
   pod 'EmitterKit'
   pod 'Lightbox'
+#  pod 'Swime'
+#  pod 'Player'
+  pod 'MobileVLCKit'
   target 'iChanTests' do
     inherit! :search_paths
     # Pods for testing

@@ -26,6 +26,8 @@
 		FA5456E32474543B0015CF84 /* iChanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5456E22474543B0015CF84 /* iChanTests.swift */; };
 		FA5456EE2474543B0015CF84 /* iChanUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5456ED2474543B0015CF84 /* iChanUITests.swift */; };
 		FA5456FC247457510015CF84 /* CatalogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5456FB247457510015CF84 /* CatalogViewController.swift */; };
+		FA63A51F24CDC286009C7072 /* VideoPlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA63A51E24CDC286009C7072 /* VideoPlayerController.swift */; };
+		FA63A52224CDC4F5009C7072 /* VideoPlayer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA63A52124CDC4F5009C7072 /* VideoPlayer.storyboard */; };
 		FA8850A6247D9BC9009D0DDA /* ThreadCatalogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */; };
 		FA8D186224758C9600BDD461 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186124758C9600BDD461 /* Requests.swift */; };
 		FA8D186424758CE300BDD461 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186324758CE300BDD461 /* Posts.swift */; };
@@ -92,6 +94,8 @@
 		FA5456ED2474543B0015CF84 /* iChanUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iChanUITests.swift; sourceTree = "<group>"; };
 		FA5456EF2474543B0015CF84 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA5456FB247457510015CF84 /* CatalogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewController.swift; sourceTree = "<group>"; };
+		FA63A51E24CDC286009C7072 /* VideoPlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerController.swift; sourceTree = "<group>"; };
+		FA63A52124CDC4F5009C7072 /* VideoPlayer.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = VideoPlayer.storyboard; sourceTree = "<group>"; };
 		FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCatalogCell.swift; sourceTree = "<group>"; };
 		FA8D186124758C9600BDD461 /* Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requests.swift; sourceTree = "<group>"; };
 		FA8D186324758CE300BDD461 /* Posts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
@@ -185,6 +189,7 @@
 		FA5456C5247454370015CF84 /* iChan */ = {
 			isa = PBXGroup;
 			children = (
+				FA63A51C24CDC272009C7072 /* VideoPlayer */,
 				FA8E946D24CCB60B00AE90ED /* Bookmarks */,
 				FA8E946524CC901F00AE90ED /* Thread */,
 				FA8E946124CC8FB200AE90ED /* Catalog */,
@@ -219,6 +224,31 @@
 				FA5456EF2474543B0015CF84 /* Info.plist */,
 			);
 			path = iChanUITests;
+			sourceTree = "<group>";
+		};
+		FA63A51C24CDC272009C7072 /* VideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				FA63A52024CDC4EC009C7072 /* View */,
+				FA63A51D24CDC27A009C7072 /* Controller */,
+			);
+			path = VideoPlayer;
+			sourceTree = "<group>";
+		};
+		FA63A51D24CDC27A009C7072 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FA63A51E24CDC286009C7072 /* VideoPlayerController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		FA63A52024CDC4EC009C7072 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FA63A52124CDC4F5009C7072 /* VideoPlayer.storyboard */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		FA8D186024758C8900BDD461 /* Model */ = {
@@ -454,6 +484,7 @@
 				FA4C338724CA19950036B29E /* ThreadCatalogCell.xib in Resources */,
 				FA5456D52474543B0015CF84 /* Assets.xcassets in Resources */,
 				FA5456D0247454370015CF84 /* Main.storyboard in Resources */,
+				FA63A52224CDC4F5009C7072 /* VideoPlayer.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,6 +628,7 @@
 				FA8D186824758CFF00BDD461 /* Catalog.swift in Sources */,
 				FA8D186224758C9600BDD461 /* Requests.swift in Sources */,
 				FA8E946C24CC939100AE90ED /* ThreadCellModel.swift in Sources */,
+				FA63A51F24CDC286009C7072 /* VideoPlayerController.swift in Sources */,
 				FA340AE924745F07009AD227 /* BoardsModalViewController.swift in Sources */,
 				FA8D186624758CEF00BDD461 /* Threads4Chan.swift in Sources */,
 				FA8850A6247D9BC9009D0DDA /* ThreadCatalogCell.swift in Sources */,

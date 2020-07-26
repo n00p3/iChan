@@ -8,6 +8,7 @@ PODS:
     - Cache (~> 5.3.0)
   - Lightbox (2.4.2):
     - Imaginary (~> 4.3.1)
+  - MobileVLCKit (3.3.13)
   - Player (0.13.0)
   - Realm (5.0.0):
     - Realm/Headers (= 5.0.0)
@@ -21,6 +22,7 @@ DEPENDENCIES:
   - Cards
   - EmitterKit
   - Lightbox
+  - MobileVLCKit
   - Realm
   - RealmSwift
   - SPAlert
@@ -33,6 +35,7 @@ SPEC REPOS:
     - EmitterKit
     - Imaginary
     - Lightbox
+    - MobileVLCKit
     - Player
     - Realm
     - RealmSwift
@@ -45,11 +48,12 @@ SPEC CHECKSUMS:
   EmitterKit: e7a27b37118823d8ad413b8396f75e40d59f8cba
   Imaginary: 18c5bba364229eef383b925199db442e71d175e1
   Lightbox: 8837c35c1150fa0410d94296e369b432d37f18c7
+  MobileVLCKit: 92e1ea43124259417f481c890821efb2399d25e3
   Player: 968d8d07d923bcdd6f7e4091c9e306eb44a5f7a4
   Realm: 76066d333de26f97e9caedaa85ee3ff4a62ca265
   RealmSwift: c1bdff09b422569dc6881410d9ccf712bcdb79b0
   SPAlert: 1a8afa1c6ac86a82ab5b2cfdf7f9a51e68cb6c0c
 
-PODFILE CHECKSUM: 2ce31a5d864a555666caf6d9086cc4e5b5cc3643
+PODFILE CHECKSUM: 56251284dbc9272dd9db870e9886330a8d61b8c9
 
 COCOAPODS: 1.9.1
