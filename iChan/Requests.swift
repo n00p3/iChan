@@ -30,9 +30,9 @@ class Requests {
      */
     static func boards(success: @escaping (BoardsJSON) -> (), failure: @escaping (Error) -> ()) {
         var h = HTTPHeaders()
-        if lastRequested.boards != nil {
-            h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
-        }
+//        if lastRequested.boards != nil {
+//            h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
+//        }
         
         AF.request("https://a.4cdn.org/boards.json", headers: h)
             .responseDecodable(of: BoardsJSON.self) { response in
@@ -46,7 +46,7 @@ class Requests {
                     return
                 }
             
-                lastRequested.boards = Date()
+//                lastRequested.boards = Date()
                 success(boards)
                 
             }
@@ -58,9 +58,9 @@ class Requests {
      */
     static func threads(of board: String, success: @escaping (Threads4Chan) -> (), failure: @escaping (Error) -> ()) {
         var h = HTTPHeaders()
-        if lastRequested.threads != nil {
-            h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
-        }
+//        if lastRequested.threads != nil {
+//            h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
+//        }
         
         AF.request("https://a.4cdn.org/\(board)/threads.json", headers: h)
             .responseDecodable(of: Threads4Chan.self) { response in
@@ -74,7 +74,7 @@ class Requests {
                     return
                 }
             
-                lastRequested.threads = Date()
+//                lastRequested.threads = Date()
                 success(threads)
             }
         
@@ -86,9 +86,9 @@ class Requests {
     static func catalog(of board: String, success: @escaping (Catalog) -> (), failure: @escaping (Error) -> ()) {
         print("Reading catalog from api")
         var h = HTTPHeaders()
-        if lastRequested.catalog?[board] != nil {
-            h["If-Modified-Since"] = self.lastRequested.catalog?[board]?.toRFC1123()
-        }
+//        if lastRequested.catalog?[board] != nil {
+//            h["If-Modified-Since"] = self.lastRequested.catalog?[board]?.toRFC1123()
+//        }
         
         AF.request("https://a.4cdn.org/\(board)/catalog.json", headers: h)
             .responseDecodable(of: Catalog.self) { response in
@@ -114,11 +114,11 @@ class Requests {
                 }
                 
 //                lastRequested.catalog = Date()
-                if lastRequested.catalog == nil {
-                    lastRequested.catalog = [String:Date]()
-                }
+//                if lastRequested.catalog == nil {
+//                    lastRequested.catalog = [String:Date]()
+//                }
 
-                lastRequested.catalog![board] = Date()
+//                lastRequested.catalog![board] = Date()
                 
                 storeCatalogInRealm(board: board, liveCatalog: catalog)
                 
@@ -131,9 +131,9 @@ class Requests {
      */
     static func posts(_ board: String, no: Int, success: @escaping (Posts) -> (), failure: @escaping (Error) -> ()) {
         var h = HTTPHeaders()
-        if lastRequested.boards != nil {
-            h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
-        }
+//        if lastRequested.boards != nil {
+//            h["If-Modified-Since"] = self.lastRequested.boards!.toRFC1123()
+//        }
 
         let url = "https://a.4cdn.org/\(board)/thread/\(no).json"
         AF.request(url, headers: h)
@@ -148,7 +148,7 @@ class Requests {
                     return
                 }
 
-                lastRequested.posts = Date()
+//                lastRequested.posts = Date()
                 success(posts)
         }
     }
