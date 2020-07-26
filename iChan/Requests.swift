@@ -182,4 +182,29 @@ class Requests {
                 callback(img)
         }
     }
+    
+    static func file(_ board: String, _ tim: Int, _ ext: String, fullSize: Bool, callback: @escaping (Data?) -> ()) {
+        var myExt = ""
+        let size: String = {
+            if fullSize {
+                myExt = ext
+                return ""
+            } else {
+                myExt = ".jpg"
+                return "s"
+            }
+        }()
+        
+        let url = "https://i.4cdn.org/\(board)/\(tim)\(size)\(myExt)"
+//        print(url)
+        AF.request(url)
+            .response { request in
+                if request.data == nil {
+                    callback(nil)
+                    return
+                }
+
+                callback(request.data!)
+        }
+    }
 }

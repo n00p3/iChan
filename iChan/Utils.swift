@@ -8,6 +8,11 @@
 
 import Foundation
 import RealmSwift
+import Lightbox
+import SPAlert
+import Player
+import AVKit
+import AVFoundation
 
 extension Date {
     func toRFC1123() -> String {
@@ -131,4 +136,58 @@ extension String {
 //    var htmlToString: String {
 //        return htmlToAttributedString?.string ?? ""
 //    }
+}
+
+/**
+ Downloads file and previews it.
+ */
+func filePreviewHandler(
+    parent: UIViewController,
+    board: String,
+    tim: Int,
+    ext: String,
+    playerDelegate: PlayerDelegate?,
+    playbackDelegate: PlayerPlaybackDelegate?) {
+
+    if ext == ".webm" {
+        let vc = UIStoryboard(name: "VideoPlayer", bundle: nil).instantiateViewController(withIdentifier: "VideoPlayerController") as! VideoPlayerController
+        vc.videoURL = "https://i.4cdn.org/\(board)/\(tim)\(ext)"
+        parent.present(vc, animated: true)
+    } else {
+        let i = LightboxImage(imageURL: URL(string: "https://i.4cdn.org/\(board)/\(tim)\(ext)")!)
+        let controller = LightboxController(images: [i])
+        controller.dynamicBackground = true
+        parent.present(controller, animated: true)
+    }
+}
+
+extension UIImage {
+    class func resize(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+        
+        let widthRatio  = targetSize.width  / image.size.width
+        let heightRatio = targetSize.height / image.size.height
+        
+        var newSize: CGSize
+        if widthRatio > heightRatio {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+        }
+        
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+        
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage!
+    }
+    
+    class func scale(image: UIImage, by scale: CGFloat) -> UIImage? {
+        let size = image.size
+        let scaledSize = CGSize(width: size.width * scale, height: size.height * scale)
+        return UIImage.resize(image: image, targetSize: scaledSize)
+    }
 }

@@ -11,8 +11,45 @@ import SPAlert
 import RealmSwift
 import EmitterKit
 import Lightbox
+import Player
 
-class ThreadViewController : UITableViewController {
+class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlaybackDelegate {
+    func playerReady(_ player: Player) {
+        
+    }
+    
+    func playerPlaybackStateDidChange(_ player: Player) {
+        
+    }
+    
+    func playerBufferingStateDidChange(_ player: Player) {
+        
+    }
+    
+    func playerBufferTimeDidChange(_ bufferTime: Double) {
+        
+    }
+    
+    func player(_ player: Player, didFailWithError error: Error?) {
+        
+    }
+    
+    func playerCurrentTimeDidChange(_ player: Player) {
+        
+    }
+    
+    func playerPlaybackWillStartFromBeginning(_ player: Player) {
+        
+    }
+    
+    func playerPlaybackDidEnd(_ player: Player) {
+        
+    }
+    
+    func playerPlaybackWillLoop(_ player: Player) {
+        
+    }
+    
     let COM_FONT_SIZE = CGFloat(16)
     var dataSource = [Post]()
     var listener: EventListener<CurrentThread>?
@@ -147,14 +184,15 @@ class ThreadViewController : UITableViewController {
     }
     
     private func viewFile(tim: Int, ext: String) {
-        Requests.image(DataHolder.shared.currentCatalogBoard, tim, ext, fullSize: true, callback: { img in
-            if img != nil {
-                let i = LightboxImage(image: img!)
-                let controller = LightboxController(images: [i])
-                controller.dynamicBackground = true
-                self.present(controller, animated: true)
-            }
-        })
+//        Requests.image(DataHolder.shared.currentCatalogBoard, tim, ext, fullSize: true, callback: { img in
+//            if img != nil {
+//                let i = LightboxImage(image: img!)
+//                let controller = LightboxController(images: [i])
+//                controller.dynamicBackground = true
+//                self.present(controller, animated: true)
+//            }
+//        })
+        filePreviewHandler(parent: self, board: DataHolder.shared.currentCatalogBoard, tim: tim, ext: ext, playerDelegate: self, playbackDelegate: self)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

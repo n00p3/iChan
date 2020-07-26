@@ -9,11 +9,15 @@
 import UIKit
 import RealmSwift
 import Cards
+import Player
+import MobileVLCKit
+import AVKit
 
-class BookmarksViewController: UIViewController {
+class BookmarksViewController: UIViewController, VLCMediaPlayerDelegate {
+    
     @IBOutlet weak var tableView: UITableView!
     var buttonRemoveAllBookmarks: UIBarButtonItem?
-    
+    var player: VLCMediaPlayer?
     var dataSource: [BookmarkElement] = [BookmarkElement]() {
         didSet {
             updateDeletionButton()
@@ -68,6 +72,12 @@ class BookmarksViewController: UIViewController {
             }
             self.dataSource.remove(at: i)
             self.tableView.deleteRows(at: [IndexPath(item: i, section: 0)], with: .automatic)
+        }
+    }
+    
+    func mediaPlayerStateChanged(_ aNotification: Notification!) {
+        if player?.state == .stopped {
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
