@@ -18,7 +18,7 @@ protocol CatalogBoardDelegate {
 
 class CatalogViewController: UIViewController, CatalogBoardDelegate {
     @IBOutlet weak var collectionView: UICollectionView!
-    
+    let blur = UIBlurEffect(style: .regular)
     let refreshControl = UIRefreshControl()
     var activityIndicator: UIActivityIndicatorView?
     
@@ -308,6 +308,9 @@ extension CatalogViewController: UICollectionViewDataSource {
         
         let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: "ThreadCatalogCell", for: indexPath)
+        for subView in cell.contentView.subviews {
+            subView.removeFromSuperview()
+        }
         
         let no = catalog[indexPath.section].threads[indexPath.row].no
 
@@ -320,8 +323,8 @@ extension CatalogViewController: UICollectionViewDataSource {
                 cell.contentView.addSubview(i)
             }
             
-            let blur = UIBlurEffect(style: .regular)
-            let effect = UIVisualEffectView(effect: blur)
+            
+            let effect = UIVisualEffectView(effect: self.blur)
             
             effect.frame = CGRect(
                 x: cell.contentView.frame.origin.x,
