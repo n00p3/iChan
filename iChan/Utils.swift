@@ -145,9 +145,7 @@ func filePreviewHandler(
     parent: UIViewController,
     board: String,
     tim: Int,
-    ext: String,
-    playerDelegate: PlayerDelegate?,
-    playbackDelegate: PlayerPlaybackDelegate?) {
+    ext: String) {
 
     if ext == ".webm" {
         let vc = UIStoryboard(name: "VideoPlayer", bundle: nil).instantiateViewController(withIdentifier: "VideoPlayerController") as! VideoPlayerController

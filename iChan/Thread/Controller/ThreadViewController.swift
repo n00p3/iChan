@@ -192,7 +192,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
 //                self.present(controller, animated: true)
 //            }
 //        })
-        filePreviewHandler(parent: self, board: DataHolder.shared.currentCatalogBoard, tim: tim, ext: ext, playerDelegate: self, playbackDelegate: self)
+        filePreviewHandler(parent: self, board: DataHolder.shared.currentCatalogBoard, tim: tim, ext: ext)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

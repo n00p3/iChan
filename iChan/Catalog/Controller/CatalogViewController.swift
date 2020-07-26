@@ -288,11 +288,11 @@ extension CatalogViewController: UICollectionViewDataSource {
             
             let thread = self.catalog[indexPath.section].threads[indexPath.row]
            
-            let viewImage = UIAction(title: "View OP file", image: UIImage(systemName: "eye"), identifier: UIAction.Identifier(rawValue: "viewImage")) { action in
+            let viewFile = UIAction(title: "View OP file", image: UIImage(systemName: "eye"), identifier: UIAction.Identifier(rawValue: "viewImage")) { action in
                 self.viewOpFile(thread: thread)
             }
             
-            let children = [bookmark, hide, viewImage]
+            let children = [bookmark, hide, viewFile]
             return UIMenu(title: "Options", image: nil, identifier: nil, children: children)
         }
         
@@ -300,14 +300,7 @@ extension CatalogViewController: UICollectionViewDataSource {
     }
     
     private func viewOpFile(thread: CatalogThread) {
-        Requests.image(DataHolder.shared.currentCatalogBoard, thread.tim!, thread.ext!, fullSize: true, callback: { img in
-            if img != nil {
-                let i = LightboxImage(image: img!)
-                let controller = LightboxController(images: [i])
-                controller.dynamicBackground = true
-                self.present(controller, animated: true)
-            }
-        })
+        filePreviewHandler(parent: self, board: DataHolder.shared.currentCatalogBoard, tim: thread.tim ?? 0, ext: thread.ext ?? "")
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
