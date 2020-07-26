@@ -35,6 +35,9 @@
                                             </constraints>
                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <state key="normal" image="play.fill" catalog="system"/>
+                                            <connections>
+                                                <action selector="playPause:" destination="Ini-BE-5uI" eventType="touchUpInside" id="KRY-R4-xUS"/>
+                                            </connections>
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bbo-0t-XUi">
                                             <rect key="frame" x="17" y="22" width="22.5" height="12"/>
@@ -105,6 +108,7 @@
                     </view>
                     <connections>
                         <outlet property="controlsView" destination="Wpa-wJ-cXp" id="7N6-5f-BGG"/>
+                        <outlet property="playPauseBtn" destination="3GI-NO-tMx" id="Sch-gg-wVT"/>
                         <outlet property="sliderView" destination="GDE-K5-FD1" id="osw-Tx-fWt"/>
                         <outlet property="videoView" destination="h0y-dC-DVD" id="6qz-9g-bbJ"/>
                     </connections>
