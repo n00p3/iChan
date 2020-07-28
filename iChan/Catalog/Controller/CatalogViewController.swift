@@ -16,7 +16,30 @@ protocol CatalogBoardDelegate {
     func boardChanged(newBoard: String)
 }
 
-class CatalogViewController: UIViewController, CatalogBoardDelegate {
+class CatalogViewController: UIViewController, CatalogBoardDelegate, UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        catalogFiltered = Catalog(catalog)
+        
+        if searchController.searchBar.text?.count == 0 {
+            self.collectionView.reloadData()
+            return
+        }
+        
+        for pageId in (0..<catalogFiltered.count).reversed() {
+            for threadId in (0..<catalogFiltered[pageId].threads.count).reversed() {
+                if !((catalogFiltered[pageId].threads[threadId].sub?.lowercased().contains(searchController.searchBar.text!.lowercased()))! ||
+                    (catalogFiltered[pageId].threads[threadId].com?.lowercased().contains(searchController.searchBar.text!.lowercased()))!) {
+                    catalogFiltered[pageId].threads.remove(at: threadId)
+                }
+//                catalog[pageId].threads[threadId].visible =
+//                    (catalog[pageId].threads[threadId].sub?.lowercased().contains(searchController.searchBar.text!.lowercased()))! ||
+//                    (catalog[pageId].threads[threadId].com?.lowercased().contains(searchController.searchBar.text!.lowercased()))!
+            }
+        }
+        
+        self.collectionView.reloadData()
+    }
+    
     @IBOutlet weak var collectionView: UICollectionView!
     let blur = UIBlurEffect(style: .regular)
     let refreshControl = UIRefreshControl()
@@ -29,6 +52,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
                                              right: 20.0)
     
     var catalog: Catalog = []
+    var catalogFiltered: Catalog = []
     
     override func viewDidLoad() {
         // fix weird scroll:  https://stackoverflow.com/questions/50708081/prefer-large-titles-and-refreshcontrol-not-working-well
@@ -43,9 +67,10 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         }
         
         updateHeader()
-        
+
         navigationController?.navigationBar.prefersLargeTitles = true
         let searchController = UISearchController()
+        searchController.searchResultsUpdater = self
         navigationItem.searchController = searchController
         navigationController?.navigationItem.hidesSearchBarWhenScrolling = true
         searchController.obscuresBackgroundDuringPresentation = false
@@ -71,6 +96,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         getCatalog(board: DataHolder.shared.currentCatalogBoard, callback: { catalog in
             if catalog != nil {
                 
+                self.catalogFiltered = catalog!
                 self.catalog = catalog!
                 self.activityIndicator!.stopAnimating()
                 
@@ -154,6 +180,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
             
             self.getCatalog(board: DataHolder.shared.currentCatalogBoard, callback: { catalog in
                 DispatchQueue.main.async {
+                    self.catalogFiltered = catalog!
                     self.catalog = catalog!
                 
             
@@ -216,7 +243,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
         }
 //        print("remote \(threadNo)")
         
-        let x = self.catalog.map { $0.threads }.joined().filter { $0.no == threadNo }.first
+        let x = self.catalogFiltered.map { $0.threads }.joined().filter { $0.no == threadNo }.first
         let ext = x?.ext ?? ""
         let tim = x?.tim ?? 0
         Requests.image(board, tim, ext, fullSize: false) { (img) in
@@ -254,23 +281,23 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate {
 extension CatalogViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return catalog.count
+        return catalogFiltered.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        catalog[section].threads.count
+        return catalogFiltered[section].threads.count
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let realm = try! Realm()
         let thread = realm.objects(BookmarkRealm.self)
-            .filter(NSPredicate(format: "threadNo = %d", catalog[indexPath.section].threads[indexPath.row].no)).first
+            .filter(NSPredicate(format: "threadNo = %d", catalogFiltered[indexPath.section].threads[indexPath.row].no)).first
         
         let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil){ _ in
             var bookmark: UIAction
             if thread == nil {
                 bookmark = UIAction(title: "Add to bookmarks", image: UIImage(systemName: "star"), identifier: UIAction.Identifier(rawValue: "bookmark")) { menu in
-                    let thread = self.catalog[indexPath.section].threads[indexPath.row]
+                    let thread = self.catalogFiltered[indexPath.section].threads[indexPath.row]
                     let subject = [thread.sub ?? "", thread.com ?? "", "[no comment]"].filter { $0 != "" }.first!
                     
                     self.addToBookmarks(threadNo: thread.no, board: DataHolder.shared.currentCatalogBoard, title: subject)
@@ -286,7 +313,7 @@ extension CatalogViewController: UICollectionViewDataSource {
             }
             
             
-            let thread = self.catalog[indexPath.section].threads[indexPath.row]
+            let thread = self.catalogFiltered[indexPath.section].threads[indexPath.row]
            
             let viewFile = UIAction(title: "View OP file", image: UIImage(systemName: "eye"), identifier: UIAction.Identifier(rawValue: "viewImage")) { action in
                 self.viewOpFile(thread: thread)
@@ -337,8 +364,8 @@ extension CatalogViewController: UICollectionViewDataSource {
             cell.contentView.layer.cornerRadius = 8
             cell.contentView.clipsToBounds = true
             
-            let sub = self.catalog[indexPath.section].threads[indexPath.row].sub ?? ""
-            let com = self.catalog[indexPath.section].threads[indexPath.row].com ?? ""
+            let sub = self.catalogFiltered[indexPath.section].threads[indexPath.row].sub ?? ""
+            let com = self.catalogFiltered[indexPath.section].threads[indexPath.row].com ?? ""
             
             let title = [sub, com].filter { $0 != "" }.first ?? "[no comment]"
             
@@ -359,13 +386,15 @@ extension CatalogViewController: UICollectionViewDataSource {
         return cell
     }
     
+
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        print(catalog[indexPath.section].threads[indexPath.row])
         DataHolder.shared.currentThread = CurrentThread(
-            threadNo: catalog[indexPath.section].threads[indexPath.row].no,
+            threadNo: catalogFiltered[indexPath.section].threads[indexPath.row].no,
             board: DataHolder.shared.currentCatalogBoard)
         
-        let thread = catalog[indexPath.section].threads[indexPath.row]
+        let thread = catalogFiltered[indexPath.section].threads[indexPath.row]
         
         DataHolder.shared.threadChangedEvent.emit(CurrentThread(threadNo: thread.no, board: DataHolder.shared.currentCatalogBoard))
         tabBarController?.selectedIndex = 2
@@ -391,6 +420,7 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         return sectionInsets
     }
+    
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,

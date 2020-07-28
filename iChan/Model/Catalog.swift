@@ -15,7 +15,7 @@ import Alamofire
 
 struct CatalogElement: Codable {
     let page: Int
-    let threads: [CatalogThread]
+    var threads: [CatalogThread]
 }
 
 struct CatalogThread: Codable {
