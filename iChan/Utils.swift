@@ -13,6 +13,7 @@ import SPAlert
 import Player
 import AVKit
 import AVFoundation
+import SDWebImage
 
 extension Date {
     func toRFC1123() -> String {
@@ -151,6 +152,27 @@ func filePreviewHandler(
         let vc = UIStoryboard(name: "VideoPlayer", bundle: nil).instantiateViewController(withIdentifier: "VideoPlayerController") as! VideoPlayerController
         vc.videoURL = "https://i.4cdn.org/\(board)/\(tim)\(ext)"
         parent.present(vc, animated: true)
+    } else if ext == ".gif" {
+        let placeholder = UIImage(named: "placeholder")!
+        
+        let i = LightboxImage(image: placeholder)
+        let controller = LightboxController(images: [i])
+        controller.dynamicBackground = true
+        
+        let downloader = SDWebImageManager()
+        downloader.loadImage(with: URL(string: "https://i.4cdn.org/\(board)/\(tim)\(ext)")!, options: .highPriority, progress: nil, completed: { (image, data, error, cacheType, finished, imageURL) in
+            if error != nil || image == nil {
+                SPAlert.present(title: "Error downloading gif", preset: .error)
+                return
+            }
+            
+            let v = UIImageView(image: image)
+            v.frame = controller.view.bounds
+            v.contentMode = .scaleAspectFit
+            controller.view.subviews[2].addSubview(v)
+        })
+        
+        parent.present(controller, animated: true)
     } else {
         let i = LightboxImage(imageURL: URL(string: "https://i.4cdn.org/\(board)/\(tim)\(ext)")!)
         let controller = LightboxController(images: [i])

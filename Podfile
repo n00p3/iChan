@@ -13,6 +13,7 @@ target 'iChan' do
   pod 'SPAlert'
   pod 'EmitterKit'
   pod 'Lightbox'
+  pod 'SDWebImage'
 #  pod 'Swime'
 #  pod 'Player'
   pod 'MobileVLCKit'

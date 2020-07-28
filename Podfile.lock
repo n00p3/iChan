@@ -15,6 +15,9 @@ PODS:
   - Realm/Headers (5.0.0)
   - RealmSwift (5.0.0):
     - Realm (= 5.0.0)
+  - SDWebImage (5.8.4):
+    - SDWebImage/Core (= 5.8.4)
+  - SDWebImage/Core (5.8.4)
   - SPAlert (2.1.4)
 
 DEPENDENCIES:
@@ -25,6 +28,7 @@ DEPENDENCIES:
   - MobileVLCKit
   - Realm
   - RealmSwift
+  - SDWebImage
   - SPAlert
 
 SPEC REPOS:
@@ -39,6 +43,7 @@ SPEC REPOS:
     - Player
     - Realm
     - RealmSwift
+    - SDWebImage
     - SPAlert
 
 SPEC CHECKSUMS:
@@ -52,8 +57,9 @@ SPEC CHECKSUMS:
   Player: 968d8d07d923bcdd6f7e4091c9e306eb44a5f7a4
   Realm: 76066d333de26f97e9caedaa85ee3ff4a62ca265
   RealmSwift: c1bdff09b422569dc6881410d9ccf712bcdb79b0
+  SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
   SPAlert: 1a8afa1c6ac86a82ab5b2cfdf7f9a51e68cb6c0c
 
-PODFILE CHECKSUM: 56251284dbc9272dd9db870e9886330a8d61b8c9
+PODFILE CHECKSUM: d69742d24d22c1bf60b3d438ddf74f11bd30d09c
 
 COCOAPODS: 1.9.1
