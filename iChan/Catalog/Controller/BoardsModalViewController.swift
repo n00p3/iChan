@@ -13,6 +13,7 @@ import RealmSwift
 class BoardsModalViewController: UITableViewController, UISearchResultsUpdating, UISearchControllerDelegate {
     
     @IBOutlet var boardsTable: UITableView!
+    var searchController: UISearchController?
     
     var myDelegate: CatalogBoardDelegate?
     @IBAction func boardChanged(_ sender: UIStoryboardSegue) {}
@@ -23,6 +24,7 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
         let bs = try! Realm().objects(BoardsRealm.self)[0]
         boards = Array(bs.boards)
         
+        self.searchController = searchController
         var search = searchController.searchBar.text
         
         if (search == nil || search!.isEmpty) {
@@ -54,10 +56,14 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
             settings.first?.currentBoardInCatalog = boards[indexPath.item].board
         }
         
-        
-//        delegate?.boardChanged(newBoard: boards[indexPath.item].board)
         myDelegate?.boardChanged(newBoard: boards[indexPath.item].board)
-        dismiss(animated: true, completion: nil)
+        
+        // Dismiss focused search field.
+        // It will work correctly even if search field wasn't focused.
+        self.dismiss(animated: true, completion: {
+            // Dismiss modal.
+            self.dismiss(animated: true, completion: nil)
+        })
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
