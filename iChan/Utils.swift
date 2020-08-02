@@ -211,3 +211,25 @@ extension UIImage {
         return UIImage.resize(image: image, targetSize: scaledSize)
     }
 }
+
+func mod(_ a: Int, _ n: Int) -> Int {
+    precondition(n > 0, "modulus must be positive")
+    let r = a % n
+    return r >= 0 ? r : r + n
+}
+
+extension UIImageView {
+  func enableZoom() {
+    let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(startZooming(_:)))
+    isUserInteractionEnabled = true
+    addGestureRecognizer(pinchGesture)
+  }
+
+  @objc
+  private func startZooming(_ sender: UIPinchGestureRecognizer) {
+    let scaleResult = sender.view?.transform.scaledBy(x: sender.scale, y: sender.scale)
+    guard let scale = scaleResult, scale.a > 1, scale.d > 1 else { return }
+    sender.view?.transform = scale
+    sender.scale = 1
+  }
+}

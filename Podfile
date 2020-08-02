@@ -17,6 +17,7 @@ target 'iChan' do
 #  pod 'Swime'
 #  pod 'Player'
   pod 'MobileVLCKit'
+  pod 'Kingfisher'
   target 'iChanTests' do
     inherit! :search_paths
     # Pods for testing
