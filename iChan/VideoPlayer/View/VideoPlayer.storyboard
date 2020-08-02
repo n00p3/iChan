@@ -17,7 +17,7 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h0y-dC-DVD">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wpa-wJ-cXp">
                                 <rect key="frame" x="42" y="750" width="330" height="64"/>
@@ -100,7 +100,7 @@
                                 <blurEffect style="dark"/>
                             </visualEffectView>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Wpa-wJ-cXp" firstAttribute="centerY" secondItem="h0y-dC-DVD" secondAttribute="centerY" constant="334" id="7UU-ti-Zj2"/>
                             <constraint firstItem="Wpa-wJ-cXp" firstAttribute="leading" secondItem="OL3-wW-byF" secondAttribute="leading" constant="42" id="Det-pN-R5D"/>

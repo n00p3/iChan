@@ -21,6 +21,20 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
     var videoURL = ""
     var timer: Timer?
     
+    func pause() {
+        if player!.mediaPlayer.isPlaying {
+            player?.pause()
+            playPauseBtn.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        }
+    }
+    
+    func play() {
+        if !player!.mediaPlayer.isPlaying {
+            player?.play()
+            playPauseBtn.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+        }
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         timer?.invalidate()
     }
@@ -49,6 +63,7 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .clear
         playPauseBtn.setImage(UIImage(systemName: "pause.fill"), for: .normal)
         var thumb = UIImage.scale(image: UIImage(systemName: "circle.fill")!, by: 0.5)
         thumb = thumb?.withTintColor(.white)

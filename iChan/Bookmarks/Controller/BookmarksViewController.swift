@@ -35,7 +35,7 @@ class BookmarksViewController: UIViewController, VLCMediaPlayerDelegate {
         
         
         let links = [
-            URL(string: "https://i.4cdn.org/g/1594686780709.png")!,
+            URL(string: "https://i.4cdn.org/wsg/1596238265078.webm")!,
             URL(string: "https://i.4cdn.org/g/1594686818586.png")!,
             URL(string: "https://i.4cdn.org/g/1594686828799.gif")!,
         ]

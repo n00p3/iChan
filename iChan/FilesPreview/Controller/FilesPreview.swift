@@ -21,7 +21,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
 //    private var i = 0
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        if let vc = viewControllers?.first as? FilesPreviewViewController {
+        if let vc = viewControllers?.first as? ImagePreviewViewController {
             return vc.imgView
         }
         
@@ -40,7 +40,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         guard vcs.count > previousIndex else {
             return nil
         }
-
+        
         return vcs[previousIndex]
     }
 
@@ -64,9 +64,21 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
 
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        let i = vcs.firstIndex(of: pageViewController.viewControllers!.first!)
         if finished && completed {
             let i = vcs.firstIndex(of: pageViewController.viewControllers!.first!)
             updatePager(currentPage: i ?? -1)
+        }
+        
+        // Pause all videos,
+        for it in vcs {
+            if let v = it as? VideoPlayerController {
+                v.pause()
+            }
+        }
+        // except the current one.
+        if let v = vcs[i!] as? VideoPlayerController {
+            v.play()
         }
     }
     
@@ -85,7 +97,11 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         delegate = self
         
         for url in urls {
-            vcs.append(imageVC(url: url))
+            if url.absoluteString.hasSuffix(".webm") {
+                vcs.append(videoVC(url: url))
+            } else {
+                vcs.append(imageVC(url: url))
+            }
         }
         
         let blur = UIBlurEffect(style: .dark)
@@ -134,8 +150,14 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         view.addConstraints([horizontalConstraint, verticalConstraint])
     }
     
-    private func imageVC(url: URL) -> FilesPreviewViewController {
-        let vc = FilesPreviewViewController()
+    private func videoVC(url: URL) -> VideoPlayerController {
+        let vc = UIStoryboard(name: "VideoPlayer", bundle: nil).instantiateViewController(withIdentifier: "VideoPlayerController") as! VideoPlayerController
+        vc.videoURL = url.absoluteString
+        return vc
+    }
+    
+    private func imageVC(url: URL) -> ImagePreviewViewController {
+        let vc = ImagePreviewViewController()
         
 //        vc.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "test", style: .plain, target: self, action: nil)
         vc.modalPresentationStyle = .fullScreen

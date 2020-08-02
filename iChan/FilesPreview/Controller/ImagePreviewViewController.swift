@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FilesPreviewViewController : UIViewController {
+class ImagePreviewViewController : UIViewController {
     var imgView: UIImageView?
     var scrollView: UIScrollView?
 }

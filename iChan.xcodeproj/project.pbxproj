@@ -40,7 +40,7 @@
 		FA8E947424CCC38F00AE90ED /* CurrentThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8E947324CCC38F00AE90ED /* CurrentThread.swift */; };
 		FAB2F1ED2475A4A900442CD4 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB2F1EC2475A4A900442CD4 /* Settings.swift */; };
 		FADCDC9224D6D5B400C4256C /* FilesPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADCDC9124D6D5B400C4256C /* FilesPreview.swift */; };
-		FADCDC9824D6F6F800C4256C /* FilesPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADCDC9724D6F6F800C4256C /* FilesPreviewViewController.swift */; };
+		FADCDC9824D6F6F800C4256C /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADCDC9724D6F6F800C4256C /* ImagePreviewViewController.swift */; };
 		FAE22A90247AA6C8008B4F04 /* BoardsJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE22A8F247AA6C8008B4F04 /* BoardsJSON.swift */; };
 		FAE22A92247AA6CE008B4F04 /* BoardsRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE22A91247AA6CE008B4F04 /* BoardsRealm.swift */; };
 		FAF3D9532488E8A800F8AAE0 /* ThreadCatalogHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3D9522488E8A800F8AAE0 /* ThreadCatalogHeader.swift */; };
@@ -110,7 +110,7 @@
 		FA8E947324CCC38F00AE90ED /* CurrentThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentThread.swift; sourceTree = "<group>"; };
 		FAB2F1EC2475A4A900442CD4 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FADCDC9124D6D5B400C4256C /* FilesPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesPreview.swift; sourceTree = "<group>"; };
-		FADCDC9724D6F6F800C4256C /* FilesPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesPreviewViewController.swift; sourceTree = "<group>"; };
+		FADCDC9724D6F6F800C4256C /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
 		FAE22A8F247AA6C8008B4F04 /* BoardsJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardsJSON.swift; sourceTree = "<group>"; };
 		FAE22A91247AA6CE008B4F04 /* BoardsRealm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardsRealm.swift; sourceTree = "<group>"; };
 		FAF3D9522488E8A800F8AAE0 /* ThreadCatalogHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCatalogHeader.swift; sourceTree = "<group>"; };
@@ -388,7 +388,7 @@
 			isa = PBXGroup;
 			children = (
 				FADCDC9124D6D5B400C4256C /* FilesPreview.swift */,
-				FADCDC9724D6F6F800C4256C /* FilesPreviewViewController.swift */,
+				FADCDC9724D6F6F800C4256C /* ImagePreviewViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -648,7 +648,7 @@
 				FA5456C9247454370015CF84 /* SceneDelegate.swift in Sources */,
 				FAF3D9532488E8A800F8AAE0 /* ThreadCatalogHeader.swift in Sources */,
 				FAF3D9552488F16800F8AAE0 /* BookmarkElement.swift in Sources */,
-				FADCDC9824D6F6F800C4256C /* FilesPreviewViewController.swift in Sources */,
+				FADCDC9824D6F6F800C4256C /* ImagePreviewViewController.swift in Sources */,
 				FA8D186824758CFF00BDD461 /* Catalog.swift in Sources */,
 				FA8D186224758C9600BDD461 /* Requests.swift in Sources */,
 				FA8E946C24CC939100AE90ED /* ThreadCellModel.swift in Sources */,
