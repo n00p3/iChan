@@ -46,9 +46,9 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate, UISearchRes
     var activityIndicator: UIActivityIndicatorView?
     
     private let itemsPerRow: CGFloat = 3
-    private let sectionInsets = UIEdgeInsets(top: 50.0,
+    private let sectionInsets = UIEdgeInsets(top: 0,
                                              left: 20.0,
-                                             bottom: 50.0,
+                                             bottom: 0,
                                              right: 20.0)
     
     var catalog: Catalog = []
@@ -428,6 +428,13 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
         return sectionInsets.left
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        if self.catalogFiltered[section].threads.count == 0 {
+            return CGSize.zero
+        }
+        return CGSize(width: collectionView.bounds.width, height: 50)
+    }
+    
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
@@ -444,7 +451,7 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
             
             headerView.headerPage.text = "Page \(indexPath.section + 1)"
             headerView.headerPage.textColor = .gray
-            headerView.frame = CGRect(x: headerView.frame.origin.x, y: headerView.frame.origin.y + 8, width: headerView.frame.width, height: headerView.frame.height)
+            headerView.frame = CGRect(x: headerView.frame.origin.x, y: headerView.frame.origin.y, width: headerView.frame.width, height: headerView.frame.height)
             return headerView
         default:
             assert(false, "Invalid element type")
