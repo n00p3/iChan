@@ -10,6 +10,7 @@ import UIKit
 import SDWebImage
 import SPAlert
 import Kingfisher
+import SafariServices
 
 class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     var urls = [URL]()
@@ -18,6 +19,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
     private var scrolls = [UIScrollView]()
 //    private var currentVC: UIViewController?
     private var pager: UILabel?
+    private var moreButton: UIButton?
     
 //    private var i = 0
     
@@ -91,6 +93,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
                 v.pause()
             }
         }
+        
         vcs.removeAll()
     }
     
@@ -116,6 +119,16 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
             }
         }
         
+        moreButton = UIButton()
+        moreButton?.setTitle("More", for: .normal)
+        moreButton?.sizeToFit()
+        view.addSubview(moreButton!)
+        moreButton?.translatesAutoresizingMaskIntoConstraints = false
+        moreButton?.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor).isActive = true
+        moreButton?.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor).isActive = true
+        moreButton?.addTarget(self, action: #selector(moreButtonPressed(_:)), for: .touchUpInside)
+        
+        
         let blur = UIBlurEffect(style: .dark)
         let effect = UIVisualEffectView(effect: blur)
         effect.frame = view.bounds
@@ -124,7 +137,39 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         updatePager(currentPage: currentPage)
         
         setViewControllers([vcs[currentPage]], direction: .forward, animated: true, completion: nil)
+    }
+    
+    @objc private func moreButtonPressed(_ sender: AnyObject) {
+        let menu = UIAlertController(title: "More", message: nil, preferredStyle: .actionSheet)
+        menu.addAction(UIAlertAction(title: "Download this", style: .default, handler: nil))
+        menu.addAction(UIAlertAction(title: "Download all", style: .default, handler: nil))
+        menu.addAction(UIAlertAction(title: "Filter posts with this file", style: .default, handler: nil))
+        menu.addAction(UIAlertAction(title: "Search using IQDB", style: .default, handler: nil))
+        menu.addAction(UIAlertAction(title: "Search using Yandex", style: .default, handler: nil))
+        menu.addAction(UIAlertAction(title: "Search using Google", style: .default, handler: { _ in
+            self.dismiss(animated: false, completion: nil)
+        }))
+        menu.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(menu, animated: true)
+    }
+    
+    private func searchUsingGoogle() {
+        var imgUrlStr = urls[currentPage].absoluteString
+        if imgUrlStr.hasPrefix("https://") {
+            imgUrlStr = imgUrlStr[8...]
+        }
+        if imgUrlStr.hasPrefix("http://") {
+            imgUrlStr = imgUrlStr[7...]
+        }
         
+        imgUrlStr = imgUrlStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+        
+        guard let url = URL(string: "https://www.google.com/searchbyimage?image_url=" + imgUrlStr) else {
+            SPAlert.present(title: "Couldn't open URL", message: nil, preset: .error)
+            return
+        }
+        let svc = SFSafariViewController(url: url)
+        present(svc, animated: true, completion: nil)
     }
     
     private func updatePager(currentPage: Int) {
@@ -134,7 +179,9 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
             pager?.textColor = .white
         }
 
-        pager?.text = "\(mod(currentPage, vcs.count) + 1)/\(vcs.count)"
+        if vcs.count > 0 {
+            pager?.text = "\(mod(currentPage, vcs.count) + 1)/\(vcs.count)"
+        }
         pager?.translatesAutoresizingMaskIntoConstraints = false
         let horizontalConstraint = NSLayoutConstraint(item: pager!, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: 1, constant: 0)
         let verticalConstraint = NSLayoutConstraint(item: pager!, attribute: NSLayoutConstraint.Attribute.bottomMargin, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.bottomMargin, multiplier: 1, constant: -10)
