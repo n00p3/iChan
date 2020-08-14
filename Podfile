@@ -18,6 +18,8 @@ target 'iChan' do
 #  pod 'Player'
   pod 'MobileVLCKit'
   pod 'Kingfisher'
+  pod 'Presentr'
+
   target 'iChanTests' do
     inherit! :search_paths
     # Pods for testing

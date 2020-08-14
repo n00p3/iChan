@@ -13,6 +13,7 @@ PODS:
     - Imaginary (~> 4.3.1)
   - MobileVLCKit (3.3.13)
   - Player (0.13.0)
+  - Presentr (1.9)
   - Realm (5.0.0):
     - Realm/Headers (= 5.0.0)
   - Realm/Headers (5.0.0)
@@ -30,6 +31,7 @@ DEPENDENCIES:
   - Kingfisher
   - Lightbox
   - MobileVLCKit
+  - Presentr
   - Realm
   - RealmSwift
   - SDWebImage
@@ -46,6 +48,7 @@ SPEC REPOS:
     - Lightbox
     - MobileVLCKit
     - Player
+    - Presentr
     - Realm
     - RealmSwift
     - SDWebImage
@@ -61,11 +64,12 @@ SPEC CHECKSUMS:
   Lightbox: 8837c35c1150fa0410d94296e369b432d37f18c7
   MobileVLCKit: 92e1ea43124259417f481c890821efb2399d25e3
   Player: 968d8d07d923bcdd6f7e4091c9e306eb44a5f7a4
+  Presentr: 7078d7eb5d1661ebeaae60c9e42a1e534de1b993
   Realm: 76066d333de26f97e9caedaa85ee3ff4a62ca265
   RealmSwift: c1bdff09b422569dc6881410d9ccf712bcdb79b0
   SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
   SPAlert: 1a8afa1c6ac86a82ab5b2cfdf7f9a51e68cb6c0c
 
-PODFILE CHECKSUM: 3234a53c931d05cb5373f47297b8574949f8d550
+PODFILE CHECKSUM: 43ba611ee9f55415e56f1e9c67bacfaea1ac6b03
 
 COCOAPODS: 1.9.1
