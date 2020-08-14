@@ -30,20 +30,7 @@ class BookmarksViewController: UIViewController, VLCMediaPlayerDelegate {
         
         // Preload thread view.
         tabBarController?.viewControllers?[2].loadViewIfNeeded()
-//        tabBarController?.viewControllers?.forEach { let _ = $0.view }
         DataHolder.shared.threadChangedEvent.emit(DataHolder.shared.currentThread)
-        
-        
-        let links = [
-            URL(string: "https://i.4cdn.org/wsg/1596238265078.webm")!,
-            URL(string: "https://i.4cdn.org/g/1594686818586.png")!,
-            URL(string: "https://i.4cdn.org/g/1594686828799.gif")!,
-        ]
-//        filesPreviewHandler(parent: self, links: links)
-        let vc = FilesPreview(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
-        vc.urls = links
-        vc.modalPresentationStyle = .overFullScreen
-        present(vc, animated: true)
     }
     
     private func fetchBookmarks() {
