@@ -56,6 +56,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     var board = ""
     var listener: EventListener<CurrentThread>?
     let activityIndicator = UIActivityIndicatorView()
+    private var selectedImageIndex = 0
     
     override func viewDidLoad() {
         tableView.delegate = self
@@ -188,32 +189,18 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     }
     
     @objc dynamic func viewFileSelector(_ gesture: UITapGestureRecognizer) {
-//        let fileName = gesture.view?.accessibilityIdentifier?.split(separator: ".")
-//        let tim = Int(fileName?.first ?? "0") ?? 0
-//        let ext = String("." + (fileName?.last ?? ""))
-//        viewFile(tim: tim, ext: ext)
+        let filtered = dataSource.filter { $0.tim != nil && $0.ext != nil }
+        let id = filtered.firstIndex(where: { String($0.tim ?? 0) == gesture.view?.accessibilityIdentifier })
+        
         let preview = FilesPreview(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [:])
-//        preview.modalPresentationStyle = .fullScreen
         preview.urls = getThreadFiles()
-//        present(preview, animated: true)
+        preview.currentPage = id ?? 0
         
         let presentr = Presentr(presentationType: .fullScreen)
         presentr.dismissOnSwipe = true
-//        Presentr.
         customPresentViewController(presentr, viewController: preview, animated: true)
     }
     
-    private func viewFile(tim: Int, ext: String) {
-//        Requests.image(DataHolder.shared.currentCatalogBoard, tim, ext, fullSize: true, callback: { img in
-//            if img != nil {
-//                let i = LightboxImage(image: img!)
-//                let controller = LightboxController(images: [i])
-//                controller.dynamicBackground = true
-//                self.present(controller, animated: true)
-//            }
-//        })
-        filePreviewHandler(parent: self, board: DataHolder.shared.currentCatalogBoard, tim: tim, ext: ext)
-    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
@@ -235,7 +222,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
                 img.isUserInteractionEnabled = true
                 let tim = self.dataSource[indexPath.row].tim ?? 0
                 let ext = self.dataSource[indexPath.row].ext ?? ""
-                img.accessibilityIdentifier = String(tim) + ext
+                img.accessibilityIdentifier = String(tim)
                 img.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.viewFileSelector(_:))))
             })
             

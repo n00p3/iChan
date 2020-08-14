@@ -13,11 +13,12 @@ import Kingfisher
 
 class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     var urls = [URL]()
+    var currentPage = 0
     private var vcs = [UIViewController]()
     private var scrolls = [UIScrollView]()
 //    private var currentVC: UIViewController?
     private var pager: UILabel?
-    private var currentPage = 0
+    
 //    private var i = 0
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
@@ -120,9 +121,10 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         effect.frame = view.bounds
         
         view.insertSubview(effect, at: 0)
-        updatePager(currentPage: 0)
+        updatePager(currentPage: currentPage)
         
-        setViewControllers([vcs.first!], direction: .forward, animated: true, completion: nil)
+        setViewControllers([vcs[currentPage]], direction: .forward, animated: true, completion: nil)
+        
     }
     
     private func updatePager(currentPage: Int) {
