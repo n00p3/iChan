@@ -22,14 +22,14 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
     var timer: Timer?
     
     func pause() {
-        if player!.mediaPlayer.isPlaying {
+        if player?.mediaPlayer.isPlaying ?? false {
             player?.pause()
             playPauseBtn.setImage(UIImage(systemName: "play.fill"), for: .normal)
         }
     }
     
     func play() {
-        if !player!.mediaPlayer.isPlaying {
+        if !(player?.mediaPlayer.isPlaying ?? false) {
             player?.play()
             playPauseBtn.setImage(UIImage(systemName: "pause.fill"), for: .normal)
         }
