@@ -14,10 +14,10 @@ import Kingfisher
 class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     var urls = [URL]()
     private var vcs = [UIViewController]()
-//    private var currentImage: UIImageView?
-//    private var currentScroll: UIScrollView?
+    private var scrolls = [UIScrollView]()
 //    private var currentVC: UIViewController?
     private var pager: UILabel?
+    private var currentPage = 0
 //    private var i = 0
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
@@ -65,6 +65,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         let i = vcs.firstIndex(of: pageViewController.viewControllers!.first!)
+        currentPage = i ?? 0
         if finished && completed {
             let i = vcs.firstIndex(of: pageViewController.viewControllers!.first!)
             updatePager(currentPage: i ?? -1)
@@ -112,28 +113,6 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         updatePager(currentPage: 0)
         
         setViewControllers([vcs.first!], direction: .forward, animated: true, completion: nil)
-        
-
-        let moreButton = UIButton()
-        moreButton.setTitle("More", for: .normal)
-//        moreButton.frame = CGRect(x: 0, y: 0, width: 100, height: 50)
-        moreButton.sizeToFit()
-        moreButton.backgroundColor = .green
-        
-//        moreButton.translatesAutoresizingMaskIntoConstraints = true
-//        view.addSubview(moreButton)
-////        view.addConstraints([horizontalConstraint, verticalConstraint])
-//        let margins = view.layoutMarginsGuide
-//        NSLayoutConstraint.activate([
-//            moreButton.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
-//            moreButton.leadingAnchor.constraint(equalTo: margins.trailingAnchor)
-//        ])
-//
-//        let guide = view.safeAreaLayoutGuide
-//        NSLayoutConstraint.activate([
-//            moreButton.topAnchor.constraint(equalToSystemSpacingBelow: guide.topAnchor, multiplier: 1.0),
-//            guide.bottomAnchor.constraint(equalToSystemSpacingBelow: moreButton.bottomAnchor, multiplier: 1.0)
-//         ])
     }
     
     private func updatePager(currentPage: Int) {
@@ -184,6 +163,8 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         vc.view.addSubview(scroll)
         vc.view.addSubview(scroll)
         
+        scrolls.append(scroll)
+        
         vc.imgView = img
         vc.scrollView = scroll
         
@@ -191,10 +172,11 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
     }
     
     @objc private func doubleTapped(_ sender: UITapGestureRecognizer) {
-//        if currentScroll?.zoomScale == 1.0 {
-//            currentScroll?.setZoomScale(2.0, animated: true)
-//        } else {
-//            currentScroll?.setZoomScale(1.0, animated: true)
-//        }
+        let scroll = scrolls[currentPage]
+        if scroll.zoomScale == 1.0 {
+            scroll.setZoomScale(2.0, animated: true)
+        } else {
+            scroll.setZoomScale(1.0, animated: true)
+        }
     }
 }
