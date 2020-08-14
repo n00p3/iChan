@@ -12,6 +12,7 @@ import RealmSwift
 import EmitterKit
 import Lightbox
 import Player
+import Presentr
 
 class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlaybackDelegate {
     func playerReady(_ player: Player) {
@@ -52,6 +53,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     
     let COM_FONT_SIZE = CGFloat(16)
     var dataSource = [Post]()
+    var board = ""
     var listener: EventListener<CurrentThread>?
     let activityIndicator = UIActivityIndicatorView()
     
@@ -176,11 +178,29 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         dataSource.count
     }
     
+    private func getThreadFiles() -> [URL] {
+//        DataHolder.shared.currentThread.board
+        return dataSource
+            .filter { post in post.tim != nil && post.ext != nil }
+            .map { post in
+            URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(post.tim!)\(post.ext!)")!
+        }
+    }
+    
     @objc dynamic func viewFileSelector(_ gesture: UITapGestureRecognizer) {
-        let fileName = gesture.view?.accessibilityIdentifier?.split(separator: ".")
-        let tim = Int(fileName?.first ?? "0") ?? 0
-        let ext = String("." + (fileName?.last ?? ""))
-        viewFile(tim: tim, ext: ext)
+//        let fileName = gesture.view?.accessibilityIdentifier?.split(separator: ".")
+//        let tim = Int(fileName?.first ?? "0") ?? 0
+//        let ext = String("." + (fileName?.last ?? ""))
+//        viewFile(tim: tim, ext: ext)
+        let preview = FilesPreview(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [:])
+//        preview.modalPresentationStyle = .fullScreen
+        preview.urls = getThreadFiles()
+//        present(preview, animated: true)
+        
+        let presentr = Presentr(presentationType: .fullScreen)
+        presentr.dismissOnSwipe = true
+//        Presentr.
+        customPresentViewController(presentr, viewController: preview, animated: true)
     }
     
     private func viewFile(tim: Int, ext: String) {
