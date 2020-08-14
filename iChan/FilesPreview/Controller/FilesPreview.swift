@@ -83,6 +83,16 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        for vc in vcs {
+            if let v = vc as? VideoPlayerController {
+                v.pause()
+            }
+        }
+        vcs.removeAll()
+    }
+    
     
     init(transitionStyle style: UIPageViewController.TransitionStyle, navigationOrientation: UIPageViewController.NavigationOrientation, options: [NSObject : AnyObject]!) {
         super.init(transitionStyle: style, navigationOrientation: navigationOrientation, options: options as? [UIPageViewController.OptionsKey : Any])
