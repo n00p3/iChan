@@ -145,7 +145,9 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         menu.addAction(UIAlertAction(title: "Download all", style: .default, handler: nil))
         menu.addAction(UIAlertAction(title: "Filter posts with this file", style: .default, handler: nil))
         menu.addAction(UIAlertAction(title: "Search using IQDB", style: .default, handler: nil))
-        menu.addAction(UIAlertAction(title: "Search using Yandex", style: .default, handler: nil))
+        menu.addAction(UIAlertAction(title: "Search using Yandex", style: .default, handler: { _ in
+            self.searchUsingYandex()
+        }))
         menu.addAction(UIAlertAction(title: "Search using Google", style: .default, handler: { _ in
             self.searchUsingGoogle()
         }))
@@ -165,6 +167,15 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         imgUrlStr = imgUrlStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
         
         guard let url = URL(string: "https://www.google.com/searchbyimage?image_url=" + imgUrlStr) else {
+            SPAlert.present(title: "Couldn't open URL", message: nil, preset: .error)
+            return
+        }
+        let svc = SFSafariViewController(url: url)
+        present(svc, animated: true, completion: nil)
+    }
+    
+    private func searchUsingYandex() {
+        guard let url = URL(string: "https://www.yandex.com/images/search?rpt=imageview&img_url=" + urls[currentPage].absoluteString) else {
             SPAlert.present(title: "Couldn't open URL", message: nil, preset: .error)
             return
         }
