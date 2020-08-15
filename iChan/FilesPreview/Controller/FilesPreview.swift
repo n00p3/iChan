@@ -147,7 +147,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         menu.addAction(UIAlertAction(title: "Search using IQDB", style: .default, handler: nil))
         menu.addAction(UIAlertAction(title: "Search using Yandex", style: .default, handler: nil))
         menu.addAction(UIAlertAction(title: "Search using Google", style: .default, handler: { _ in
-            self.dismiss(animated: false, completion: nil)
+            self.searchUsingGoogle()
         }))
         menu.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(menu, animated: true)
