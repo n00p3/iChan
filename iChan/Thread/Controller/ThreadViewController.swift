@@ -179,21 +179,21 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         dataSource.count
     }
     
-    private func getThreadFiles() -> [URL] {
-//        DataHolder.shared.currentThread.board
-        return dataSource
-            .filter { post in post.tim != nil && post.ext != nil }
-            .map { post in
-            URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(post.tim!)\(post.ext!)")!
-        }
-    }
+//    private func getThreadFiles() -> [URL] {
+////        DataHolder.shared.currentThread.board
+//        return dataSource
+//            .filter { post in post.tim != nil && post.ext != nil }
+//            .map { post in
+//            URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(post.tim!)\(post.ext!)")!
+//        }
+//    }
     
     @objc dynamic func viewFileSelector(_ gesture: UITapGestureRecognizer) {
         let filtered = dataSource.filter { $0.tim != nil && $0.ext != nil }
         let id = filtered.firstIndex(where: { String($0.tim ?? 0) == gesture.view?.accessibilityIdentifier })
         
         let preview = FilesPreview(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [:])
-        preview.urls = getThreadFiles()
+        preview.urls = self.dataSource.filter { $0.ext != nil }
         preview.currentPage = id ?? 0
         
         let presentr = Presentr(presentationType: .fullScreen)

@@ -13,7 +13,7 @@ import Kingfisher
 import SafariServices
 
 class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIScrollViewDelegate, UIGestureRecognizerDelegate {
-    var urls = [URL]()
+    var urls = [Post]()
     var currentPage = 0
     private var vcs = [UIViewController]()
     private var scrolls = [UIScrollView]()
@@ -74,7 +74,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
             updatePager(currentPage: i ?? -1)
         }
         
-        // Pause all videos,
+        // Pause all videos.
         for it in vcs {
             if let v = it as? VideoPlayerController {
                 v.pause()
@@ -112,10 +112,10 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         delegate = self
         
         for url in urls {
-            if url.absoluteString.hasSuffix(".webm") {
-                vcs.append(videoVC(url: url))
+            if url.ext == ".webm" {
+                vcs.append(videoVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!))
             } else {
-                vcs.append(imageVC(url: url))
+                vcs.append(imageVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!))
             }
         }
         
@@ -156,7 +156,20 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
     }
     
     private func searchUsingGoogle() {
-        var imgUrlStr = urls[currentPage].absoluteString
+        for it in vcs {
+            if let v = it as? VideoPlayerController {
+                v.pause()
+            }
+        }
+        
+        var imgUrlStr = ""
+        if urls[currentPage].ext == ".webm" {
+            imgUrlStr = "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(urls[currentPage].tim!)s.jpg"
+        } else {
+            imgUrlStr = "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(urls[currentPage].tim!)\(urls[currentPage].ext!)"
+        }
+//         = urls[currentPage].absoluteString
+        
         if imgUrlStr.hasPrefix("https://") {
             imgUrlStr = imgUrlStr[8...]
         }
@@ -175,7 +188,20 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
     }
     
     private func searchUsingYandex() {
-        guard let url = URL(string: "https://www.yandex.com/images/search?rpt=imageview&img_url=" + urls[currentPage].absoluteString) else {
+        for it in vcs {
+            if let v = it as? VideoPlayerController {
+                v.pause()
+            }
+        }
+        
+        var imgUrlStr = ""
+        if urls[currentPage].ext == ".webm" {
+            imgUrlStr = "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(urls[currentPage].tim!)s.jpg"
+        } else {
+            imgUrlStr = "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(urls[currentPage].tim!)\(urls[currentPage].ext!)"
+        }
+        
+        guard let url = URL(string: "https://www.yandex.com/images/search?rpt=imageview&img_url=" + imgUrlStr) else {
             SPAlert.present(title: "Couldn't open URL", message: nil, preset: .error)
             return
         }
