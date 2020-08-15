@@ -57,13 +57,7 @@ class BoardsModalViewController: UITableViewController, UISearchResultsUpdating,
         }
         
         myDelegate?.boardChanged(newBoard: boards[indexPath.item].board)
-        
-        // Dismiss focused search field.
-        // It will work correctly even if search field wasn't focused.
-        self.dismiss(animated: true, completion: {
-            // Dismiss modal.
-            self.dismiss(animated: true, completion: nil)
-        })
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
