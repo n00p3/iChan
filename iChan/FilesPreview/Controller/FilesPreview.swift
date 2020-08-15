@@ -144,7 +144,9 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         menu.addAction(UIAlertAction(title: "Download this", style: .default, handler: nil))
         menu.addAction(UIAlertAction(title: "Download all", style: .default, handler: nil))
         menu.addAction(UIAlertAction(title: "Filter posts with this file", style: .default, handler: nil))
-        menu.addAction(UIAlertAction(title: "Search using IQDB", style: .default, handler: nil))
+        menu.addAction(UIAlertAction(title: "Search using IQDB", style: .default, handler: { _ in
+            self.searchUsingIQDB()
+        }))
         menu.addAction(UIAlertAction(title: "Search using Yandex", style: .default, handler: { _ in
             self.searchUsingYandex()
         }))
@@ -202,6 +204,28 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         }
         
         guard let url = URL(string: "https://www.yandex.com/images/search?rpt=imageview&img_url=" + imgUrlStr) else {
+            SPAlert.present(title: "Couldn't open URL", message: nil, preset: .error)
+            return
+        }
+        let svc = SFSafariViewController(url: url)
+        present(svc, animated: true, completion: nil)
+    }
+    
+    private func searchUsingIQDB() {
+        for it in vcs {
+            if let v = it as? VideoPlayerController {
+                v.pause()
+            }
+        }
+        
+        var imgUrlStr = ""
+        if urls[currentPage].ext == ".webm" {
+            imgUrlStr = "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(urls[currentPage].tim!)s.jpg"
+        } else {
+            imgUrlStr = "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(urls[currentPage].tim!)\(urls[currentPage].ext!)"
+        }
+        
+        guard let url = URL(string: "http://iqdb.org/?url=" + imgUrlStr) else {
             SPAlert.present(title: "Couldn't open URL", message: nil, preset: .error)
             return
         }
