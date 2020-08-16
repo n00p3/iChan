@@ -11,6 +11,7 @@ import SDWebImage
 import SPAlert
 import Kingfisher
 import SafariServices
+import Photos
 
 class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     var urls = [Post]()
@@ -141,7 +142,9 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
     
     @objc private func moreButtonPressed(_ sender: AnyObject) {
         let menu = UIAlertController(title: "More", message: nil, preferredStyle: .actionSheet)
-        menu.addAction(UIAlertAction(title: "Download this", style: .default, handler: nil))
+        menu.addAction(UIAlertAction(title: "Download this", style: .default, handler: { _ in
+            self.downloadCurrentFile()
+        }))
         menu.addAction(UIAlertAction(title: "Download all", style: .default, handler: nil))
         menu.addAction(UIAlertAction(title: "Filter posts with this file", style: .default, handler: nil))
         menu.addAction(UIAlertAction(title: "Search using IQDB", style: .default, handler: { _ in
@@ -298,5 +301,114 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         } else {
             scroll.setZoomScale(1.0, animated: true)
         }
+    }
+
+    func downloadCurrentFile () {
+        PHPhotoLibrary.requestAuthorization({ status in
+            if status != .authorized {
+                DispatchQueue.main.async {
+                    SPAlert.present(title: "Permission to save files denied", message: nil, preset: .error)
+                }
+                return
+            }
+            guard let url = URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(self.urls[self.currentPage].tim!)\(self.urls[self.currentPage].ext!)") else {
+                DispatchQueue.main.async {
+                    SPAlert.present(title: "URL is invalid", message: nil, preset: .error)
+                }
+                return
+            }
+            
+            self.saveImage(photoURL: url, toAlbum: "iChan", completionHandler: { a, b in
+                DispatchQueue.main.async {
+                    SPAlert.present(title: "File saved", message: nil, preset: .done)
+                }
+            })
+        })
+    }
+    
+    func createAlbum(withTitle title: String, completionHandler: @escaping (PHAssetCollection?) -> ()) {
+        DispatchQueue.global(qos: .background).async {
+            var placeholder: PHObjectPlaceholder?
+
+            PHPhotoLibrary.shared().performChanges({
+                let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: title)
+                placeholder = createAlbumRequest.placeholderForCreatedAssetCollection
+            }, completionHandler: { (created, error) in
+                var album: PHAssetCollection?
+                if created {
+                    let collectionFetchResult = placeholder.map { PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [$0.localIdentifier], options: nil) }
+                    album = collectionFetchResult?.firstObject
+                }
+
+                completionHandler(album)
+            })
+        }
+    }
+    
+    func getAlbum(title: String, completionHandler: @escaping (PHAssetCollection?) -> ()) {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            let fetchOptions = PHFetchOptions()
+            fetchOptions.predicate = NSPredicate(format: "title = %@", title)
+            let collections = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
+
+            if let album = collections.firstObject {
+                completionHandler(album)
+            } else {
+                self?.createAlbum(withTitle: title, completionHandler: { (album) in
+                    completionHandler(album)
+                })
+            }
+        }
+    }
+    
+    func saveImage(photoURL: URL, toAlbum titled: String, completionHandler: @escaping (Bool, Error?) -> ()) {
+        getAlbum(title: titled) { (album) in
+            DispatchQueue.global(qos: .background).async {
+                PHPhotoLibrary.shared().performChanges({
+                    do {
+                        let assetRequest = PHAssetChangeRequest.creationRequestForAsset(from: UIImage(data: try Data(contentsOf: photoURL))!)
+                        let assets = assetRequest.placeholderForCreatedAsset
+                            .map { [$0] as NSArray } ?? NSArray()
+                        let albumChangeRequest = album.flatMap { PHAssetCollectionChangeRequest(for: $0) }
+                        albumChangeRequest?.addAssets(assets)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }, completionHandler: { (success, error) in
+                    completionHandler(success, error)
+                })
+            }
+        }
+    }
+    
+    func createPhotoLibraryAlbum(name: String) {
+        var albumPlaceholder: PHObjectPlaceholder?
+        PHPhotoLibrary.shared().performChanges({
+            // Request creating an album with parameter name
+            let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: name)
+            // Get a placeholder for the new album
+            albumPlaceholder = createAlbumRequest.placeholderForCreatedAssetCollection
+        }, completionHandler: { success, error in
+            if success {
+                guard let placeholder = albumPlaceholder else {
+                    fatalError("Album placeholder is nil")
+                }
+
+                let fetchResult = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [placeholder.localIdentifier], options: nil)
+                guard let album: PHAssetCollection = fetchResult.firstObject else {
+                    // FetchResult has no PHAssetCollection
+                    return
+                }
+
+                // Saved successfully!
+                print(album.assetCollectionType)
+            }
+            else if let e = error {
+                // Save album failed with error
+            }
+            else {
+                // Save album failed with no error
+            }
+        })
     }
 }

@@ -68,6 +68,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>App saves files to ~/Photos directory.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>App saves files to ~/Photos directory.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
