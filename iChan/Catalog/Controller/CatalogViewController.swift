@@ -17,6 +17,8 @@ protocol CatalogBoardDelegate {
 }
 
 class CatalogViewController: UIViewController, CatalogBoardDelegate, UISearchResultsUpdating {
+    private let CATALOG_FONT_SIZE = CGFloat(10)
+    
     func updateSearchResults(for searchController: UISearchController) {
         catalogFiltered = Catalog(catalog)
         
@@ -370,9 +372,17 @@ extension CatalogViewController: UICollectionViewDataSource {
             let title = [sub, com].filter { $0 != "" }.first ?? "[no comment]"
             
             let label = UILabel()
-            label.text = title
-            label.minimumScaleFactor = 0.5
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 2
+
+            let attrs: [NSAttributedString.Key : Any] = [
+                .font : UIFont.systemFont(ofSize: self.CATALOG_FONT_SIZE),
+                .paragraphStyle : paragraphStyle
+            ]
             label.adjustsFontSizeToFitWidth = true
+            label.attributedText = title.htmlToAttributedString(attrs: attrs)
+            label.minimumScaleFactor = 0.5
+            label.lineBreakMode = .byWordWrapping
             label.numberOfLines = 2
             
             let INSET = CGFloat(8)
@@ -381,6 +391,7 @@ extension CatalogViewController: UICollectionViewDataSource {
                 y: ((cell.contentView.frame.height - H) + cell.contentView.frame.origin.y) + INSET / 2,
                 width: cell.contentView.frame.width - INSET * 2,
                 height: H * 0.8)
+            label.sizeToFit()
             cell.contentView.addSubview(label)
         })
         return cell
