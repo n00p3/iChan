@@ -18,24 +18,30 @@ protocol CatalogBoardDelegate {
 
 class CatalogViewController: UIViewController, CatalogBoardDelegate, UISearchResultsUpdating {
     private let CATALOG_FONT_SIZE = CGFloat(10)
+    private var search = ""
     
     func updateSearchResults(for searchController: UISearchController) {
+        search = searchController.searchBar.text ?? ""
+        
+        DispatchQueue.main.asyncDeduped(target: self, after: 0.5) {
+             self.updateSearchDebounced()
+        }
+    }
+    
+    private func updateSearchDebounced() {
         catalogFiltered = Catalog(catalog)
         
-        if searchController.searchBar.text?.count == 0 {
+        if search.count == 0 {
             self.collectionView.reloadData()
             return
         }
         
         for pageId in (0..<catalogFiltered.count).reversed() {
             for threadId in (0..<catalogFiltered[pageId].threads.count).reversed() {
-                if !((catalogFiltered[pageId].threads[threadId].sub?.lowercased().contains(searchController.searchBar.text!.lowercased()))! ||
-                    (catalogFiltered[pageId].threads[threadId].com?.lowercased().contains(searchController.searchBar.text!.lowercased()))!) {
+                if !((catalogFiltered[pageId].threads[threadId].sub?.lowercased().contains(search.lowercased()))! ||
+                    (catalogFiltered[pageId].threads[threadId].com?.lowercased().contains(search.lowercased()))!) {
                     catalogFiltered[pageId].threads.remove(at: threadId)
                 }
-//                catalog[pageId].threads[threadId].visible =
-//                    (catalog[pageId].threads[threadId].sub?.lowercased().contains(searchController.searchBar.text!.lowercased()))! ||
-//                    (catalog[pageId].threads[threadId].com?.lowercased().contains(searchController.searchBar.text!.lowercased()))!
             }
         }
         
@@ -288,6 +294,7 @@ extension CatalogViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return catalogFiltered[section].threads.count
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
@@ -341,9 +348,9 @@ extension CatalogViewController: UICollectionViewDataSource {
             subView.removeFromSuperview()
         }
         
-        let no = catalog[indexPath.section].threads[indexPath.row].no
+        let no = catalogFiltered[indexPath.section].threads[indexPath.row].no
 
-        store(thread: self.catalog[indexPath.section].threads[indexPath.row])
+        store(thread: self.catalogFiltered[indexPath.section].threads[indexPath.row])
         readImageForThread(board: DataHolder.shared.currentCatalogBoard, threadNo: no, callback: { img in
             if img != nil {
                 let i = UIImageView(image: img!)
@@ -366,6 +373,10 @@ extension CatalogViewController: UICollectionViewDataSource {
             cell.contentView.layer.cornerRadius = 8
             cell.contentView.clipsToBounds = true
             
+            
+            if indexPath.row >= self.catalogFiltered[indexPath.section].threads.count {
+                return
+            }
             let sub = self.catalogFiltered[indexPath.section].threads[indexPath.row].sub ?? ""
             let com = self.catalogFiltered[indexPath.section].threads[indexPath.row].com ?? ""
             
@@ -400,7 +411,6 @@ extension CatalogViewController: UICollectionViewDataSource {
 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        print(catalog[indexPath.section].threads[indexPath.row])
         DataHolder.shared.currentThread = CurrentThread(
             threadNo: catalogFiltered[indexPath.section].threads[indexPath.row].no,
             board: DataHolder.shared.currentCatalogBoard)
@@ -418,11 +428,11 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
+
         let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
         let availableWidth = view.frame.width - paddingSpace
         let widthPerItem = availableWidth / itemsPerRow
-        
+
         return CGSize(width: widthPerItem, height: widthPerItem * 1.2)
     }
     
