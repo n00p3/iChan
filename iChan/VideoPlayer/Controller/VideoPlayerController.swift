@@ -37,6 +37,9 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         timer?.invalidate()
+        player?.mediaList = VLCMediaList()
+        player?.mediaPlayer.stop()
+        player = nil
     }
     
     @objc private func sliderValueWillChange() {
@@ -84,7 +87,7 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
         media.add(VLCMedia(url: URL(string: videoURL)!))
         player?.mediaList = media
         player?.repeatMode = .repeatAllItems
-        player?.play()
+//        player?.play()
         
         createTimer()
     }
@@ -99,18 +102,9 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
             }
         })
     }
-    
-//    @objc private func pinchedView(_ sender: UIPinchGestureRecognizer) {
-//        let trans = CGAffineTransform(
-//            scaleX: sender.scale,
-//            y: sender.scale)
-//        videoView.transform = trans
-//    }
   
-    
-    
     @IBAction func playPause(_ sender: Any) {
-        if player!.mediaPlayer.isPlaying {
+        if player?.mediaPlayer.isPlaying ?? true {
             player?.pause()
             playPauseBtn.setImage(UIImage(systemName: "play.fill"), for: .normal)
         } else {
@@ -118,8 +112,4 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
             playPauseBtn.setImage(UIImage(systemName: "pause.fill"), for: .normal)
         }
     }
-    
-//    func mediaPlayerStateChanged(_ aNotification: Notification!) {
-////        print(player?.mediaPlayer.state)
-//    }
 }
