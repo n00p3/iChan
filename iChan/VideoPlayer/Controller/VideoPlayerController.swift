@@ -66,6 +66,11 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         view.backgroundColor = .clear
         playPauseBtn.setImage(UIImage(systemName: "pause.fill"), for: .normal)
         var thumb = UIImage.scale(image: UIImage(systemName: "circle.fill")!, by: 0.5)
@@ -87,7 +92,7 @@ class VideoPlayerController : UIViewController, VLCMediaPlayerDelegate {
         media.add(VLCMedia(url: URL(string: videoURL)!))
         player?.mediaList = media
         player?.repeatMode = .repeatAllItems
-//        player?.play()
+        player?.play()
         
         createTimer()
     }
