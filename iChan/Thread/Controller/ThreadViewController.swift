@@ -55,6 +55,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     var dataSourceFiltered = [Post]()
     var dataSource = [Post]()
     var board = ""
+    var highlightCellIndex: Int? = nil
     var listener: EventListener<CurrentThread>?
     let activityIndicator = UIActivityIndicatorView()
     private var selectedImageIndex = 0
@@ -295,6 +296,16 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         
         cell.contentView.addSubview(comment)
         
+        if highlightCellIndex == indexPath.row {
+            let defaultColor = cell.backgroundColor
+            cell.backgroundColor = .yellow
+            UIView.animateKeyframes(withDuration: 1, delay: 1, options: [], animations: {
+                cell.backgroundColor = defaultColor
+            }, completion: { _ in
+                self.highlightCellIndex = nil
+            })
+        }
+        
         return cell
     }
     
@@ -312,9 +323,9 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
             searchController.isActive = false
             dataSourceFiltered = dataSource
             tableView.reloadData()
-            DispatchQueue.main.async {
-                tableView.scrollToRow(at: indexPathToFind, at: .middle, animated: true)
-            }
+            tableView.layoutIfNeeded()
+            tableView.scrollToRow(at: indexPathToFind, at: .middle, animated: false)
+            highlightCellIndex = index
         }
     }
     
