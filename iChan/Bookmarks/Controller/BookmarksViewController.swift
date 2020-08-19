@@ -88,28 +88,13 @@ class BookmarksViewController: UIViewController, VLCMediaPlayerDelegate {
         navigationItem.rightBarButtonItem = buttonRemoveAllBookmarks
         
         tableView.dataSource = self
+        tableView.delegate = self
         
         fetchBookmarks()
     }
-    
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if (editingStyle == .delete) {
-            let realm = try! Realm()
-            try! realm.write {
-                let bookmark = realm.objects(BookmarkRealm.self).filter(NSPredicate(format: "threadNo = %d", self.dataSource[indexPath.row].threadNo))
-                realm.delete(bookmark)
-            }
-            self.dataSource.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
-        }
-    }
 }
 
-extension BookmarksViewController : UITableViewDataSource {
+extension BookmarksViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         dataSource.count
     }
@@ -132,5 +117,28 @@ extension BookmarksViewController : UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
     
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == .delete) {
+            let realm = try! Realm()
+            try! realm.write {
+                let bookmark = realm.objects(BookmarkRealm.self).filter(NSPredicate(format: "threadNo = %d", self.dataSource[indexPath.row].threadNo))
+                realm.delete(bookmark)
+            }
+            self.dataSource.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        DataHolder.shared.currentThread = CurrentThread(
+            threadNo: dataSource[indexPath.row].threadNo,
+            board: dataSource[indexPath.row].board)
+        
+        DataHolder.shared.threadChangedEvent.emit(CurrentThread(threadNo: dataSource[indexPath.row].threadNo, board: dataSource[indexPath.row].board))
+        tabBarController?.selectedIndex = 2
+    }
 }
