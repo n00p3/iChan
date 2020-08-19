@@ -302,6 +302,18 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let index = dataSource.firstIndex(where: { $0.no == dataSourceFiltered[indexPath.row].no })!
+        let indexPathToFind = IndexPath(item: index, section: 0)
+        
+        if searchController.isActive {
+            searchController.isActive = false
+            dataSourceFiltered = dataSource
+            tableView.reloadData()
+            DispatchQueue.main.async {
+                tableView.scrollToRow(at: indexPathToFind, at: .middle, animated: true)
+            }
+        }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
