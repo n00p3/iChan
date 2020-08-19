@@ -135,6 +135,8 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
                 no: data.threadNo,
                 success: { posts in
                     self.dataSourceFiltered = posts.posts
+                    self.dataSource = posts.posts
+                    
                     self.setHeader(posts.posts.first?.sub)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
