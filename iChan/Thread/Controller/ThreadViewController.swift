@@ -205,6 +205,10 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         
+        if dataSource.count == 0 {
+            return cell
+        }
+        
         var x = CGFloat(20)
         
         if dataSource[indexPath.row].filename != nil {
@@ -269,6 +273,11 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         var x = CGFloat(20)
+        
+        if dataSource.count == 0 {
+            return 0
+        }
+        
         if dataSource[indexPath.row].filename != nil {
             x = CGFloat(128)
         }

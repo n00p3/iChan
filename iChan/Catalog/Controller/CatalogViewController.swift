@@ -450,6 +450,10 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        if catalogFiltered.count == 0 {
+            return CGSize.zero
+        }
+        
         if self.catalogFiltered[section].threads.count == 0 {
             return CGSize.zero
         }
