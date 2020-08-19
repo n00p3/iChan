@@ -14,7 +14,7 @@ import Lightbox
 import Player
 import Presentr
 
-class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlaybackDelegate {
+class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlaybackDelegate, UISearchResultsUpdating {
     func playerReady(_ player: Player) {
         
     }
@@ -52,15 +52,21 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     }
     
     let COM_FONT_SIZE = CGFloat(16)
+    var dataSourceFiltered = [Post]()
     var dataSource = [Post]()
     var board = ""
     var listener: EventListener<CurrentThread>?
     let activityIndicator = UIActivityIndicatorView()
     private var selectedImageIndex = 0
+    private var searchController = UISearchController()
     
     override func viewDidLoad() {
         tableView.delegate = self
         tableView.dataSource = self
+        searchController.searchResultsUpdater = self
+        
+        navigationItem.searchController = searchController
+        navigationItem.searchController?.obscuresBackgroundDuringPresentation = false
         
         activityIndicator.startAnimating()
         activityIndicator.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height / 2)
@@ -71,6 +77,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
             DataHolder.shared.currentThread.board,
             no: DataHolder.shared.currentThread.threadNo,
             success: { posts in
+                self.dataSourceFiltered = posts.posts
                 self.dataSource = posts.posts
                 self.setHeader(posts.posts.first?.sub)
                 DispatchQueue.main.async {
@@ -89,10 +96,36 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         prepareEventListener()
     }
     
+    func updateSearchResults(for searchController: UISearchController) {
+        DispatchQueue.main.asyncDeduped(target: self, after: 0.5) {
+             self.updateSearchDebounced()
+        }
+    }
+    
+    private func updateSearchDebounced() {
+        dataSourceFiltered = dataSource
+        
+        if searchController.searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0 == 0 {
+            tableView.reloadData()
+            return
+        }
+        
+        for i in (0..<dataSourceFiltered.count).reversed() {
+            if !(dataSourceFiltered[i].com?.lowercased().contains(searchController.searchBar.text!.lowercased()) ?? false ||
+                 dataSourceFiltered[i].sub?.lowercased().contains(searchController.searchBar.text!.lowercased()) ?? false ||
+                 dataSourceFiltered[i].name.lowercased().contains(searchController.searchBar.text!.lowercased()) ||
+                 dataSourceFiltered[i].capcode?.lowercased().contains(searchController.searchBar.text!.lowercased()) ?? false) {
+                dataSourceFiltered.remove(at: i)
+            }
+        }
+        
+        tableView.reloadData()
+    }
+    
     private func prepareEventListener() {
         listener = DataHolder.shared.threadChangedEvent.on { data in
             self.activityIndicator.alpha = 1
-            self.dataSource.removeAll()
+            self.dataSourceFiltered.removeAll()
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -101,7 +134,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
                 data.board,
                 no: data.threadNo,
                 success: { posts in
-                    self.dataSource = posts.posts
+                    self.dataSourceFiltered = posts.posts
                     self.setHeader(posts.posts.first?.sub)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
@@ -132,7 +165,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         }
 //        print("remote \(threadNo)")
         
-        let x = self.dataSource.filter { $0.no == postNo }.first
+        let x = self.dataSourceFiltered.filter { $0.no == postNo }.first
         let ext = x?.ext ?? ""
         let tim = x?.tim ?? 0
         Requests.image(board, tim, ext, fullSize: false) { (img) in
@@ -176,7 +209,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        dataSource.count
+        dataSourceFiltered.count
     }
     
 //    private func getThreadFiles() -> [URL] {
@@ -189,11 +222,11 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
 //    }
     
     @objc dynamic func viewFileSelector(_ gesture: UITapGestureRecognizer) {
-        let filtered = dataSource.filter { $0.tim != nil && $0.ext != nil }
+        let filtered = dataSourceFiltered.filter { $0.tim != nil && $0.ext != nil }
         let id = filtered.firstIndex(where: { String($0.tim ?? 0) == gesture.view?.accessibilityIdentifier })
         
         let preview = FilesPreview(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [:])
-        preview.urls = self.dataSource.filter { $0.ext != nil }
+        preview.urls = self.dataSourceFiltered.filter { $0.ext != nil }
         preview.currentPage = id ?? 0
         
         let presentr = Presentr(presentationType: .fullScreen)
@@ -205,13 +238,13 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         
-        if dataSource.count == 0 {
+        if dataSourceFiltered.count == 0 {
             return cell
         }
         
         var x = CGFloat(20)
         
-        if dataSource[indexPath.row].filename != nil {
+        if dataSourceFiltered[indexPath.row].filename != nil {
             let img = UIImageView()
             img.contentMode = .scaleAspectFill
             img.clipsToBounds = true
@@ -221,11 +254,11 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         
             cell.addSubview(img)
             
-            readImageForPost(board: DataHolder.shared.currentThread.board, postNo: dataSource[indexPath.row].no, callback: { i in
+            readImageForPost(board: DataHolder.shared.currentThread.board, postNo: dataSourceFiltered[indexPath.row].no, callback: { i in
                 img.image = i
                 img.isUserInteractionEnabled = true
-                let tim = self.dataSource[indexPath.row].tim ?? 0
-                let ext = self.dataSource[indexPath.row].ext ?? ""
+                let tim = self.dataSourceFiltered[indexPath.row].tim ?? 0
+                let ext = self.dataSourceFiltered[indexPath.row].ext ?? ""
                 img.accessibilityIdentifier = String(tim)
                 img.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.viewFileSelector(_:))))
             })
@@ -234,9 +267,9 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         }
         
         let header = UILabel()
-        let author = dataSource[indexPath.row].name
-        let dateTime = dataSource[indexPath.row].now
-        let no = dataSource[indexPath.row].no
+        let author = dataSourceFiltered[indexPath.row].name
+        let dateTime = dataSourceFiltered[indexPath.row].now
+        let no = dataSourceFiltered[indexPath.row].no
         header.text = "\(author) \(dateTime) \(no)"
         header.textColor = .gray
         header.adjustsFontSizeToFitWidth = true
@@ -252,7 +285,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         let attrs: [NSAttributedString.Key : Any] = [
             .font : UIFont.systemFont(ofSize: COM_FONT_SIZE)
         ]
-        let attrStr = dataSource[indexPath.row].com?.htmlToAttributedString(attrs: attrs)
+        let attrStr = dataSourceFiltered[indexPath.row].com?.htmlToAttributedString(attrs: attrs)
         comment.attributedText = attrStr
         comment.frame = CGRect(x: x, y: 8, width: tableView.frame.width - (x + 20), height: CGFloat.greatestFiniteMagnitude)
         comment.sizeToFit()
@@ -274,11 +307,11 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         var x = CGFloat(20)
         
-        if dataSource.count == 0 {
+        if dataSourceFiltered.count == 0 {
             return 0
         }
         
-        if dataSource[indexPath.row].filename != nil {
+        if dataSourceFiltered[indexPath.row].filename != nil {
             x = CGFloat(128)
         }
         let comment = UILabel()
@@ -288,7 +321,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         let attrs: [NSAttributedString.Key : Any] = [
             .font : UIFont.systemFont(ofSize: COM_FONT_SIZE)
         ]
-        let attrStr = dataSource[indexPath.row].com?.htmlToAttributedString(attrs: attrs)
+        let attrStr = dataSourceFiltered[indexPath.row].com?.htmlToAttributedString(attrs: attrs)
         comment.attributedText = attrStr
         comment.frame = CGRect(x: x, y: 8, width: tableView.frame.width - (x + 20), height: CGFloat.greatestFiniteMagnitude)
         comment.sizeToFit()
