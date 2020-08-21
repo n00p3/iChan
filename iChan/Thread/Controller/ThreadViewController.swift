@@ -206,7 +206,7 @@ class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlayba
         if val == nil {
             navigationItem.title = "Thread"
         } else {
-            navigationItem.title = val!
+            navigationItem.title = String(htmlEncodedString: val!)
         }
         
     }
