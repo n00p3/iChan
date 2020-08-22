@@ -33,7 +33,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let viewControllerIndex = vcs.index(of: viewController) else {
+        guard let viewControllerIndex = vcs.firstIndex(of: viewController) else {
             return nil
         }
         let previousIndex = viewControllerIndex - 1
@@ -45,11 +45,13 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
             return nil
         }
         
+        vcs[previousIndex] = createControllerFor(page: previousIndex)
+        
         return vcs[previousIndex]
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let viewControllerIndex = vcs.index(of: viewController) else {
+        guard let viewControllerIndex = vcs.firstIndex(of: viewController) else {
             return nil
         }
         let nextIndex = viewControllerIndex + 1
@@ -62,6 +64,8 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         guard orderedViewControllersCount > nextIndex else {
             return nil
         }
+        
+        vcs[nextIndex] = createControllerFor(page: nextIndex)
         
         return vcs[nextIndex]
     }
@@ -112,13 +116,16 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         dataSource = self
         delegate = self
         
-        for url in urls {
-            if url.ext == ".webm" {
-                vcs.append(videoVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!))
-            } else {
-                vcs.append(imageVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!))
-            }
+        for _ in urls {
+            vcs.append(UIViewController())
         }
+//        for url in urls {
+//            if url.ext == ".webm" {
+//                vcs.append(videoVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!))
+//            } else {
+//                vcs.append(imageVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!))
+//            }
+//        }
         
         moreButton = UIButton()
         moreButton?.setTitle("More", for: .normal)
@@ -137,7 +144,18 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         view.insertSubview(effect, at: 0)
         updatePager(currentPage: currentPage)
         
+        
+        vcs[currentPage] = createControllerFor(page: currentPage)
         setViewControllers([vcs[currentPage]], direction: .forward, animated: true, completion: nil)
+    }
+    
+    private func createControllerFor(page: Int) -> UIViewController {
+        let url = urls[page]
+        if url.ext == ".webm" {
+            return videoVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!)
+        } else {
+            return imageVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!)
+        }
     }
     
     @objc private func moreButtonPressed(_ sender: AnyObject) {
@@ -267,7 +285,10 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         let img = UIImageView()
         img.frame = view.bounds
         
-        img.kf.setImage(with: url)
+        img.kf.setImage(with: .network(url),  progressBlock: { receivedSize, totalSize in
+            print(receivedSize, totalSize)
+        })
+        
         img.contentMode = .scaleAspectFit
         
         let scroll = UIScrollView()
