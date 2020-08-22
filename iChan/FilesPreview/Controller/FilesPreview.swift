@@ -21,6 +21,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
 //    private var currentVC: UIViewController?
     private var pager: UILabel?
     private var moreButton: UIButton?
+    private var progress: UIProgressView?
     
 //    private var i = 0
     
@@ -147,6 +148,8 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         
         vcs[currentPage] = createControllerFor(page: currentPage)
         setViewControllers([vcs[currentPage]], direction: .forward, animated: true, completion: nil)
+        
+        updateProgress(value: 0, page: currentPage)
     }
     
     private func createControllerFor(page: Int) -> UIViewController {
@@ -154,7 +157,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         if url.ext == ".webm" {
             return videoVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!)
         } else {
-            return imageVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!)
+            return imageVC(url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(url.tim!)\(url.ext!)")!, page: page)
         }
     }
     
@@ -254,20 +257,45 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         present(svc, animated: true, completion: nil)
     }
     
+    /**
+     Value should be in 0..1 range
+     */
+    private func updateProgress(value: Float, page: Int) {
+        if progress == nil {
+            progress = UIProgressView()
+
+            progress?.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(progress!)
+            
+            let horizontalConstraint = NSLayoutConstraint(item: progress!, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: 1, constant: 0)
+            let verticalConstraint = NSLayoutConstraint(item: progress!, attribute: NSLayoutConstraint.Attribute.bottomMargin, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.bottomMargin, multiplier: 1, constant: -50)
+            let widthConstraint = NSLayoutConstraint(item: progress!, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: view.frame.width)
+            view.addConstraints([horizontalConstraint, verticalConstraint, widthConstraint])
+        }
+        
+        if page != currentPage {
+            return
+        }
+        progress?.setProgress(value, animated: value > progress!.progress)
+        progress?.isHidden = value >= 1 || value <= 0
+    }
+    
     private func updatePager(currentPage: Int) {
         if pager == nil {
             pager = UILabel()
             view.addSubview(pager!)
             pager?.textColor = .white
+            
+            pager?.translatesAutoresizingMaskIntoConstraints = false
+
+            let horizontalConstraint = NSLayoutConstraint(item: pager!, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: 1, constant: 0)
+            let verticalConstraint = NSLayoutConstraint(item: pager!, attribute: NSLayoutConstraint.Attribute.bottomMargin, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.bottomMargin, multiplier: 1, constant: -10)
+            view.addConstraints([horizontalConstraint, verticalConstraint])
         }
 
         if vcs.count > 0 {
             pager?.text = "\(mod(currentPage, vcs.count) + 1)/\(vcs.count)"
         }
-        pager?.translatesAutoresizingMaskIntoConstraints = false
-        let horizontalConstraint = NSLayoutConstraint(item: pager!, attribute: NSLayoutConstraint.Attribute.centerX, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerX, multiplier: 1, constant: 0)
-        let verticalConstraint = NSLayoutConstraint(item: pager!, attribute: NSLayoutConstraint.Attribute.bottomMargin, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.bottomMargin, multiplier: 1, constant: -10)
-        view.addConstraints([horizontalConstraint, verticalConstraint])
     }
     
     private func videoVC(url: URL) -> VideoPlayerController {
@@ -276,17 +304,17 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         return vc
     }
     
-    private func imageVC(url: URL) -> ImagePreviewViewController {
+    private func imageVC(url: URL, page: Int) -> ImagePreviewViewController {
         let vc = ImagePreviewViewController()
-        
-//        vc.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "test", style: .plain, target: self, action: nil)
+
         vc.modalPresentationStyle = .fullScreen
         
         let img = UIImageView()
         img.frame = view.bounds
         
         img.kf.setImage(with: .network(url),  progressBlock: { receivedSize, totalSize in
-            print(receivedSize, totalSize)
+//            print(receivedSize, totalSize)
+            self.updateProgress(value: Float(receivedSize) / Float(totalSize), page: page)
         })
         
         img.contentMode = .scaleAspectFit
@@ -305,12 +333,12 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         doubleTapGesture.numberOfTapsRequired = 2
         scroll.addGestureRecognizer(doubleTapGesture)
         vc.view.addSubview(scroll)
-        vc.view.addSubview(scroll)
         
         scrolls.append(scroll)
         
-        vc.imgView = img
-        vc.scrollView = scroll
+//        vc.imgView = img
+//        vc.scrollView = scroll
+//        vc.progress = progress
         
         return vc
     }
