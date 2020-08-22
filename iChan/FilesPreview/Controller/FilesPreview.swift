@@ -336,9 +336,8 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         
         scrolls.append(scroll)
         
-//        vc.imgView = img
-//        vc.scrollView = scroll
-//        vc.progress = progress
+        vc.imgView = img
+        vc.scrollView = scroll
         
         return vc
     }
