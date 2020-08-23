@@ -14,52 +14,30 @@ import Lightbox
 import Player
 import Presentr
 
-class ThreadViewController : UITableViewController, PlayerDelegate, PlayerPlaybackDelegate, UISearchResultsUpdating {
-    func playerReady(_ player: Player) {
-        
-    }
-    
-    func playerPlaybackStateDidChange(_ player: Player) {
-        
-    }
-    
-    func playerBufferingStateDidChange(_ player: Player) {
-        
-    }
-    
-    func playerBufferTimeDidChange(_ bufferTime: Double) {
-        
-    }
-    
-    func player(_ player: Player, didFailWithError error: Error?) {
-        
-    }
-    
-    func playerCurrentTimeDidChange(_ player: Player) {
-        
-    }
-    
-    func playerPlaybackWillStartFromBeginning(_ player: Player) {
-        
-    }
-    
-    func playerPlaybackDidEnd(_ player: Player) {
-        
-    }
-    
-    func playerPlaybackWillLoop(_ player: Player) {
-        
-    }
-    
+class ThreadViewController : UITableViewController, UISearchResultsUpdating {
     let COM_FONT_SIZE = CGFloat(16)
     var dataSourceFiltered = [Post]()
     var dataSource = [Post]()
-    var board = ""
     var highlightCellIndex: Int? = nil
     var listener: EventListener<CurrentThread>?
     let activityIndicator = UIActivityIndicatorView()
     private var selectedImageIndex = 0
     private var searchController = UISearchController()
+
+    private func updateScrollLocationInDb(offset: Float) {
+        ThreadScrollOffset.setOffset(
+            threadNo: DataHolder.shared.currentThread.threadNo,
+            board: DataHolder.shared.currentThread.board,
+            offset: Float(offset))
+    }
+    
+    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        updateScrollLocationInDb(offset: Float(scrollView.contentOffset.y))
+    }
+    
+    override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        updateScrollLocationInDb(offset: Float(scrollView.contentOffset.y))
+    }
     
     override func viewDidLoad() {
         tableView.delegate = self

@@ -28,6 +28,7 @@
 		FA5456FC247457510015CF84 /* CatalogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5456FB247457510015CF84 /* CatalogViewController.swift */; };
 		FA63A51F24CDC286009C7072 /* VideoPlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA63A51E24CDC286009C7072 /* VideoPlayerController.swift */; };
 		FA63A52224CDC4F5009C7072 /* VideoPlayer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA63A52124CDC4F5009C7072 /* VideoPlayer.storyboard */; };
+		FA65B35724F2B4E0005790B6 /* ThreadScrollOffset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA65B35624F2B4E0005790B6 /* ThreadScrollOffset.swift */; };
 		FA8850A6247D9BC9009D0DDA /* ThreadCatalogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */; };
 		FA8D186224758C9600BDD461 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186124758C9600BDD461 /* Requests.swift */; };
 		FA8D186424758CE300BDD461 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186324758CE300BDD461 /* Posts.swift */; };
@@ -99,6 +100,7 @@
 		FA5456FB247457510015CF84 /* CatalogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewController.swift; sourceTree = "<group>"; };
 		FA63A51E24CDC286009C7072 /* VideoPlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerController.swift; sourceTree = "<group>"; };
 		FA63A52124CDC4F5009C7072 /* VideoPlayer.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = VideoPlayer.storyboard; sourceTree = "<group>"; };
+		FA65B35624F2B4E0005790B6 /* ThreadScrollOffset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadScrollOffset.swift; sourceTree = "<group>"; };
 		FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCatalogCell.swift; sourceTree = "<group>"; };
 		FA8D186124758C9600BDD461 /* Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requests.swift; sourceTree = "<group>"; };
 		FA8D186324758CE300BDD461 /* Posts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
@@ -271,6 +273,7 @@
 				FAF3D9542488F16800F8AAE0 /* BookmarkElement.swift */,
 				FA8E947124CCB7C900AE90ED /* BookmarkRealm.swift */,
 				FA8E947324CCC38F00AE90ED /* CurrentThread.swift */,
+				FA65B35624F2B4E0005790B6 /* ThreadScrollOffset.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -642,6 +645,7 @@
 				FAE22A92247AA6CE008B4F04 /* BoardsRealm.swift in Sources */,
 				FA25D8092487ADC4002D14FA /* CardCell.swift in Sources */,
 				FAB2F1ED2475A4A900442CD4 /* Settings.swift in Sources */,
+				FA65B35724F2B4E0005790B6 /* ThreadScrollOffset.swift in Sources */,
 				FA5456CB247454370015CF84 /* BookmarksViewController.swift in Sources */,
 				FA5456C7247454370015CF84 /* AppDelegate.swift in Sources */,
 				FADCDC9224D6D5B400C4256C /* FilesPreview.swift in Sources */,
