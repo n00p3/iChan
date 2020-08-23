@@ -94,7 +94,7 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
         for i in (0..<dataSourceFiltered.count).reversed() {
             if !(dataSourceFiltered[i].com?.lowercased().contains(searchController.searchBar.text!.lowercased()) ?? false ||
                  dataSourceFiltered[i].sub?.lowercased().contains(searchController.searchBar.text!.lowercased()) ?? false ||
-                 dataSourceFiltered[i].name.lowercased().contains(searchController.searchBar.text!.lowercased()) ||
+                 dataSourceFiltered[i].name?.lowercased().contains(searchController.searchBar.text!.lowercased()) ?? false ||
                  dataSourceFiltered[i].capcode?.lowercased().contains(searchController.searchBar.text!.lowercased()) ?? false) {
                 dataSourceFiltered.remove(at: i)
             }
@@ -260,7 +260,7 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
         }
         
         let header = UILabel()
-        let author = dataSourceFiltered[indexPath.row].name
+        let author = dataSourceFiltered[indexPath.row].name ?? ""
         let dateTime = dataSourceFiltered[indexPath.row].now
         let no = dataSourceFiltered[indexPath.row].no
         header.text = "\(author) \(dateTime) \(no)"

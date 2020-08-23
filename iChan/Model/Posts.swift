@@ -20,7 +20,8 @@ class Posts: Object, Codable {
 class Post: Codable {
     let no: Int
     let sticky, closed: Int?
-    let now, name: String
+    let now: String
+    let name: String?
     let sub: String?
     var com, filename, ext: String?
     let w, h, tnW, tnH: Int?
@@ -46,7 +47,7 @@ class Post: Codable {
         sticky = nil
         closed = nil
         now = ""
-        name = ""
+        name = nil
         sub = nil
         com = nil
         filename = nil
