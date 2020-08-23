@@ -366,7 +366,7 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
         Downloader.load(
             url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(self.urls[self.currentPage].tim!)\(self.urls[self.currentPage].ext!)")!,
             to: path) {
-            print("File downloaded.")
+                SPAlert.present(title: "File saved", message: nil, preset: .done)
         }
     }
     
