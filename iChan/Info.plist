@@ -72,6 +72,10 @@
 	<string>App saves files to ~/Photos directory.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>App saves files to ~/Photos directory.</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

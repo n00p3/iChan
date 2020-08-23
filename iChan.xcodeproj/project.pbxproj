@@ -76,6 +76,7 @@
 		CA035EBD3FBA8B1217DD4F61 /* Pods-iChan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iChan.debug.xcconfig"; path = "Target Support Files/Pods-iChan/Pods-iChan.debug.xcconfig"; sourceTree = "<group>"; };
 		FA18BBFD248A37FE00CC1582 /* CatalogThreadRealm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CatalogThreadRealm.swift; sourceTree = "<group>"; };
 		FA18BBFF248A644700CC1582 /* BoardsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsNavigationController.swift; sourceTree = "<group>"; };
+		FA253C0F24F1F002001E3CCA /* iChan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iChan.entitlements; sourceTree = "<group>"; };
 		FA25D8082487ADC4002D14FA /* CardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCell.swift; sourceTree = "<group>"; };
 		FA340AE824745F07009AD227 /* BoardsModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsModalViewController.swift; sourceTree = "<group>"; };
 		FA4C338624CA19950036B29E /* ThreadCatalogCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ThreadCatalogCell.xib; sourceTree = "<group>"; };
@@ -193,6 +194,7 @@
 		FA5456C5247454370015CF84 /* iChan */ = {
 			isa = PBXGroup;
 			children = (
+				FA253C0F24F1F002001E3CCA /* iChan.entitlements */,
 				FADCDC9524D6F6DC00C4256C /* FilesPreview */,
 				FA63A51C24CDC272009C7072 /* VideoPlayer */,
 				FA8E946D24CCB60B00AE90ED /* Bookmarks */,
@@ -835,6 +837,7 @@
 			baseConfigurationReference = CA035EBD3FBA8B1217DD4F61 /* Pods-iChan.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iChan/iChan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JSH738YSUP;
 				ENABLE_BITCODE = NO;
@@ -855,6 +858,7 @@
 			baseConfigurationReference = C93F53CA73EC6EF6E77AB1E4 /* Pods-iChan.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iChan/iChan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JSH738YSUP;
 				ENABLE_BITCODE = NO;

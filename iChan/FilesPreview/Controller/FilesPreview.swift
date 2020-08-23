@@ -352,6 +352,25 @@ class FilesPreview : UIPageViewController, UIPageViewControllerDelegate, UIPageV
     }
 
     func downloadCurrentFile () {
+        if urls[currentPage].ext! == ".webm" {
+            videoDownloadHandler()
+        } else {
+            imageDownloadHandler()
+        }
+    }
+    
+    private func videoDownloadHandler() {
+        let downloadsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let path = downloadsURL.appendingPathComponent(urls[currentPage].filename! + " - " + String(urls[currentPage].tim!) + urls[currentPage].ext!)
+        
+        Downloader.load(
+            url: URL(string: "https://i.4cdn.org/\(DataHolder.shared.currentThread.board)/\(self.urls[self.currentPage].tim!)\(self.urls[self.currentPage].ext!)")!,
+            to: path) {
+            print("File downloaded.")
+        }
+    }
+    
+    private func imageDownloadHandler() {
         PHPhotoLibrary.requestAuthorization({ status in
             if status != .authorized {
                 DispatchQueue.main.async {
