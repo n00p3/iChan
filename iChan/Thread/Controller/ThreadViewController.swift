@@ -49,8 +49,11 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
         
         activityIndicator.startAnimating()
         activityIndicator.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height / 2)
+
+        activityIndicator.frame = view.bounds
+        activityIndicator.backgroundColor = .systemBackground
         view.addSubview(activityIndicator)
-        self.activityIndicator.alpha = 0
+//        self.activityIndicator.alpha = 0
         
         // Do not delete or the thread will not appear for the first time.
         Requests.posts(
@@ -65,11 +68,6 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
                     self.tableView.layoutIfNeeded()
                     self.setScrollOffsetFromMemory()
                 }
-                
-                UIView.animate(withDuration: 0.5, animations: {
-                    self.activityIndicator.alpha = 0
-                    self.tableView.alpha = 1
-                })
                 
         }, failure: { e in
             SPAlert.present(title: "Error", message: "Couldn't fetch thread data.", preset: .error)
@@ -126,13 +124,6 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
                         self.tableView.layoutIfNeeded()
                         self.setScrollOffsetFromMemory()
                     }
-                    
-                    
-                    UIView.animate(withDuration: 0.5, animations: {
-                        self.activityIndicator.alpha = 0
-                        self.tableView.alpha = 1
-                    })
-                    
             }, failure: { e in
                 SPAlert.present(title: "Error", message: "Couldn't fetch thread data.", preset: .error)
             })
@@ -143,6 +134,12 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
     private func setScrollOffsetFromMemory() {
         let firstVisiblePost = ThreadScrollOffset.getOffset(threadNo: DataHolder.shared.currentThread.threadNo, board: DataHolder.shared.currentThread.board)
         tableView.scrollToRow(at: IndexPath(row: firstVisiblePost, section: 0), at: .top, animated: false)
+        UIView.animate(withDuration: 0.5) {
+            self.activityIndicator.alpha = 0
+        }
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     private func readImageForPost(board: String, postNo: Int, callback: @escaping (UIImage?) -> ()) {
