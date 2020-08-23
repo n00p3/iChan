@@ -24,19 +24,19 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
     private var selectedImageIndex = 0
     private var searchController = UISearchController()
 
-    private func updateScrollLocationInDb(offset: Float) {
+    private func updateScrollLocationInDb(firstVisiblePost: Int) {
         ThreadScrollOffset.setOffset(
             threadNo: DataHolder.shared.currentThread.threadNo,
             board: DataHolder.shared.currentThread.board,
-            offset: Float(offset))
+            firstVisiblePost: firstVisiblePost)
     }
     
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        updateScrollLocationInDb(offset: Float(scrollView.contentOffset.y))
+        updateScrollLocationInDb(firstVisiblePost: tableView.indexPathsForVisibleRows?.first?.row ?? 0)
     }
     
     override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        updateScrollLocationInDb(offset: Float(scrollView.contentOffset.y))
+        updateScrollLocationInDb(firstVisiblePost: tableView.indexPathsForVisibleRows?.first?.row ?? 0)
     }
     
     override func viewDidLoad() {
@@ -52,6 +52,7 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
         view.addSubview(activityIndicator)
         self.activityIndicator.alpha = 0
         
+        // Do not delete or the thread will not appear for the first time.
         Requests.posts(
             DataHolder.shared.currentThread.board,
             no: DataHolder.shared.currentThread.threadNo,
@@ -61,6 +62,8 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
                 self.setHeader(posts.posts.first?.sub)
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
+                    self.tableView.layoutIfNeeded()
+                    self.setScrollOffsetFromMemory()
                 }
                 
                 UIView.animate(withDuration: 0.5, animations: {
@@ -71,6 +74,7 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
         }, failure: { e in
             SPAlert.present(title: "Error", message: "Couldn't fetch thread data.", preset: .error)
         })
+        // ! Do not delete.
         
         prepareEventListener()
     }
@@ -119,7 +123,10 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
                     self.setHeader(posts.posts.first?.sub)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
+                        self.tableView.layoutIfNeeded()
+                        self.setScrollOffsetFromMemory()
                     }
+                    
                     
                     UIView.animate(withDuration: 0.5, animations: {
                         self.activityIndicator.alpha = 0
@@ -131,6 +138,11 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
             })
             
         }
+    }
+    
+    private func setScrollOffsetFromMemory() {
+        let firstVisiblePost = ThreadScrollOffset.getOffset(threadNo: DataHolder.shared.currentThread.threadNo, board: DataHolder.shared.currentThread.board)
+        tableView.scrollToRow(at: IndexPath(row: firstVisiblePost, section: 0), at: .top, animated: false)
     }
     
     private func readImageForPost(board: String, postNo: Int, callback: @escaping (UIImage?) -> ()) {
@@ -236,12 +248,15 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
             cell.addSubview(img)
             
             readImageForPost(board: DataHolder.shared.currentThread.board, postNo: dataSourceFiltered[indexPath.row].no, callback: { i in
+                if indexPath.row >= self.dataSourceFiltered.count { return }
+                
                 img.image = i
                 img.isUserInteractionEnabled = true
                 let tim = self.dataSourceFiltered[indexPath.row].tim ?? 0
                 let ext = self.dataSourceFiltered[indexPath.row].ext ?? ""
                 img.accessibilityIdentifier = String(tim)
                 img.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.viewFileSelector(_:))))
+
             })
             
             x = CGFloat(128)

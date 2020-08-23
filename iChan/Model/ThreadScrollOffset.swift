@@ -12,7 +12,7 @@ import RealmSwift
 class ThreadScrollOffset: Object {
     @objc dynamic var threadNo = 0
     @objc dynamic var board = ""
-    @objc dynamic var offset = Float(0)
+    @objc dynamic var firstVisiblePost = 0
     @objc dynamic var createdAt = Date()
     @objc dynamic var updatedAt = Date()
     
@@ -20,7 +20,7 @@ class ThreadScrollOffset: Object {
         "threadNo"
     }
     
-    static func setOffset(threadNo: Int, board: String, offset: Float) {
+    static func setOffset(threadNo: Int, board: String, firstVisiblePost: Int) {
         let realm = try! Realm()
         try! realm.write {
             let obj = realm.objects(ThreadScrollOffset.self)
@@ -30,11 +30,11 @@ class ThreadScrollOffset: Object {
                 let nVal = ThreadScrollOffset()
                 nVal.threadNo = threadNo
                 nVal.board = board
-                nVal.offset = offset
+                nVal.firstVisiblePost = firstVisiblePost
                 
                 realm.add(nVal)
             } else {
-                obj.first!.offset = offset
+                obj.first!.firstVisiblePost = firstVisiblePost
                 obj.first!.updatedAt = Date()
             }
         }
@@ -42,6 +42,16 @@ class ThreadScrollOffset: Object {
         cleanUpOffsets()
     }
     
+    static func getOffset(threadNo: Int, board: String) -> Int {
+        let realm = try! Realm()
+        let obj = realm.objects(ThreadScrollOffset.self)
+            .filter(NSPredicate(format: "threadNo = %d and board = %@", threadNo, board))
+        if obj.count == 0 {
+            return 0
+        } else {
+            return obj.first!.firstVisiblePost
+        }
+    }
     /**
      Removes old data.
      Keeps only 100 newest threads.
