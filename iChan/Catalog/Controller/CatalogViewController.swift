@@ -11,6 +11,7 @@ import RealmSwift
 import SPAlert
 import EmitterKit
 import Lightbox
+import Presentr
 
 protocol CatalogBoardDelegate {
     func boardChanged(newBoard: String)
@@ -336,7 +337,22 @@ extension CatalogViewController: UICollectionViewDataSource {
     }
     
     private func viewOpFile(thread: CatalogThread) {
-        filePreviewHandler(parent: self, board: DataHolder.shared.currentCatalogBoard, tim: thread.tim ?? 0, ext: thread.ext ?? "")
+//        filePreviewHandler(parent: self, board: DataHolder.shared.currentCatalogBoard, tim: thread.tim ?? 0, ext: thread.ext ?? "")
+        if thread.ext == nil || thread.ext == "" {
+            SPAlert.present(title: "Error", message: "No file found", preset: .error)
+            return
+        }
+        
+        let preview = FilesPreview(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [:])
+        let post = Post()
+        post.tim = thread.tim
+        post.ext = thread.ext
+        preview.urls = [post]
+        preview.currentPage = 0
+        
+        let presentr = Presentr(presentationType: .fullScreen)
+        presentr.dismissOnSwipe = true
+        customPresentViewController(presentr, viewController: preview, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

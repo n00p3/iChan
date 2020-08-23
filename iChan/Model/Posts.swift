@@ -22,9 +22,9 @@ class Post: Codable {
     let sticky, closed: Int?
     let now, name: String
     let sub: String?
-    let com, filename, ext: String?
+    var com, filename, ext: String?
     let w, h, tnW, tnH: Int?
-    let tim, time: Int?
+    var tim, time: Int?
     let md5: String?
     let fsize, resto: Int?
     let capcode: String?
@@ -39,5 +39,31 @@ class Post: Codable {
         case semanticURL = "semantic_url"
         case replies, images
         case uniqueIPS = "unique_ips"
+    }
+    
+    init() {
+        no = 0
+        sticky = nil
+        closed = nil
+        now = ""
+        name = ""
+        sub = nil
+        com = nil
+        filename = nil
+        ext = nil
+        w = nil
+        h = nil
+        tnW = nil
+        tnH = nil
+        tim = nil
+        time = nil
+        md5 = nil
+        fsize = nil
+        resto = nil
+        capcode = nil
+        semanticURL = nil
+        replies = nil
+        images = nil
+        uniqueIPS = nil
     }
 }
