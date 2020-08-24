@@ -29,4 +29,17 @@ class HistoryViewController : UITableViewController {
         cell.textLabel?.text = dataSource[indexPath.row].board + " - " + String(dataSource[indexPath.row].threadNo)
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // TODO: Emit change on set / set value on emit.
+        DataHolder.shared.currentThread = CurrentThread(
+            threadNo: dataSource[indexPath.row].threadNo,
+            board: dataSource[indexPath.row].board)
+        
+        DataHolder.shared.threadChangedEvent.emit(
+            CurrentThread(
+                threadNo: dataSource[indexPath.row].threadNo,
+                board: dataSource[indexPath.row].board))
+        self.tabBarController?.selectedIndex = 2
+    }
 }
