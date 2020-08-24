@@ -29,6 +29,8 @@
 		FA63A51F24CDC286009C7072 /* VideoPlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA63A51E24CDC286009C7072 /* VideoPlayerController.swift */; };
 		FA63A52224CDC4F5009C7072 /* VideoPlayer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA63A52124CDC4F5009C7072 /* VideoPlayer.storyboard */; };
 		FA65B35724F2B4E0005790B6 /* ThreadScrollOffset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA65B35624F2B4E0005790B6 /* ThreadScrollOffset.swift */; };
+		FA67672224F45BD90011B962 /* VisitedThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67672124F45BD90011B962 /* VisitedThread.swift */; };
+		FA67672624F463E70011B962 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA67672524F463E70011B962 /* HistoryViewController.swift */; };
 		FA8850A6247D9BC9009D0DDA /* ThreadCatalogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */; };
 		FA8D186224758C9600BDD461 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186124758C9600BDD461 /* Requests.swift */; };
 		FA8D186424758CE300BDD461 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8D186324758CE300BDD461 /* Posts.swift */; };
@@ -101,6 +103,8 @@
 		FA63A51E24CDC286009C7072 /* VideoPlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerController.swift; sourceTree = "<group>"; };
 		FA63A52124CDC4F5009C7072 /* VideoPlayer.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = VideoPlayer.storyboard; sourceTree = "<group>"; };
 		FA65B35624F2B4E0005790B6 /* ThreadScrollOffset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadScrollOffset.swift; sourceTree = "<group>"; };
+		FA67672124F45BD90011B962 /* VisitedThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitedThread.swift; sourceTree = "<group>"; };
+		FA67672524F463E70011B962 /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		FA8850A5247D9BC9009D0DDA /* ThreadCatalogCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCatalogCell.swift; sourceTree = "<group>"; };
 		FA8D186124758C9600BDD461 /* Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requests.swift; sourceTree = "<group>"; };
 		FA8D186324758CE300BDD461 /* Posts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
@@ -196,6 +200,7 @@
 		FA5456C5247454370015CF84 /* iChan */ = {
 			isa = PBXGroup;
 			children = (
+				FA67672324F463D40011B962 /* History */,
 				FA253C0F24F1F002001E3CCA /* iChan.entitlements */,
 				FADCDC9524D6F6DC00C4256C /* FilesPreview */,
 				FA63A51C24CDC272009C7072 /* VideoPlayer */,
@@ -260,6 +265,22 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		FA67672324F463D40011B962 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				FA67672424F463DA0011B962 /* Controller */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		FA67672424F463DA0011B962 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FA67672524F463E70011B962 /* HistoryViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		FA8D186024758C8900BDD461 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -274,6 +295,7 @@
 				FA8E947124CCB7C900AE90ED /* BookmarkRealm.swift */,
 				FA8E947324CCC38F00AE90ED /* CurrentThread.swift */,
 				FA65B35624F2B4E0005790B6 /* ThreadScrollOffset.swift */,
+				FA67672124F45BD90011B962 /* VisitedThread.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -639,6 +661,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA67672224F45BD90011B962 /* VisitedThread.swift in Sources */,
+				FA67672624F463E70011B962 /* HistoryViewController.swift in Sources */,
 				FA5456FC247457510015CF84 /* CatalogViewController.swift in Sources */,
 				FA8E947224CCB7C900AE90ED /* BookmarkRealm.swift in Sources */,
 				FA5456D3247454370015CF84 /* iChan.xcdatamodeld in Sources */,
