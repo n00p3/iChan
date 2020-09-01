@@ -434,6 +434,13 @@ extension CatalogViewController: UICollectionViewDataSource {
         
         let thread = catalogFiltered[indexPath.section].threads[indexPath.row]
         
+        VisitedThread.addToHistory(
+            threadNo: thread.no,
+            board: DataHolder.shared.currentCatalogBoard,
+            subject: thread.sub ?? "",
+            comment: thread.com ?? ""
+        )
+        
         DataHolder.shared.threadChangedEvent.emit(CurrentThread(threadNo: thread.no, board: DataHolder.shared.currentCatalogBoard))
         tabBarController?.selectedIndex = 2
     }

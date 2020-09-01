@@ -26,7 +26,24 @@ class HistoryViewController : UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
 
-        cell.textLabel?.text = dataSource[indexPath.row].board + " - " + String(dataSource[indexPath.row].threadNo)
+        var content = ""
+        if dataSource[indexPath.row].subject.count == 0 && dataSource[indexPath.row].comment.count == 0 {
+            content = "[no comment]"
+        } else if dataSource[indexPath.row].subject.count > 0 && dataSource[indexPath.row].comment.count == 0 {
+            content = dataSource[indexPath.row].subject
+        } else if dataSource[indexPath.row].subject.count == 0 && dataSource[indexPath.row].comment.count > 0 {
+            content = dataSource[indexPath.row].comment
+        } else if dataSource[indexPath.row].subject.count > 0 && dataSource[indexPath.row].comment.count > 0 {
+            content = dataSource[indexPath.row].subject + " - " + dataSource[indexPath.row].comment
+        }
+        
+        content = dataSource[indexPath.row].board + " - " + content
+        let attrs: [NSAttributedString.Key : Any] = [
+            .font : UIFont.systemFont(ofSize: cell.textLabel?.font.pointSize ?? 12)
+        ]
+        
+        cell.textLabel?.attributedText = content.htmlToAttributedString(attrs: attrs)
+        cell.textLabel?.lineBreakMode = .byTruncatingTail
         return cell
     }
     

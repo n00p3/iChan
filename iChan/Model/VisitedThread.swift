@@ -11,6 +11,8 @@ import RealmSwift
 class VisitedThread: Object {
     @objc dynamic var threadNo = 0
     @objc dynamic var board = ""
+    @objc dynamic var subject = ""
+    @objc dynamic var comment = ""
     @objc dynamic var lastVisitedAt = Date()
     
     override class func primaryKey() -> String? {
@@ -23,7 +25,7 @@ class VisitedThread: Object {
         return objs.map { $0 }.sorted(by: { $0.lastVisitedAt > $1.lastVisitedAt })
     }
     
-    static func addToHistory(threadNo: Int, board: String) {
+    static func addToHistory(threadNo: Int, board: String, subject: String, comment: String) {
         let realm = try! Realm()
         let obj = realm.objects(VisitedThread.self)
             .filter(NSPredicate(format: "threadNo = %d and board = %@", threadNo, board))
@@ -32,6 +34,8 @@ class VisitedThread: Object {
                 let temp = VisitedThread()
                 temp.threadNo = threadNo
                 temp.board = board
+                temp.subject = subject
+                temp.comment = comment
                 temp.lastVisitedAt = Date()
                 realm.add(temp).self
             }

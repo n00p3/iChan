@@ -33,7 +33,6 @@ struct DataHolder {
                 t.no = currentThread.threadNo
                 sett.currentThread = t
             }
-            VisitedThread.addToHistory(threadNo: currentThread.threadNo, board: currentThread.board)
             print(realm.objects(Settings.self).first!.currentThread)
         }
     }
