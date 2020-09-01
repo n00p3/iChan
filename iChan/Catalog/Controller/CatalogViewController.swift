@@ -145,6 +145,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate, UISearchRes
             storeCatalogInRealm(board: board, liveCatalog: catalog)
             
             NSLog("\(catalog.count) pages")
+            callback(catalog)
         }) { (error) in
             NSLog("Failed to load catalog; \(error.localizedDescription)")
         }
