@@ -145,6 +145,7 @@ class CatalogViewController: UIViewController, CatalogBoardDelegate, UISearchRes
             storeCatalogInRealm(board: board, liveCatalog: catalog)
             
             NSLog("\(catalog.count) pages")
+            callback(catalog)
         }) { (error) in
             NSLog("Failed to load catalog; \(error.localizedDescription)")
         }
@@ -432,6 +433,13 @@ extension CatalogViewController: UICollectionViewDataSource {
             board: DataHolder.shared.currentCatalogBoard)
         
         let thread = catalogFiltered[indexPath.section].threads[indexPath.row]
+        
+        VisitedThread.addToHistory(
+            threadNo: thread.no,
+            board: DataHolder.shared.currentCatalogBoard,
+            subject: thread.sub ?? "",
+            comment: thread.com ?? ""
+        )
         
         DataHolder.shared.threadChangedEvent.emit(CurrentThread(threadNo: thread.no, board: DataHolder.shared.currentCatalogBoard))
         tabBarController?.selectedIndex = 2
