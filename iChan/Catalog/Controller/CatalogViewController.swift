@@ -505,5 +505,6 @@ extension CatalogViewController : UICollectionViewDelegateFlowLayout {
         default:
             assert(false, "Invalid element type")
         }
+        return UICollectionReusableView()
     }
 }
