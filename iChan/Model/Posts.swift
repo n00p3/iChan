@@ -31,15 +31,18 @@ class Post: Codable {
     let capcode: String?
     let semanticURL: String?
     let replies, images, uniqueIPS: Int?
+    let country: String?
+    let countryName: String?
 
     enum CodingKeys: String, CodingKey {
-        case no, sticky, closed, now, name, sub, com, filename, ext, w, h
+        case no, sticky, closed, now, name, sub, com, filename, ext, w, h, country
         case tnW = "tn_w"
         case tnH = "tn_h"
         case tim, time, md5, fsize, resto, capcode
         case semanticURL = "semantic_url"
         case replies, images
         case uniqueIPS = "unique_ips"
+        case countryName = "country_name"
     }
     
     init() {
@@ -66,5 +69,7 @@ class Post: Codable {
         replies = nil
         images = nil
         uniqueIPS = nil
+        country = nil
+        countryName = nil
     }
 }
