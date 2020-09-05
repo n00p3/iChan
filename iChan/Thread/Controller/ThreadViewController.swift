@@ -13,6 +13,7 @@ import EmitterKit
 import Lightbox
 import Player
 import Presentr
+import Kingfisher
 
 class ThreadViewController : UITableViewController, UISearchResultsUpdating {
     let COM_FONT_SIZE = CGFloat(16)
@@ -232,10 +233,12 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
             return cell
         }
         
-        var x = CGFloat(20)
+        let header = UILabel()
+        let headerDetails = UILabel()
         
+        var x = CGFloat(20)
+        let img = UIImageView()
         if dataSourceFiltered[indexPath.row].filename != nil {
-            let img = UIImageView()
             img.contentMode = .scaleAspectFill
             img.clipsToBounds = true
             img.frame = CGRect(x: x, y: 8, width: 100, height: 100)
@@ -253,23 +256,49 @@ class ThreadViewController : UITableViewController, UISearchResultsUpdating {
                 let ext = self.dataSourceFiltered[indexPath.row].ext ?? ""
                 img.accessibilityIdentifier = String(tim)
                 img.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.viewFileSelector(_:))))
-
+                
+                headerDetails.frame = CGRect(x: headerDetails.frame.origin.x, y: headerDetails.frame.origin.y, width: tableView.frame.width - (x + 16) - img.frame.width, height: headerDetails.frame.height)
             })
             
             x = CGFloat(128)
         }
         
-        let header = UILabel()
+
         let author = dataSourceFiltered[indexPath.row].name ?? ""
         let dateTime = dataSourceFiltered[indexPath.row].now
         let no = dataSourceFiltered[indexPath.row].no
-        header.text = "\(author) \(dateTime) \(no)"
+        
+        let country = dataSourceFiltered[indexPath.row].country
+        
+        let countryFlag = UIImageView()
+
+        header.text = author
         header.textColor = .gray
         header.adjustsFontSizeToFitWidth = true
         header.minimumScaleFactor = 0.5
         header.frame =  CGRect(x: x, y: 8, width: tableView.frame.width - (x + 8), height: 12)
+        header.sizeToFit()
+        
+        headerDetails.text = "\(dateTime) \(no)"
+        headerDetails.textColor = .gray
+        headerDetails.adjustsFontSizeToFitWidth = true
+        headerDetails.minimumScaleFactor = 0.5
+        
+        // TODO: Thread No. goes out of screen on iPhone 8.
+        if country == nil {
+            headerDetails.frame = CGRect(x: 8 + header.frame.origin.x + header.frame.width, y: 8, width: tableView.frame.width - (x + 8) - header.frame.width, height: 12)
+        } else {
+            countryFlag.kf.setImage(with: URL(string: "https://s.4cdn.org/image/country/\(country!.lowercased()).gif"))
+            countryFlag.frame = CGRect(x: x + header.frame.width + 4, y: 12, width: 16, height: 11)
+            cell.addSubview(countryFlag)
+            
+            headerDetails.frame = CGRect(x: 20 + countryFlag.frame.origin.x, y: 8, width: tableView.frame.width - (x + 16) - header.frame.width, height: 12)
+        }
+        headerDetails.sizeToFit()
         
         cell.addSubview(header)
+        
+        cell.addSubview(headerDetails)
         
         let comment = UILabel()
         comment.font = comment.font.withSize(COM_FONT_SIZE)
